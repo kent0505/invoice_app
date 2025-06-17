@@ -14,23 +14,23 @@ final theme = ThemeData(
 
   // OVERSCROLL
   colorScheme: const ColorScheme.light(
-    surface: Color(0xffF2F5F8), // bg color when push
-    secondary: Color(0xffd5d5d5), // overscroll
+    surface: Color(0xffF3F3F1), // bg color when push
+    secondary: Color(0xff94A3B8), // overscroll
   ),
 
   // SCAFFOLD
-  scaffoldBackgroundColor: const Color(0xffF2F5F8),
+  scaffoldBackgroundColor: const Color(0xffF3F3F1),
 
   // APPBAR
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xffF2F5F8),
+    backgroundColor: Color(0xffF3F3F1),
     centerTitle: true,
     toolbarHeight: 64, // app bar size
     elevation: 0,
     actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     titleTextStyle: TextStyle(
-      color: Colors.black,
-      fontSize: 18,
+      color: Color(0xff151515),
+      fontSize: 16,
       fontFamily: AppFonts.w600,
     ),
   ),

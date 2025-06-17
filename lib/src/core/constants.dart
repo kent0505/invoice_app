@@ -1,10 +1,4 @@
 abstract final class AppFonts {
-  // static const montserrat400 = 'montserrat400';
-  // static const montserrat500 = 'montserrat500';
-  // static const montserrat600 = 'montserrat600';
-  // static const montserrat700 = 'montserrat700';
-  // static const montserrat800 = 'montserrat800';
-
   static const w400 = 'w400';
   static const w500 = 'w500';
   static const w600 = 'w600';
