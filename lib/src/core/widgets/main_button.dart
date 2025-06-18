@@ -59,3 +59,30 @@ class MainButton extends StatelessWidget {
     );
   }
 }
+
+class MainButtonWrapper extends StatelessWidget {
+  const MainButtonWrapper({super.key, required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16).copyWith(
+        bottom: 16 + MediaQuery.of(context).viewPadding.bottom,
+      ),
+      child: Column(
+        children: children,
+      ),
+    );
+  }
+}

@@ -1,5 +1,9 @@
 import 'package:go_router/go_router.dart';
 
+import '../features/business/models/business.dart';
+import '../features/business/screens/business_screen.dart';
+import '../features/business/screens/create_business_screen.dart';
+import '../features/business/screens/edit_business_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboard/screens/onboard_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
@@ -20,9 +24,27 @@ final routerConfig = GoRouter(
       path: HomeScreen.routePath,
       builder: (context, state) => const HomeScreen(),
     ),
+
+    // settings
     GoRoute(
       path: SettingsScreen.routePath,
       builder: (context, state) => const SettingsScreen(),
+    ),
+
+    // business
+    GoRoute(
+      path: BusinessScreen.routePath,
+      builder: (context, state) => const BusinessScreen(),
+    ),
+    GoRoute(
+      path: CreateBusinessScreen.routePath,
+      builder: (context, state) => const CreateBusinessScreen(),
+    ),
+    GoRoute(
+      path: EditBusinessScreen.routePath,
+      builder: (context, state) => EditBusinessScreen(
+        business: state.extra as Business,
+      ),
     ),
   ],
 );

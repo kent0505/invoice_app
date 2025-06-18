@@ -48,41 +48,38 @@ abstract final class Identifiers {
 }
 
 abstract final class Tables {
-  static const resumes = 'resumes';
-  static const languages = 'languages';
-  static const educations = 'educations';
+  static const invoices = 'invoices';
+  static const business = 'business';
+  static const items = 'items';
+  static const clients = 'clients';
 }
 
 abstract final class SQL {
-  static const resumes = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.resumes} (
+  static const invoices = '''
+    CREATE TABLE IF NOT EXISTS ${Tables.invoices} (
       id INTEGER,
-      template INTEGER,
-      photo TEXT,
+    )
+    ''';
+  static const business = '''
+    CREATE TABLE IF NOT EXISTS ${Tables.business} (
+      id INTEGER,
       name TEXT,
       phone TEXT,
       email TEXT,
-      city TEXT,
-      birth TEXT,
-      job TEXT,
-      about TEXT
+      address TEXT,
+      currency TEXT,
+      imageLogo TEXT,
+      imageSignature TEXT
     )
     ''';
-  static const languages = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.languages} (
+  static const items = '''
+    CREATE TABLE IF NOT EXISTS ${Tables.items} (
       id INTEGER,
-      language TEXT,
-      level TEXT
     )
     ''';
-  static const educations = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.educations} (
+  static const clients = '''
+    CREATE TABLE IF NOT EXISTS ${Tables.clients} (
       id INTEGER,
-      name TEXT,
-      faculty TEXT,
-      specialization TEXT,
-      startYear TEXT,
-      endYear TEXT
     )
     ''';
 }

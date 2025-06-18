@@ -7,9 +7,9 @@ final theme = ThemeData(
   brightness: Brightness.light,
   fontFamily: AppFonts.w400,
   textSelectionTheme: const TextSelectionThemeData(
-    cursorColor: Color(0xff095EF1),
-    selectionColor: Color(0xff095EF1),
-    selectionHandleColor: Color(0xff095EF1),
+    cursorColor: Color(0xffFF4400),
+    selectionColor: Color(0xffFF4400),
+    selectionHandleColor: Color(0xffFF4400),
   ),
 
   // OVERSCROLL
@@ -29,7 +29,7 @@ final theme = ThemeData(
     elevation: 0,
     actionsPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     titleTextStyle: TextStyle(
-      color: Color(0xff151515),
+      color: Colors.black,
       fontSize: 16,
       fontFamily: AppFonts.w600,
     ),
@@ -44,21 +44,21 @@ final theme = ThemeData(
   ),
 
   // TEXTFIELD
-  inputDecorationTheme: InputDecorationTheme(
-    filled: true,
-    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Colors.transparent),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Colors.transparent),
-    ),
-    hintStyle: const TextStyle(
-      color: Color(0xff707883),
-      fontSize: 14,
-      fontFamily: AppFonts.w500,
-    ),
-  ),
+  // inputDecorationTheme: InputDecorationTheme(
+  //   filled: true,
+  //   contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+  //   focusedBorder: OutlineInputBorder(
+  //     borderRadius: BorderRadius.circular(16),
+  //     borderSide: const BorderSide(color: Colors.transparent),
+  //   ),
+  //   enabledBorder: OutlineInputBorder(
+  //     borderRadius: BorderRadius.circular(16),
+  //     borderSide: const BorderSide(color: Colors.transparent),
+  //   ),
+  //   hintStyle: const TextStyle(
+  //     color: Color(0xff707883),
+  //     fontSize: 14,
+  //     fontFamily: AppFonts.w500,
+  //   ),
+  // ),
 );

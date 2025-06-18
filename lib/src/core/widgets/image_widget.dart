@@ -24,6 +24,16 @@ class ImageWidget extends StatelessWidget {
   final int? cacheWidth;
   final int? cacheHeight;
 
+  static Widget errorBuilder(
+    BuildContext context,
+    Object error,
+    StackTrace? stackTrace,
+  ) {
+    logger(error);
+
+    return SizedBox();
+  }
+
   static Widget frameBuilder(
     BuildContext context,
     Widget child,
@@ -48,17 +58,10 @@ class ImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         alignment: alignment,
+        errorBuilder: errorBuilder,
         frameBuilder: frameBuilder,
         cacheWidth: cacheWidth,
         cacheHeight: cacheHeight,
-        errorBuilder: (context, error, stackTrace) {
-          logger(error);
-
-          return SizedBox(
-            width: width,
-            height: height,
-          );
-        },
       ),
     );
   }

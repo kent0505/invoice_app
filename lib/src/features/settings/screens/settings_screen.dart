@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:invoice_app/src/core/constants.dart';
-import 'package:invoice_app/src/core/widgets/appbar.dart';
-import 'package:invoice_app/src/core/widgets/svg_widget.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../core/constants.dart';
+import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
+import '../../../core/widgets/svg_widget.dart';
+import '../../business/screens/business_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -81,7 +83,9 @@ class SettingsScreen extends StatelessWidget {
                 _Tile(
                   title: 'Business Information',
                   hasIcon: true,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push(BusinessScreen.routePath);
+                  },
                 ),
                 _Tile(
                   title: 'Clients',

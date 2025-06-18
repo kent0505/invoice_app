@@ -9,9 +9,13 @@ import 'package:path/path.dart';
 import 'src/core/constants.dart';
 import 'src/core/router.dart';
 import 'src/core/themes.dart';
-import 'src/features/onboard/data/onboard_repository.dart';
+import 'src/features/business/bloc/business_bloc.dart';
+import 'src/features/business/data/business_repository.dart';
+import 'src/features/invoice/bloc/invoice_bloc.dart';
+import 'src/features/invoice/data/invoice_repository.dart';
 import 'src/features/pro/bloc/pro_bloc.dart';
 import 'src/features/pro/data/pro_repository.dart';
+import 'src/features/onboard/data/onboard_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +38,10 @@ void main() async {
     path,
     version: 1,
     onCreate: (db, version) async {
-      // await db.execute(SQL.resumes);
-      // await db.execute(SQL.languages);
-      // await db.execute(SQL.educations);
+      // await db.execute(SQL.invoices);
+      await db.execute(SQL.business);
+      // await db.execute(SQL.items);
+      // await db.execute(SQL.clients);
     },
   );
 
@@ -49,9 +54,25 @@ void main() async {
         RepositoryProvider<ProRepository>(
           create: (context) => ProRepositoryImpl(prefs: prefs),
         ),
+        RepositoryProvider<InvoiceRepository>(
+          create: (context) => InvoiceRepositoryImpl(db: db),
+        ),
+        RepositoryProvider<BusinessRepository>(
+          create: (context) => BusinessRepositoryImpl(db: db),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (context) => InvoiceBloc(
+              repository: context.read<InvoiceRepository>(),
+            )..add(GetInvoices()),
+          ),
+          BlocProvider(
+            create: (context) => BusinessBloc(
+              repository: context.read<BusinessRepository>(),
+            )..add(GetBusiness()),
+          ),
           BlocProvider(
             create: (context) =>
                 ProBloc(repository: context.read<ProRepository>())

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:invoice_app/src/core/widgets/main_button.dart';
 
 import '../../../core/constants.dart';
-import '../../invoice/models/invoice.dart';
+import '../../../core/widgets/main_button.dart';
+import '../../../core/widgets/no_data.dart';
+import '../../invoice/bloc/invoice_bloc.dart';
 import '../../invoice/widgets/invoice_tile.dart';
 import '../../pro/bloc/pro_bloc.dart';
 import '../../pro/screens/pro_sheet.dart';
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
               FilterTab(
                 index: 2,
                 current: index,
-                title: 'Outstanding',
+                title: 'Unpaid',
                 onPressed: onFilter,
               ),
               const SizedBox(width: 16),
@@ -98,45 +99,41 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                InvoiceTile(
-                  invoice: Invoice(
-                    id: 1,
-                    title: 'Aaa',
-                  ),
-                  circleColor: invoiceColors[index % invoiceColors.length],
-                ),
-                InvoiceTile(
-                  invoice: Invoice(
-                    id: 2,
-                    title: 'Bbb',
-                  ),
-                  circleColor: invoiceColors[index % invoiceColors.length],
-                ),
-              ],
+            child: BlocBuilder<InvoiceBloc, InvoiceState>(
+              builder: (context, state) {
+                if (state is InvoicesLoaded) {
+                  return state.invoices.isEmpty
+                      ? const NoData()
+                      : ListView.builder(
+                          padding: const EdgeInsets.all(16),
+                          itemCount: state.invoices.length,
+                          itemBuilder: (context, index) {
+                            return InvoiceTile(
+                              invoice: state.invoices[index],
+                              circleColor:
+                                  invoiceColors[index % invoiceColors.length],
+                            );
+                          },
+                        );
+                }
+
+                return const SizedBox();
+              },
             ),
           ),
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16).copyWith(
-              bottom: 16 + MediaQuery.of(context).viewPadding.bottom,
-            ),
-            child: Column(
-              children: [
-                MainButton(
-                  title: 'Create Invoice',
-                  onPressed: () {},
-                ),
-                const SizedBox(height: 8),
-                MainButton(
-                  title: 'Create Estimates',
-                  outlined: true,
-                  onPressed: () {},
-                ),
-              ],
-            ),
+          MainButtonWrapper(
+            children: [
+              MainButton(
+                title: 'Create Invoice',
+                onPressed: () {},
+              ),
+              const SizedBox(height: 8),
+              MainButton(
+                title: 'Create Estimates',
+                outlined: true,
+                onPressed: () {},
+              ),
+            ],
           ),
         ],
       ),
