@@ -27,6 +27,7 @@ class BusinessScreen extends StatelessWidget {
                   return state.businessList.isEmpty
                       ? const NoData()
                       : ListView.builder(
+                          padding: const EdgeInsets.all(16),
                           itemCount: state.businessList.length,
                           itemBuilder: (context, index) {
                             return BusinessTile(

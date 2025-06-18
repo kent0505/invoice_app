@@ -4,6 +4,7 @@ import '../features/business/models/business.dart';
 import '../features/business/screens/business_screen.dart';
 import '../features/business/screens/create_business_screen.dart';
 import '../features/business/screens/edit_business_screen.dart';
+import '../features/business/screens/signature_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/onboard/screens/onboard_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
@@ -45,6 +46,10 @@ final routerConfig = GoRouter(
       builder: (context, state) => EditBusinessScreen(
         business: state.extra as Business,
       ),
+    ),
+    GoRoute(
+      path: SignatureScreen.routePath,
+      builder: (context, state) => const SignatureScreen(),
     ),
   ],
 );

@@ -1,21 +1,18 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
-import '../../../core/widgets/button.dart';
-import '../../../core/widgets/image_widget.dart';
 import '../../../core/widgets/main_button.dart';
-import '../../../core/widgets/svg_widget.dart';
 import '../bloc/business_bloc.dart';
 import '../models/business.dart';
+import '../widgets/business_field.dart';
+import '../widgets/business_logo.dart';
+import 'signature_screen.dart';
 
 class CreateBusinessScreen extends StatefulWidget {
   const CreateBusinessScreen({super.key});
@@ -28,7 +25,7 @@ class CreateBusinessScreen extends StatefulWidget {
 
 class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   XFile file = XFile('');
-
+  String? signature = '';
   bool active = false;
 
   final nameController = TextEditingController();
@@ -39,12 +36,11 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   void checkActive() {
     setState(() {
       active = [
-            nameController,
-            phoneController,
-            emailController,
-            addressController,
-          ].every((element) => element.text.isNotEmpty) &&
-          file.path.isNotEmpty;
+        nameController,
+        phoneController,
+        emailController,
+        addressController,
+      ].every((element) => element.text.isNotEmpty);
     });
   }
 
@@ -53,8 +49,16 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
     checkActive();
   }
 
-  void onSignature() {
-    // context.push(location);
+  void onSignature() async {
+    context.push<String?>(SignatureScreen.routePath).then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            signature = value;
+          });
+        }
+      },
+    );
   }
 
   void onSave() {
@@ -67,7 +71,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
               email: emailController.text,
               address: addressController.text,
               imageLogo: file.path,
-              imageSignature: 'imageSignature',
+              imageSignature: signature ?? '',
             ),
           ),
         );
@@ -94,7 +98,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _AddLogo(
+                BusinessLogo(
                   file: file,
                   onPressed: onAddLogo,
                 ),
@@ -116,24 +120,24 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                   ),
                   child: Column(
                     children: [
-                      _Field(
+                      BusinessField(
                         title: 'Name',
                         controller: nameController,
                         onChanged: checkActive,
                       ),
-                      _Field(
+                      BusinessField(
                         title: 'Phone',
                         controller: phoneController,
                         keyboardType: TextInputType.phone,
                         onChanged: checkActive,
                       ),
-                      _Field(
+                      BusinessField(
                         title: 'E-Mail',
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         onChanged: checkActive,
                       ),
-                      _Field(
+                      BusinessField(
                         title: 'Address',
                         controller: addressController,
                         onChanged: checkActive,
@@ -141,6 +145,8 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 12),
+                SvgPicture.string(signature ?? ''),
               ],
             ),
           ),
@@ -160,140 +166,6 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _AddLogo extends StatelessWidget {
-  const _AddLogo({
-    required this.file,
-    required this.onPressed,
-  });
-
-  final XFile file;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Button(
-        onPressed: onPressed,
-        child: file.path.isEmpty
-            ? const DottedBorder(
-                options: RectDottedBorderOptions(
-                  dashPattern: [2, 2],
-                  strokeWidth: 1,
-                  color: Color(0xff8E8E93),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgWidget(Assets.addImage),
-                      Text(
-                        'Add Logo',
-                        style: TextStyle(
-                          color: Color(0xff8E8E93),
-                          fontSize: 12,
-                          fontFamily: AppFonts.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : Image.file(
-                File(file.path),
-                errorBuilder: ImageWidget.errorBuilder,
-                frameBuilder: ImageWidget.frameBuilder,
-              ),
-      ),
-    );
-  }
-}
-
-class _Field extends StatelessWidget {
-  const _Field({
-    required this.title,
-    required this.controller,
-    this.keyboardType,
-    required this.onChanged,
-  });
-
-  final String title;
-  final TextEditingController controller;
-  final TextInputType? keyboardType;
-  final void Function() onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 44,
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        textCapitalization: TextCapitalization.sentences,
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(50),
-        ],
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontFamily: AppFonts.w400,
-        ),
-        decoration: InputDecoration(
-          prefixIcon: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 100,
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: AppFonts.w400,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 11),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              width: 0.4,
-              color: Color(0xff545456).withValues(alpha: 0.34),
-            ),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              width: 0.4,
-              color: Color(0xff545456).withValues(alpha: 0.34),
-            ),
-          ),
-          hintStyle: TextStyle(
-            color: Color(0xff3C3C43).withValues(alpha: 0.3),
-            fontSize: 16,
-            fontFamily: AppFonts.w400,
-          ),
-          hintText: 'Optional',
-        ),
-        onChanged: (_) {
-          onChanged();
-        },
-        onTapOutside: (_) {
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
       ),
     );
   }

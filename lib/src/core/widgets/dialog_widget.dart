@@ -8,22 +8,30 @@ class DialogWidget extends StatelessWidget {
   const DialogWidget({
     super.key,
     required this.title,
+    this.delete = false,
     this.onPressed,
   });
 
   final String title;
+  final bool delete;
   final VoidCallback? onPressed;
 
   static void show(
     BuildContext context, {
     required String title,
+    bool delete = false,
+    VoidCallback? onPressed,
   }) {
     showDialog(
       context: context,
       barrierColor: Colors.transparent,
       useSafeArea: false,
       builder: (context) {
-        return DialogWidget(title: title);
+        return DialogWidget(
+          title: title,
+          delete: delete,
+          onPressed: onPressed,
+        );
       },
     );
   }
@@ -54,15 +62,34 @@ class DialogWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _Button(
-                    title: 'OK',
-                    color: Colors.black,
-                    fontFamily: AppFonts.w500,
-                    onPressed: onPressed ??
-                        () {
-                          context.pop();
-                        },
-                  ),
+                  if (delete) ...[
+                    _Button(
+                      title: 'No',
+                      color: Colors.black,
+                      fontFamily: AppFonts.w500,
+                      onPressed: () {
+                        context.pop();
+                      },
+                    ),
+                    _Button(
+                      title: 'Yes',
+                      color: Colors.black,
+                      fontFamily: AppFonts.w500,
+                      onPressed: onPressed ??
+                          () {
+                            context.pop();
+                          },
+                    ),
+                  ] else
+                    _Button(
+                      title: 'OK',
+                      color: Colors.black,
+                      fontFamily: AppFonts.w500,
+                      onPressed: onPressed ??
+                          () {
+                            context.pop();
+                          },
+                    ),
                 ],
               ),
             ],
