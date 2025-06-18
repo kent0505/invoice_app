@@ -80,6 +80,11 @@ abstract final class SQL {
   static const clients = '''
     CREATE TABLE IF NOT EXISTS ${Tables.clients} (
       id INTEGER,
+      billTo TEXT,
+      name TEXT,
+      phone TEXT,
+      email TEXT,
+      address TEXT
     )
     ''';
 }

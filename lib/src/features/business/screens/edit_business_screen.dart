@@ -35,20 +35,18 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
   final emailController = TextEditingController();
   final addressController = TextEditingController();
 
-  void checkActive() {
+  void checkActive(String _) {
     setState(() {
       active = [
         nameController,
         phoneController,
-        emailController,
-        addressController,
       ].every((element) => element.text.isNotEmpty);
     });
   }
 
   void onAddLogo() async {
     file = await pickImage();
-    checkActive();
+    checkActive('');
   }
 
   void onSignature() async {
@@ -148,12 +146,10 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
                         title: 'E-Mail',
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
-                        onChanged: checkActive,
                       ),
                       BusinessField(
                         title: 'Address',
                         controller: addressController,
-                        onChanged: checkActive,
                       ),
                     ],
                   ),

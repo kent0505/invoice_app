@@ -11,6 +11,8 @@ import 'src/core/router.dart';
 import 'src/core/themes.dart';
 import 'src/features/business/bloc/business_bloc.dart';
 import 'src/features/business/data/business_repository.dart';
+import 'src/features/client/bloc/client_bloc.dart';
+import 'src/features/client/data/client_repository.dart';
 import 'src/features/invoice/bloc/invoice_bloc.dart';
 import 'src/features/invoice/data/invoice_repository.dart';
 import 'src/features/pro/bloc/pro_bloc.dart';
@@ -41,7 +43,7 @@ void main() async {
       // await db.execute(SQL.invoices);
       await db.execute(SQL.business);
       // await db.execute(SQL.items);
-      // await db.execute(SQL.clients);
+      await db.execute(SQL.clients);
     },
   );
 
@@ -60,6 +62,9 @@ void main() async {
         RepositoryProvider<BusinessRepository>(
           create: (context) => BusinessRepositoryImpl(db: db),
         ),
+        RepositoryProvider<ClientRepository>(
+          create: (context) => ClientRepositoryImpl(db: db),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -72,6 +77,11 @@ void main() async {
             create: (context) => BusinessBloc(
               repository: context.read<BusinessRepository>(),
             )..add(GetBusiness()),
+          ),
+          BlocProvider(
+            create: (context) => ClientBloc(
+              repository: context.read<ClientRepository>(),
+            )..add(GetClients()),
           ),
           BlocProvider(
             create: (context) =>

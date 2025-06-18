@@ -39,7 +39,7 @@ class InvoiceTile extends StatelessWidget {
               backgroundColor: circleColor,
               radius: 28,
               child: Text(
-                invoice.title[0],
+                'invoice.title[0]',
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -54,7 +54,7 @@ class InvoiceTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    invoice.title,
+                    'invoice.title',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -65,7 +65,7 @@ class InvoiceTile extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    invoice.title,
+                    'invoice.title',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(

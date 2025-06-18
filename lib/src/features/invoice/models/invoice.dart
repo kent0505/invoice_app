@@ -1,23 +1,35 @@
 class Invoice {
   Invoice({
     required this.id,
-    required this.title,
+    required this.date,
+    required this.index,
+    required this.businessID,
+    required this.clientID,
   });
 
   final int id;
-  String title;
+  String date;
+  int index;
+  int businessID;
+  int clientID;
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'title': title,
+      'date': date,
+      'index': index,
+      'businessID': businessID,
+      'clientID': clientID,
     };
   }
 
   factory Invoice.fromMap(Map<String, dynamic> map) {
     return Invoice(
       id: map['id'],
-      title: map['title'],
+      date: map['date'],
+      index: map['index'],
+      businessID: map['businessID'],
+      clientID: map['clientID'],
     );
   }
 }

@@ -27,8 +27,8 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
     GetBusiness event,
     Emitter<BusinessState> emit,
   ) async {
-    final businessList = await _repository.getBusiness();
-    emit(BusinessLoaded(businessList: businessList));
+    final businesses = await _repository.getBusiness();
+    emit(BusinessLoaded(businesses: businesses));
   }
 
   void _addBusiness(

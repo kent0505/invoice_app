@@ -1,43 +1,39 @@
-class Business {
-  Business({
+class Client {
+  Client({
     required this.id,
+    required this.billTo,
     required this.name,
     required this.phone,
     required this.email,
     required this.address,
-    required this.imageLogo,
-    required this.imageSignature,
   });
 
   final int id;
+  final String billTo;
   final String name;
   final String phone;
   final String email;
   final String address;
-  final String imageLogo;
-  final String imageSignature;
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'billTo': billTo,
       'name': name,
       'phone': phone,
       'email': email,
       'address': address,
-      'imageLogo': imageLogo,
-      'imageSignature': imageSignature,
     };
   }
 
-  factory Business.fromMap(Map<String, dynamic> map) {
-    return Business(
+  factory Client.fromMap(Map<String, dynamic> map) {
+    return Client(
       id: map['id'] ?? '',
+      billTo: map['billTo'] ?? '',
       name: map['name'] ?? '',
       phone: map['phone'] ?? '',
       email: map['email'] ?? '',
       address: map['address'] ?? '',
-      imageLogo: map['imageLogo'] ?? '',
-      imageSignature: map['imageSignature'] ?? '',
     );
   }
 }

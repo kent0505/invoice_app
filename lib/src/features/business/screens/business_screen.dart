@@ -24,14 +24,14 @@ class BusinessScreen extends StatelessWidget {
             child: BlocBuilder<BusinessBloc, BusinessState>(
               builder: (context, state) {
                 if (state is BusinessLoaded) {
-                  return state.businessList.isEmpty
+                  return state.businesses.isEmpty
                       ? const NoData()
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: state.businessList.length,
+                          itemCount: state.businesses.length,
                           itemBuilder: (context, index) {
                             return BusinessTile(
-                              business: state.businessList[index],
+                              business: state.businesses[index],
                             );
                           },
                         );

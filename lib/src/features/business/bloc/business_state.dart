@@ -6,7 +6,7 @@ sealed class BusinessState {}
 final class BusinessInitial extends BusinessState {}
 
 final class BusinessLoaded extends BusinessState {
-  BusinessLoaded({required this.businessList});
+  BusinessLoaded({required this.businesses});
 
-  final List<Business> businessList;
+  final List<Business> businesses;
 }

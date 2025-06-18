@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../invoice/bloc/invoice_bloc.dart';
+import '../../invoice/screens/create_invoice_screen.dart';
 import '../../invoice/widgets/invoice_tile.dart';
 import '../../pro/bloc/pro_bloc.dart';
 import '../../pro/screens/pro_sheet.dart';
@@ -37,6 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       index = value;
     });
+  }
+
+  void onCreate() {
+    context.push(CreateInvoiceScreen.routePath);
   }
 
   @override
@@ -125,13 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               MainButton(
                 title: 'Create Invoice',
-                onPressed: () {},
-              ),
-              const SizedBox(height: 8),
-              MainButton(
-                title: 'Create Estimates',
-                outlined: true,
-                onPressed: () {},
+                onPressed: onCreate,
               ),
             ],
           ),

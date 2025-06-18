@@ -6,6 +6,7 @@ import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../../business/screens/business_screen.dart';
+import '../../client/screens/clients_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -15,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Appbar(title: 'Settings'),
+      appBar: const Appbar(title: 'Settings'),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -90,7 +91,9 @@ class SettingsScreen extends StatelessWidget {
                 _Tile(
                   title: 'Clients',
                   hasIcon: true,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push(ClientsScreen.routePath);
+                  },
                 ),
                 _Tile(
                   title: 'Items',

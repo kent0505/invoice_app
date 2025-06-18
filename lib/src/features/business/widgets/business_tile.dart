@@ -82,19 +82,19 @@ class _BusinessTileState extends State<BusinessTile> {
                           shape: BoxShape.circle,
                           color: const Color(0xffFF4400),
                         ),
-                        child: Center(
-                          child: widget.business.imageLogo.isEmpty
-                              ? const SvgWidget(Assets.user)
-                              : ClipRRect(
-                                  borderRadius:
-                                      BorderRadiusGeometry.circular(56),
-                                  child: Image.file(
-                                    File(widget.business.imageLogo),
-                                    errorBuilder: ImageWidget.errorBuilder,
-                                    frameBuilder: ImageWidget.frameBuilder,
-                                  ),
+                        child: widget.business.imageLogo.isEmpty
+                            ? const Center(
+                                child: SvgWidget(Assets.user),
+                              )
+                            : ClipRRect(
+                                borderRadius: BorderRadiusGeometry.circular(56),
+                                child: Image.file(
+                                  File(widget.business.imageLogo),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: ImageWidget.errorBuilder,
+                                  frameBuilder: ImageWidget.frameBuilder,
                                 ),
-                        ),
+                              ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(

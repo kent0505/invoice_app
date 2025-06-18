@@ -9,13 +9,13 @@ class BusinessField extends StatelessWidget {
     required this.title,
     required this.controller,
     this.keyboardType,
-    required this.onChanged,
+    this.onChanged,
   });
 
   final String title;
   final TextEditingController controller;
   final TextInputType? keyboardType;
-  final void Function() onChanged;
+  final void Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +68,9 @@ class BusinessField extends StatelessWidget {
             fontSize: 16,
             fontFamily: AppFonts.w400,
           ),
-          hintText: 'Optional',
+          hintText: onChanged == null ? 'Optional' : 'Required',
         ),
-        onChanged: (_) {
-          onChanged();
-        },
+        onChanged: onChanged,
         onTapOutside: (_) {
           FocusManager.instance.primaryFocus?.unfocus();
         },
