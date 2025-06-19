@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
+import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/dialog_widget.dart';
 import '../../../core/widgets/main_button.dart';
@@ -10,6 +11,7 @@ import '../../business/widgets/business_field.dart';
 import '../bloc/client_bloc.dart';
 import '../models/client.dart';
 import '../widgets/client_bill_to.dart';
+import '../widgets/client_import_contact.dart';
 
 class EditClientScreen extends StatefulWidget {
   const EditClientScreen({super.key, required this.client});
@@ -38,6 +40,17 @@ class _EditClientScreenState extends State<EditClientScreen> {
         nameController,
         phoneController,
       ].every((element) => element.text.isNotEmpty);
+    });
+  }
+
+  void onContact() async {
+    await getContact(context).then((value) {
+      setState(() {
+        nameController.text = value.name;
+        phoneController.text = value.phone;
+        emailController.text = value.email;
+        addressController.text = value.address;
+      });
     });
   }
 
@@ -148,6 +161,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                ClientImportContact(onPressed: onContact),
               ],
             ),
           ),

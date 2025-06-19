@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import 'src/core/constants.dart';
+import 'src/core/custom_bloc_observer.dart';
 import 'src/core/router.dart';
 import 'src/core/themes.dart';
 import 'src/features/business/bloc/business_bloc.dart';
@@ -46,6 +47,8 @@ void main() async {
       await db.execute(SQL.clients);
     },
   );
+
+  Bloc.observer = CustomBlocObserver();
 
   runApp(
     MultiRepositoryProvider(

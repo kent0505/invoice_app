@@ -10,6 +10,7 @@ import '../../business/widgets/business_field.dart';
 import '../bloc/client_bloc.dart';
 import '../models/client.dart';
 import '../widgets/client_bill_to.dart';
+import '../widgets/client_import_contact.dart';
 
 class CreateClientScreen extends StatefulWidget {
   const CreateClientScreen({super.key});
@@ -36,6 +37,17 @@ class _CreateClientScreenState extends State<CreateClientScreen> {
         nameController,
         phoneController,
       ].every((element) => element.text.isNotEmpty);
+    });
+  }
+
+  void onContact() async {
+    await getContact(context).then((value) {
+      setState(() {
+        nameController.text = value.name;
+        phoneController.text = value.phone;
+        emailController.text = value.email;
+        addressController.text = value.address;
+      });
     });
   }
 
@@ -123,6 +135,7 @@ class _CreateClientScreenState extends State<CreateClientScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                ClientImportContact(onPressed: onContact),
               ],
             ),
           ),
