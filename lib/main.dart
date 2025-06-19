@@ -7,15 +7,20 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import 'src/core/constants.dart';
-import 'src/core/custom_bloc_observer.dart';
 import 'src/core/router.dart';
 import 'src/core/themes.dart';
 import 'src/features/business/bloc/business_bloc.dart';
 import 'src/features/business/data/business_repository.dart';
+import 'src/features/business/models/business.dart';
 import 'src/features/client/bloc/client_bloc.dart';
 import 'src/features/client/data/client_repository.dart';
+import 'src/features/client/models/client.dart';
 import 'src/features/invoice/bloc/invoice_bloc.dart';
 import 'src/features/invoice/data/invoice_repository.dart';
+import 'src/features/invoice/models/invoice.dart';
+import 'src/features/item/bloc/item_bloc.dart';
+import 'src/features/item/data/item_repository.dart';
+import 'src/features/item/models/item.dart';
 import 'src/features/pro/bloc/pro_bloc.dart';
 import 'src/features/pro/data/pro_repository.dart';
 import 'src/features/onboard/data/onboard_repository.dart';
@@ -41,14 +46,12 @@ void main() async {
     path,
     version: 1,
     onCreate: (db, version) async {
-      // await db.execute(SQL.invoices);
-      await db.execute(SQL.business);
-      // await db.execute(SQL.items);
-      await db.execute(SQL.clients);
+      await db.execute(Invoice.sql);
+      await db.execute(Business.sql);
+      await db.execute(Client.sql);
+      await db.execute(Item.sql);
     },
   );
-
-  Bloc.observer = CustomBlocObserver();
 
   runApp(
     MultiRepositoryProvider(
@@ -68,6 +71,9 @@ void main() async {
         RepositoryProvider<ClientRepository>(
           create: (context) => ClientRepositoryImpl(db: db),
         ),
+        RepositoryProvider<ItemRepository>(
+          create: (context) => ItemRepositoryImpl(db: db),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -85,6 +91,11 @@ void main() async {
             create: (context) => ClientBloc(
               repository: context.read<ClientRepository>(),
             )..add(GetClients()),
+          ),
+          BlocProvider(
+            create: (context) => ItemBloc(
+              repository: context.read<ItemRepository>(),
+            )..add(GetItems()),
           ),
           BlocProvider(
             create: (context) =>

@@ -7,23 +7,24 @@ import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../../core/widgets/search_field.dart';
-import '../bloc/client_bloc.dart';
-import '../widgets/client_tile.dart';
-import 'create_client_screen.dart';
-import 'edit_client_screen.dart';
+import '../bloc/item_bloc.dart';
+import '../models/item.dart';
+import '../widgets/item_tile.dart';
+import 'create_item_screen.dart';
+import 'edit_item_screen.dart';
 
-class ClientsScreen extends StatefulWidget {
-  const ClientsScreen({super.key, required this.select});
+class ItemsScreen extends StatefulWidget {
+  const ItemsScreen({super.key, required this.select});
 
   final bool select;
 
-  static const routePath = '/ClientsScreen';
+  static const routePath = '/ItemsScreen';
 
   @override
-  State<ClientsScreen> createState() => _ClientsScreenState();
+  State<ItemsScreen> createState() => _ItemsScreenState();
 }
 
-class _ClientsScreenState extends State<ClientsScreen> {
+class _ItemsScreenState extends State<ItemsScreen> {
   final searchController = TextEditingController();
 
   void onSearch(String _) {
@@ -41,10 +42,16 @@ class _ClientsScreenState extends State<ClientsScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: Appbar(
-        title: 'Clients',
+        title: 'Items',
         right: Button(
           onPressed: () {
-            context.push(CreateClientScreen.routePath);
+            context
+                .push<Item?>(CreateItemScreen.routePath, extra: widget.select)
+                .then(
+              (value) {
+                if (widget.select && context.mounted) context.pop(value);
+              },
+            );
           },
           child: const Text(
             '+',
@@ -66,13 +73,17 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ),
           ),
           Expanded(
-            child: BlocBuilder<ClientBloc, ClientState>(
+            child: BlocBuilder<ItemBloc, ItemState>(
               builder: (context, state) {
-                if (state is ClientsLoaded) {
+                if (state is ItemsLoaded) {
+                  final items = state.items
+                      .where((element) => element.invoiceID == 0)
+                      .toList();
+
                   final sorted = searchController.text.isEmpty
-                      ? state.clients
-                      : state.clients.where((client) {
-                          return client.name
+                      ? items
+                      : items.where((client) {
+                          return client.title
                               .toLowerCase()
                               .contains(searchController.text.toLowerCase());
                         }).toList();
@@ -81,18 +92,18 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       ? const NoData()
                       : ListView.builder(
                           padding: const EdgeInsets.all(16),
-                          itemCount: state.clients.length,
+                          itemCount: items.length,
                           itemBuilder: (context, index) {
-                            final client = state.clients[index];
+                            final item = items[index];
 
-                            return ClientTile(
-                              client: client,
+                            return ItemTile(
+                              item: item,
                               onPressed: () {
                                 widget.select
-                                    ? context.pop(client)
+                                    ? context.pop(item)
                                     : context.push(
-                                        EditClientScreen.routePath,
-                                        extra: client,
+                                        EditItemScreen.routePath,
+                                        extra: item,
                                       );
                               },
                             );

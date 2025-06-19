@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../features/client/models/client.dart';
 import 'widgets/snack_widget.dart';
@@ -15,7 +16,25 @@ bool isIOS() {
 }
 
 int getTimestamp() {
-  return DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  return DateTime.now().millisecondsSinceEpoch;
+}
+
+String formatTimestamp(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  final formatter = DateFormat('d MMMM yyyy');
+  return formatter.format(date);
+}
+
+String formatSmartDate(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  final now = DateTime.now();
+  final isToday =
+      date.year == now.year && date.month == now.month && date.day == now.day;
+  if (isToday) {
+    return 'Today';
+  } else {
+    return DateFormat('MMM d. yyyy').format(date); // Example: May 15. 2025
+  }
 }
 
 Future<XFile> pickImage() async {

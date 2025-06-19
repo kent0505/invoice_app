@@ -5,8 +5,10 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/button.dart';
 import '../../../core/widgets/dialog_widget.dart';
 import '../../../core/widgets/main_button.dart';
+import '../../../core/widgets/svg_widget.dart';
 import '../../business/widgets/business_field.dart';
 import '../bloc/client_bloc.dart';
 import '../models/client.dart';
@@ -98,6 +100,8 @@ class _EditClientScreenState extends State<EditClientScreen> {
     billToController.dispose();
     nameController.dispose();
     phoneController.dispose();
+    emailController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 
@@ -105,7 +109,20 @@ class _EditClientScreenState extends State<EditClientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const Appbar(title: 'Edit Client'),
+      appBar: Appbar(
+        title: 'Edit Client',
+        right: Button(
+          onPressed: () {
+            DialogWidget.show(
+              context,
+              title: 'Delete?',
+              delete: true,
+              onPressed: onDelete,
+            );
+          },
+          child: const SvgWidget(Assets.delete),
+        ),
+      ),
       body: Column(
         children: [
           Expanded(
@@ -167,12 +184,6 @@ class _EditClientScreenState extends State<EditClientScreen> {
           ),
           MainButtonWrapper(
             children: [
-              MainButton(
-                title: 'Delete',
-                active: active,
-                onPressed: onDelete,
-              ),
-              const SizedBox(height: 16),
               MainButton(
                 title: 'Edit',
                 active: active,

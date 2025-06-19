@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/widgets/button.dart';
-import '../models/client.dart';
+import '../models/item.dart';
 
-class ClientTile extends StatelessWidget {
-  const ClientTile({
+class ItemTile extends StatelessWidget {
+  const ItemTile({
     super.key,
-    required this.client,
+    required this.item,
     required this.onPressed,
   });
 
-  final Client client;
+  final Item item;
   final VoidCallback onPressed;
 
   @override
@@ -30,10 +30,20 @@ class ClientTile extends StatelessWidget {
         ),
         child: Row(
           children: [
+            Expanded(
+              child: Text(
+                item.title,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontFamily: AppFonts.w400,
+                ),
+              ),
+            ),
             Text(
-              client.name,
+              '\$${item.price}',
               style: const TextStyle(
-                color: Colors.black,
+                color: Color(0xff7D81A3),
                 fontSize: 14,
                 fontFamily: AppFonts.w400,
               ),

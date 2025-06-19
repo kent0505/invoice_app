@@ -50,44 +50,10 @@ abstract final class Identifiers {
 abstract final class Tables {
   static const invoices = 'invoices';
   static const business = 'business';
-  static const items = 'items';
   static const clients = 'clients';
+  static const items = 'items';
 }
 
-abstract final class SQL {
-  static const invoices = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.invoices} (
-      id INTEGER,
-    )
-    ''';
-  static const business = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.business} (
-      id INTEGER,
-      name TEXT,
-      phone TEXT,
-      email TEXT,
-      address TEXT,
-      currency TEXT,
-      imageLogo TEXT,
-      imageSignature TEXT
-    )
-    ''';
-  static const items = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.items} (
-      id INTEGER,
-    )
-    ''';
-  static const clients = '''
-    CREATE TABLE IF NOT EXISTS ${Tables.clients} (
-      id INTEGER,
-      billTo TEXT,
-      name TEXT,
-      phone TEXT,
-      email TEXT,
-      address TEXT
-    )
-    ''';
-}
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';

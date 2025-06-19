@@ -11,6 +11,10 @@ import '../features/client/screens/create_client_screen.dart';
 import '../features/client/screens/edit_client_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/invoice/screens/create_invoice_screen.dart';
+import '../features/item/models/item.dart';
+import '../features/item/screens/create_item_screen.dart';
+import '../features/item/screens/edit_item_screen.dart';
+import '../features/item/screens/items_screen.dart';
 import '../features/onboard/screens/onboard_screen.dart';
 import '../features/settings/screens/settings_screen.dart';
 import '../features/splash/screens/splash_screen.dart';
@@ -46,7 +50,9 @@ final routerConfig = GoRouter(
     // business
     GoRoute(
       path: BusinessScreen.routePath,
-      builder: (context, state) => const BusinessScreen(),
+      builder: (context, state) => BusinessScreen(
+        select: state.extra as bool,
+      ),
     ),
     GoRoute(
       path: CreateBusinessScreen.routePath,
@@ -66,7 +72,9 @@ final routerConfig = GoRouter(
     // client
     GoRoute(
       path: ClientsScreen.routePath,
-      builder: (context, state) => const ClientsScreen(),
+      builder: (context, state) => ClientsScreen(
+        select: state.extra as bool,
+      ),
     ),
     GoRoute(
       path: CreateClientScreen.routePath,
@@ -76,6 +84,26 @@ final routerConfig = GoRouter(
       path: EditClientScreen.routePath,
       builder: (context, state) => EditClientScreen(
         client: state.extra as Client,
+      ),
+    ),
+
+    // item
+    GoRoute(
+      path: ItemsScreen.routePath,
+      builder: (context, state) => ItemsScreen(
+        select: state.extra as bool,
+      ),
+    ),
+    GoRoute(
+      path: CreateItemScreen.routePath,
+      builder: (context, state) => CreateItemScreen(
+        select: state.extra as bool,
+      ),
+    ),
+    GoRoute(
+      path: EditItemScreen.routePath,
+      builder: (context, state) => EditItemScreen(
+        item: state.extra as Item,
       ),
     ),
   ],

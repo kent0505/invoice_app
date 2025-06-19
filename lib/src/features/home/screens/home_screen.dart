@@ -108,11 +108,19 @@ class _HomeScreenState extends State<HomeScreen> {
             child: BlocBuilder<InvoiceBloc, InvoiceState>(
               builder: (context, state) {
                 if (state is InvoicesLoaded) {
-                  return state.invoices.isEmpty
+                  final sorted = index == 1
+                      ? state.invoices
+                      : state.invoices.where(
+                          (element) => index == 2
+                              ? element.paymentMethod.isEmpty
+                              : element.paymentMethod.isNotEmpty,
+                        );
+
+                  return sorted.isEmpty
                       ? const NoData()
                       : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: state.invoices.length,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          itemCount: sorted.length,
                           itemBuilder: (context, index) {
                             return InvoiceTile(
                               invoice: state.invoices[index],

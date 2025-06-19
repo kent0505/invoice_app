@@ -11,12 +11,16 @@ import '../../../core/widgets/image_widget.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../bloc/business_bloc.dart';
 import '../models/business.dart';
-import '../screens/edit_business_screen.dart';
 
 class BusinessTile extends StatefulWidget {
-  const BusinessTile({super.key, required this.business});
+  const BusinessTile({
+    super.key,
+    required this.business,
+    required this.onPressed,
+  });
 
   final Business business;
+  final VoidCallback onPressed;
 
   @override
   State<BusinessTile> createState() => _BusinessTileState();
@@ -35,10 +39,7 @@ class _BusinessTileState extends State<BusinessTile> {
     if (delete) {
       onMenu();
     } else {
-      context.push(
-        EditBusinessScreen.routePath,
-        extra: widget.business,
-      );
+      widget.onPressed();
     }
   }
 

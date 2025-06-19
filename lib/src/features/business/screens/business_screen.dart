@@ -8,9 +8,12 @@ import '../../../core/widgets/no_data.dart';
 import '../bloc/business_bloc.dart';
 import '../widgets/business_tile.dart';
 import 'create_business_screen.dart';
+import 'edit_business_screen.dart';
 
 class BusinessScreen extends StatelessWidget {
-  const BusinessScreen({super.key});
+  const BusinessScreen({super.key, required this.select});
+
+  final bool select;
 
   static const routePath = '/BusinessScreen';
 
@@ -30,8 +33,18 @@ class BusinessScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(16),
                           itemCount: state.businesses.length,
                           itemBuilder: (context, index) {
+                            final business = state.businesses[index];
+
                             return BusinessTile(
-                              business: state.businesses[index],
+                              business: business,
+                              onPressed: () {
+                                select
+                                    ? context.pop(business)
+                                    : context.push(
+                                        EditBusinessScreen.routePath,
+                                        extra: business,
+                                      );
+                              },
                             );
                           },
                         );

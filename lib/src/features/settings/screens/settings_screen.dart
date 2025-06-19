@@ -7,6 +7,7 @@ import '../../../core/widgets/button.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../../business/screens/business_screen.dart';
 import '../../client/screens/clients_screen.dart';
+import '../../item/screens/items_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -85,20 +86,31 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Business Information',
                   hasIcon: true,
                   onPressed: () {
-                    context.push(BusinessScreen.routePath);
+                    context.push(
+                      BusinessScreen.routePath,
+                      extra: false,
+                    );
                   },
                 ),
                 _Tile(
                   title: 'Clients',
                   hasIcon: true,
                   onPressed: () {
-                    context.push(ClientsScreen.routePath);
+                    context.push(
+                      ClientsScreen.routePath,
+                      extra: false,
+                    );
                   },
                 ),
                 _Tile(
                   title: 'Items',
                   hasIcon: true,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.push(
+                      ItemsScreen.routePath,
+                      extra: false,
+                    );
+                  },
                 ),
                 _Tile(
                   title: 'Privacy',

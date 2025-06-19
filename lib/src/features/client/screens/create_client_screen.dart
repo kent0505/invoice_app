@@ -72,6 +72,8 @@ class _CreateClientScreenState extends State<CreateClientScreen> {
     billToController.dispose();
     nameController.dispose();
     phoneController.dispose();
+    emailController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 

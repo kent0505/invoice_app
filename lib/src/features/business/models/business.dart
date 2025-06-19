@@ -1,3 +1,5 @@
+import '../../../core/constants.dart';
+
 class Business {
   Business({
     required this.id,
@@ -31,13 +33,25 @@ class Business {
 
   factory Business.fromMap(Map<String, dynamic> map) {
     return Business(
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
-      phone: map['phone'] ?? '',
-      email: map['email'] ?? '',
-      address: map['address'] ?? '',
-      imageLogo: map['imageLogo'] ?? '',
-      imageSignature: map['imageSignature'] ?? '',
+      id: map['id'],
+      name: map['name'],
+      phone: map['phone'],
+      email: map['email'],
+      address: map['address'],
+      imageLogo: map['imageLogo'],
+      imageSignature: map['imageSignature'],
     );
   }
+
+  static const sql = '''
+    CREATE TABLE IF NOT EXISTS ${Tables.business} (
+      id INTEGER,
+      name TEXT,
+      phone TEXT,
+      email TEXT,
+      address TEXT,
+      imageLogo TEXT,
+      imageSignature TEXT
+    )
+    ''';
 }
