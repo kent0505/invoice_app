@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/widgets/appbar.dart';
 import '../models/invoice.dart';
 
 class InvoiceCustomizeScreen extends StatelessWidget {
@@ -12,6 +13,7 @@ class InvoiceCustomizeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const Appbar(title: 'Customize'),
       body: Column(
         children: [],
       ),

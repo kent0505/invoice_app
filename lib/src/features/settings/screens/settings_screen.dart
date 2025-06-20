@@ -21,54 +21,54 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Center(
-            child: Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'User',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
-              fontFamily: AppFonts.w600,
-            ),
-          ),
-          const SizedBox(height: 22),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SvgWidget(Assets.star),
-              SizedBox(width: 5),
-              Text(
-                'Plus Weekly',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 10,
-                  fontFamily: AppFonts.w600,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Renews on 12.05.2025',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xff748098),
-              fontSize: 8,
-              fontFamily: AppFonts.w400,
-            ),
-          ),
-          const SizedBox(height: 14),
+          // Center(
+          //   child: Container(
+          //     height: 50,
+          //     width: 50,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(10),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 4),
+          // Text(
+          //   'User',
+          //   textAlign: TextAlign.center,
+          //   style: const TextStyle(
+          //     color: Colors.black,
+          //     fontSize: 16,
+          //     fontFamily: AppFonts.w600,
+          //   ),
+          // ),
+          // const SizedBox(height: 22),
+          // const Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     SvgWidget(Assets.star),
+          //     SizedBox(width: 5),
+          //     Text(
+          //       'Plus Weekly',
+          //       textAlign: TextAlign.center,
+          //       style: TextStyle(
+          //         color: Colors.black,
+          //         fontSize: 10,
+          //         fontFamily: AppFonts.w600,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          // const SizedBox(height: 4),
+          // Text(
+          //   'Renews on 12.05.2025',
+          //   textAlign: TextAlign.center,
+          //   style: const TextStyle(
+          //     color: Color(0xff748098),
+          //     fontSize: 8,
+          //     fontFamily: AppFonts.w400,
+          //   ),
+          // ),
+          // const SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(

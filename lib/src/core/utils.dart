@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../features/client/models/client.dart';
+import '../features/item/models/item.dart';
 import 'widgets/snack_widget.dart';
 
 void logger(Object message) => developer.log(message.toString());
@@ -33,7 +34,7 @@ String formatSmartDate(int timestamp) {
   if (isToday) {
     return 'Today';
   } else {
-    return DateFormat('MMM d. yyyy').format(date); // Example: May 15. 2025
+    return DateFormat('MMM d. yyyy').format(date);
   }
 }
 
@@ -83,4 +84,20 @@ Future<Client> getContact(BuildContext context) async {
 
 String formatInvoiceNumber(int number) {
   return number.toString().padLeft(3, '0');
+}
+
+String calculateInvoiceMoney({
+  required List<Item> items,
+  int invoiceID = 0,
+}) {
+  double amount = items
+      .where((item) => invoiceID == 0 || item.invoiceID == invoiceID)
+      .fold(0.0, (sum, item) {
+    final basePrice = double.tryParse(item.discountPrice) ?? 0;
+    final taxRate = double.tryParse(item.tax) ?? 0;
+    final priceWithTax = basePrice + (basePrice * taxRate / 100);
+    return sum + priceWithTax;
+  });
+
+  return '\$${amount.toStringAsFixed(2).replaceAll('.', ',')}';
 }

@@ -103,7 +103,6 @@ void main() async {
                   ..add(
                     CheckPro(
                       identifier: Identifiers.paywall1,
-                      initial: true,
                     ),
                   ),
           ),

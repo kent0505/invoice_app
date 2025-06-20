@@ -16,6 +16,9 @@ import '../../client/screens/clients_screen.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
 import '../../item/screens/items_screen.dart';
+import '../../pro/bloc/pro_bloc.dart';
+import '../../pro/data/pro_repository.dart';
+import '../../pro/screens/pro_page.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../widgets/invoice_appbar.dart';
@@ -37,78 +40,74 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   Business? business;
   Client? client;
   List<Item> items = [];
-  double totalPrice = 0;
+  // double totalPrice = 0;
   bool active = false;
 
   void checkActive() {
     setState(() {
       active = business != null && client != null && items.isNotEmpty;
-      totalPrice = 0;
-      for (Item item in items) {
-        totalPrice += double.tryParse(item.discountPrice) ?? 0;
-      }
+      // calculateInvoiceMoney(items: items, invoiceID: invoiceID)
+      // totalPrice = 0;
+      // for (Item item in items) {
+      //   final basePrice = double.tryParse(item.discountPrice) ?? 0;
+      //   final taxRate = double.tryParse(item.tax) ?? 0;
+      //   final priceWithTax = basePrice + (basePrice * taxRate / 100);
+      //   totalPrice += priceWithTax;
+      // }
     });
   }
 
   void onPreview() {}
 
-  void onDone() {}
-
   void onDate() {}
 
   void onDueDate() {}
 
-  void onSelectBusiness() {
+  void onSelectBusiness() async {
     if (business == null) {
-      context.push<Business?>(BusinessScreen.routePath, extra: true).then(
-        (value) {
-          if (value != null) {
-            business = value;
-            checkActive();
-          }
-        },
+      business = await context.push<Business?>(
+        BusinessScreen.routePath,
+        extra: true,
       );
+      if (business != null) checkActive();
     } else {
       business = null;
       checkActive();
     }
   }
 
-  void onSelectClient() {
+  void onSelectClient() async {
     if (client == null) {
-      context.push<Client?>(ClientsScreen.routePath, extra: true).then(
-        (value) {
-          if (value != null) {
-            client = value;
-            checkActive();
-          }
-        },
+      client = await context.push<Client?>(
+        ClientsScreen.routePath,
+        extra: true,
       );
+      if (client != null) checkActive();
     } else {
       client = null;
       checkActive();
     }
   }
 
-  void onSelectItems() {
-    context.push<Item?>(ItemsScreen.routePath, extra: true).then(
-      (value) {
-        if (value != null) {
-          items.add(
-            Item(
-              id: id,
-              title: value.title,
-              type: value.type,
-              price: value.price,
-              discountPrice: value.discountPrice,
-              tax: value.tax,
-              invoiceID: id,
-            ),
-          );
-          checkActive();
-        }
-      },
+  void onSelectItems() async {
+    Item? item = await context.push<Item?>(
+      ItemsScreen.routePath,
+      extra: true,
     );
+    if (item != null) {
+      items.add(
+        Item(
+          id: id,
+          title: item.title,
+          type: item.type,
+          price: item.price,
+          discountPrice: item.discountPrice,
+          tax: item.tax,
+          invoiceID: id,
+        ),
+      );
+      checkActive();
+    }
   }
 
   void removeItem(int index) {
@@ -117,20 +116,29 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   }
 
   void onCreate() {
-    context.read<InvoiceBloc>().add(
-          AddInvoice(
-            invoice: Invoice(
-              id: id,
-              number: number,
-              date: date,
-              dueDate: dueDate,
-              businessID: business!.id,
-              clientID: client!.id,
+    final available = context.read<ProRepository>().getAvailable();
+    if (available >= 1 || context.read<ProBloc>().state.isPro) {
+      context.read<ProRepository>().saveAvailable(available - 1);
+      context.read<InvoiceBloc>().add(
+            AddInvoice(
+              invoice: Invoice(
+                id: id,
+                number: number,
+                date: date,
+                dueDate: dueDate,
+                businessID: business!.id,
+                clientID: client!.id,
+              ),
             ),
-          ),
-        );
-    context.read<ItemBloc>().add(AddItem(items: items));
-    context.pop();
+          );
+      context.read<ItemBloc>().add(AddItem(items: items));
+      context.pop();
+    } else {
+      context.push(
+        ProScreen.routePath,
+        extra: Identifiers.paywall1,
+      );
+    }
   }
 
   @override
@@ -147,7 +155,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
       appBar: InvoiceAppbar(
         title: 'New invoice',
         onPreview: onPreview,
-        onDone: onDone,
       ),
       body: Column(
         children: [
@@ -250,7 +257,8 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        '${totalPrice.toStringAsFixed(2).replaceAll('.', ',')} \$',
+                        // '${totalPrice.toStringAsFixed(2).replaceAll('.', ',')} \$',
+                        calculateInvoiceMoney(items: items),
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 12,

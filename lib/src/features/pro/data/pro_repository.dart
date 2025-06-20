@@ -8,6 +8,8 @@ abstract interface class ProRepository {
 
   int getShowCount();
   Future<void> saveShowCount(int value);
+  int getAvailable();
+  Future<void> saveAvailable(int value);
   Future<bool> getPro();
   Future<Offering?> getOffering(String identifier);
 }
@@ -25,6 +27,16 @@ final class ProRepositoryImpl implements ProRepository {
   @override
   Future<void> saveShowCount(int value) async {
     await _prefs.setInt(Keys.showCount, value);
+  }
+
+  @override
+  int getAvailable() {
+    return _prefs.getInt(Keys.available) ?? 3;
+  }
+
+  @override
+  Future<void> saveAvailable(int value) async {
+    await _prefs.setInt(Keys.available, value);
   }
 
   @override

@@ -10,12 +10,10 @@ class InvoiceAppbar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.title,
     required this.onPreview,
-    required this.onDone,
   });
 
   final String title;
   final VoidCallback onPreview;
-  final VoidCallback onDone;
 
   @override
   Size get preferredSize => const Size.fromHeight(90);
@@ -59,18 +57,18 @@ class InvoiceAppbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 30),
-            Button(
-              onPressed: onDone,
-              child: const Text(
-                'Done',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontFamily: AppFonts.w600,
-                ),
-              ),
-            ),
+            // const SizedBox(width: 30),
+            // Button(
+            //   onPressed: onDone,
+            //   child: const Text(
+            //     'Done',
+            //     style: TextStyle(
+            //       color: Colors.black,
+            //       fontSize: 14,
+            //       fontFamily: AppFonts.w600,
+            //     ),
+            //   ),
+            // ),
             const SizedBox(width: 16),
           ],
         ),

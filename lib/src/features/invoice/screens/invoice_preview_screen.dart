@@ -5,6 +5,7 @@ import '../../../core/constants.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../models/invoice.dart';
+import 'invoice_customize_screen.dart';
 
 class InvoicePreviewScreen extends StatelessWidget {
   const InvoicePreviewScreen({super.key, required this.invoice});
@@ -21,7 +22,7 @@ class InvoicePreviewScreen extends StatelessWidget {
         right: Button(
           onPressed: () {
             context.push(
-              InvoicePreviewScreen.routePath,
+              InvoiceCustomizeScreen.routePath,
               extra: invoice,
             );
           },

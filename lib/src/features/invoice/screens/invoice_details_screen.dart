@@ -172,16 +172,11 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                       const SizedBox(height: 8),
                       BlocBuilder<ItemBloc, List<Item>>(
                         builder: (context, items) {
-                          double amount = 0;
-                          for (Item item in items) {
-                            if (item.invoiceID == invoice.id) {
-                              amount +=
-                                  double.tryParse(item.discountPrice) ?? 0;
-                            }
-                          }
-
                           return Text(
-                            '\$ $amount',
+                            calculateInvoiceMoney(
+                              items: items,
+                              invoiceID: invoice.id,
+                            ),
                             style: const TextStyle(
                               color: Colors.black,
                               fontSize: 28,

@@ -131,17 +131,25 @@ class InvoiceTile extends StatelessWidget {
                     const SizedBox(height: 2),
                     BlocBuilder<ItemBloc, List<Item>>(
                       builder: (context, items) {
-                        double amount = 0;
-                        for (Item item in items) {
-                          if (item.invoiceID == invoice.id) {
-                            amount += double.tryParse(item.discountPrice) ?? 0;
-                          }
-                        }
+                        // double amount = 0;
+                        // for (Item item in items) {
+                        //   if (item.invoiceID == invoice.id) {
+                        //     final basePrice =
+                        //         double.tryParse(item.discountPrice) ?? 0;
+                        //     final taxRate = double.tryParse(item.tax) ?? 0;
+                        //     final priceWithTax =
+                        //         basePrice + (basePrice * taxRate / 100);
+                        //     amount += priceWithTax;
+                        //   }
+                        // }
 
                         return Text(
                           invoice.paymentMethod.isEmpty
                               ? 'Invoice Send'
-                              : 'Received \$${amount.toStringAsFixed(2)}',
+                              : 'Received ${calculateInvoiceMoney(
+                                  items: items,
+                                  invoiceID: invoice.id,
+                                )}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(

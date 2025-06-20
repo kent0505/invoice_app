@@ -2,15 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/constants.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../invoice/bloc/invoice_bloc.dart';
 import '../../invoice/models/invoice.dart';
 import '../../invoice/screens/create_invoice_screen.dart';
 import '../../invoice/widgets/invoice_tile.dart';
-import '../../pro/bloc/pro_bloc.dart';
-import '../../pro/screens/pro_sheet.dart';
 import '../widgets/filter_tab.dart';
 import '../widgets/total_income.dart';
 
@@ -24,8 +21,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _paywallShown = false;
-
   int index = 1;
 
   List<Color> invoiceColors = const [
@@ -46,29 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
     context.push(CreateInvoiceScreen.routePath);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final state = context.read<ProBloc>().state;
-
-      if (!_paywallShown &&
-          !state.loading &&
-          !state.isPro &&
-          state.offering != null &&
-          mounted) {
-        _paywallShown = true;
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) {
-            ProSheet.show(
-              context,
-              identifier: Identifiers.paywall1,
-            );
-          }
-        });
-      }
-    });
-  }
+  void onEstimates() {}
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
               MainButton(
                 title: 'Create Invoice',
                 onPressed: onCreate,
+              ),
+              const SizedBox(height: 8),
+              MainButton(
+                title: 'Create Estimates',
+                outlined: true,
+                onPressed: onEstimates,
               ),
             ],
           ),

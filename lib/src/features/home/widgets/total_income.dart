@@ -53,8 +53,12 @@ class TotalIncome extends StatelessWidget {
                         for (Invoice invoice in sorted) {
                           for (Item item in items) {
                             if (item.invoiceID == invoice.id) {
-                              amount +=
+                              final basePrice =
                                   double.tryParse(item.discountPrice) ?? 0;
+                              final taxRate = double.tryParse(item.tax) ?? 0;
+                              final priceWithTax =
+                                  basePrice + (basePrice * taxRate / 100);
+                              amount += priceWithTax;
                             }
                           }
                         }

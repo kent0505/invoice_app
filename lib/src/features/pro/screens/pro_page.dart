@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'pro_sheet.dart';
 
-class ProPage extends StatelessWidget {
-  const ProPage({super.key, required this.identifier});
+class ProScreen extends StatelessWidget {
+  const ProScreen({super.key, required this.identifier});
 
-  static const routePath = '/ProPage';
+  static const routePath = '/ProScreen';
 
   final String identifier;
 

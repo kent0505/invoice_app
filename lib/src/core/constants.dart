@@ -40,6 +40,7 @@ abstract final class Assets {
 abstract final class Keys {
   static const onboard = 'onboard';
   static const showCount = 'showCount';
+  static const available = 'available';
 }
 
 abstract final class Identifiers {
