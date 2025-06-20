@@ -77,11 +77,11 @@ class SettingsScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                _Tile(
-                  title: 'Personal Account',
-                  hasIcon: true,
-                  onPressed: () {},
-                ),
+                // _Tile(
+                //   title: 'Personal Account',
+                //   hasIcon: true,
+                //   onPressed: () {},
+                // ),
                 _Tile(
                   title: 'Business Information',
                   hasIcon: true,

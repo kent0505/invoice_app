@@ -82,18 +82,13 @@ class _EditItemScreenState extends State<EditItemScreen> {
   }
 
   void onEdit() {
-    context.read<ItemBloc>().add(
-          EditItem(
-            item: Item(
-              id: widget.item.id,
-              title: titleController.text,
-              type: typeController.text,
-              price: priceController.text,
-              discountPrice: discountPriceController.text,
-              tax: taxController.text,
-            ),
-          ),
-        );
+    final item = widget.item;
+    item.title = titleController.text;
+    item.type = typeController.text;
+    item.price = priceController.text;
+    item.discountPrice = discountPriceController.text;
+    item.tax = taxController.text;
+    context.read<ItemBloc>().add(EditItem(item: item));
     context.pop();
   }
 

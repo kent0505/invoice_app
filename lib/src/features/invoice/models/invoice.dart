@@ -14,12 +14,12 @@ class Invoice {
 
   final int id;
   final int number;
-  final int date;
-  final int dueDate;
-  final int businessID;
-  final int clientID;
-  final int paymentDate;
-  final String paymentMethod;
+  int date;
+  int dueDate;
+  int businessID;
+  int clientID;
+  int paymentDate;
+  String paymentMethod;
 
   Map<String, dynamic> toMap() {
     return {

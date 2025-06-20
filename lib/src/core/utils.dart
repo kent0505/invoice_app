@@ -57,7 +57,7 @@ Future<Client> getContact(BuildContext context) async {
       return Client(
         id: 0,
         billTo: '',
-        name: contact.name.first,
+        name: '${contact.name.first} ${contact.name.last}',
         phone: contact.phones.isNotEmpty ? contact.phones[0].number : '',
         email: contact.emails.isNotEmpty ? contact.emails[0].address : '',
         address:
@@ -79,4 +79,8 @@ Future<Client> getContact(BuildContext context) async {
     email: '',
     address: '',
   );
+}
+
+String formatInvoiceNumber(int number) {
+  return number.toString().padLeft(3, '0');
 }

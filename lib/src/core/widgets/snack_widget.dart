@@ -21,15 +21,15 @@ class SnackWidget {
               vertical: 8,
             ),
             decoration: BoxDecoration(
-              color: Colors.greenAccent,
+              color: Color(0xffFF4400),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Text(
               message,
               style: const TextStyle(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 14,
-                fontFamily: AppFonts.w600,
+                fontFamily: AppFonts.w400,
               ),
             ),
           ),

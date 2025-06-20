@@ -47,12 +47,11 @@ class _EditClientScreenState extends State<EditClientScreen> {
 
   void onContact() async {
     await getContact(context).then((value) {
-      setState(() {
-        nameController.text = value.name;
-        phoneController.text = value.phone;
-        emailController.text = value.email;
-        addressController.text = value.address;
-      });
+      nameController.text = value.name;
+      phoneController.text = value.phone;
+      emailController.text = value.email;
+      addressController.text = value.address;
+      checkActive('');
     });
   }
 
@@ -70,18 +69,13 @@ class _EditClientScreenState extends State<EditClientScreen> {
   }
 
   void onEdit() {
-    context.read<ClientBloc>().add(
-          EditClient(
-            client: Client(
-              id: widget.client.id,
-              billTo: billToController.text,
-              name: nameController.text,
-              phone: phoneController.text,
-              email: emailController.text,
-              address: addressController.text,
-            ),
-          ),
-        );
+    final client = widget.client;
+    client.billTo = billToController.text;
+    client.name = nameController.text;
+    client.phone = phoneController.text;
+    client.email = emailController.text;
+    client.address = addressController.text;
+    context.read<ClientBloc>().add(EditClient(client: client));
     context.pop();
   }
 

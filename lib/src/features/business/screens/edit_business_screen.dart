@@ -62,19 +62,14 @@ class _EditBusinessScreenState extends State<EditBusinessScreen> {
   }
 
   void onEdit() {
-    context.read<BusinessBloc>().add(
-          EditBusiness(
-            business: Business(
-              id: widget.business.id,
-              name: nameController.text,
-              phone: phoneController.text,
-              email: emailController.text,
-              address: addressController.text,
-              imageLogo: file.path,
-              imageSignature: signature ?? '',
-            ),
-          ),
-        );
+    final business = widget.business;
+    business.name = nameController.text;
+    business.phone = phoneController.text;
+    business.email = emailController.text;
+    business.address = addressController.text;
+    business.imageLogo = file.path;
+    business.imageSignature = signature ?? '';
+    context.read<BusinessBloc>().add(EditBusiness(business: business));
     context.pop();
   }
 

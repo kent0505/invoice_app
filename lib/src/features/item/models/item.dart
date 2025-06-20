@@ -12,12 +12,12 @@ class Item {
   });
 
   final int id;
-  final String title;
-  final String type;
-  final String price;
-  final String discountPrice;
-  final String tax;
-  final int invoiceID;
+  String title;
+  String type;
+  String price;
+  String discountPrice;
+  String tax;
+  int invoiceID;
 
   Map<String, dynamic> toMap() {
     return {

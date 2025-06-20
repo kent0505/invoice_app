@@ -12,12 +12,12 @@ class Business {
   });
 
   final int id;
-  final String name;
-  final String phone;
-  final String email;
-  final String address;
-  final String imageLogo;
-  final String imageSignature;
+  String name;
+  String phone;
+  String email;
+  String address;
+  String imageLogo;
+  String imageSignature;
 
   Map<String, dynamic> toMap() {
     return {

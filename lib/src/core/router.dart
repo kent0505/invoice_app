@@ -10,7 +10,10 @@ import '../features/client/screens/clients_screen.dart';
 import '../features/client/screens/create_client_screen.dart';
 import '../features/client/screens/edit_client_screen.dart';
 import '../features/home/screens/home_screen.dart';
+import '../features/invoice/models/invoice.dart';
 import '../features/invoice/screens/create_invoice_screen.dart';
+import '../features/invoice/screens/invoice_details_screen.dart';
+import '../features/invoice/screens/invoice_preview_screen.dart';
 import '../features/item/models/item.dart';
 import '../features/item/screens/create_item_screen.dart';
 import '../features/item/screens/edit_item_screen.dart';
@@ -45,6 +48,18 @@ final routerConfig = GoRouter(
     GoRoute(
       path: CreateInvoiceScreen.routePath,
       builder: (context, state) => const CreateInvoiceScreen(),
+    ),
+    GoRoute(
+      path: InvoiceDetailsScreen.routePath,
+      builder: (context, state) => InvoiceDetailsScreen(
+        invoice: state.extra as Invoice,
+      ),
+    ),
+    GoRoute(
+      path: InvoicePreviewScreen.routePath,
+      builder: (context, state) => InvoicePreviewScreen(
+        invoice: state.extra as Invoice,
+      ),
     ),
 
     // business

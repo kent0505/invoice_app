@@ -42,12 +42,11 @@ class _CreateClientScreenState extends State<CreateClientScreen> {
 
   void onContact() async {
     await getContact(context).then((value) {
-      setState(() {
-        nameController.text = value.name;
-        phoneController.text = value.phone;
-        emailController.text = value.email;
-        addressController.text = value.address;
-      });
+      nameController.text = value.name;
+      phoneController.text = value.phone;
+      emailController.text = value.email;
+      addressController.text = value.address;
+      checkActive('');
     });
   }
 

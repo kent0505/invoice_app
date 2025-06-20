@@ -30,7 +30,7 @@ class CreateInvoiceScreen extends StatefulWidget {
 }
 
 class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
-  int invoiceID = 0;
+  int id = 0;
   int number = 0;
   int date = 0;
   int dueDate = 0;
@@ -97,13 +97,13 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         if (value != null) {
           items.add(
             Item(
-              id: invoiceID,
+              id: id,
               title: value.title,
               type: value.type,
               price: value.price,
               discountPrice: value.discountPrice,
               tax: value.tax,
-              invoiceID: invoiceID,
+              invoiceID: id,
             ),
           );
           checkActive();
@@ -121,7 +121,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     context.read<InvoiceBloc>().add(
           AddInvoice(
             invoice: Invoice(
-              id: getTimestamp(),
+              id: id,
               number: number,
               date: date,
               dueDate: dueDate,
@@ -137,10 +137,9 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   @override
   void initState() {
     super.initState();
-    invoiceID = getTimestamp();
-    date = invoiceID;
-    final state = context.read<InvoiceBloc>().state;
-    if (state is InvoicesLoaded) number = state.invoices.length + 1;
+    id = getTimestamp();
+    date = id;
+    number = context.read<InvoiceBloc>().state.length + 1;
   }
 
   @override
@@ -320,7 +319,8 @@ class _Dates extends StatelessWidget {
           const DividerWidget(),
           Expanded(
             child: Text(
-              number.toString().padLeft(3, '0'),
+              formatInvoiceNumber(number),
+              // number.toString().padLeft(3, '0'),
               textAlign: TextAlign.end,
               style: const TextStyle(
                 color: Colors.black,

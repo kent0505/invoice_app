@@ -6,6 +6,7 @@ import '../../../core/constants.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../invoice/bloc/invoice_bloc.dart';
+import '../../invoice/models/invoice.dart';
 import '../../invoice/screens/create_invoice_screen.dart';
 import '../../invoice/widgets/invoice_tile.dart';
 import '../../pro/bloc/pro_bloc.dart';
@@ -105,33 +106,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: BlocBuilder<InvoiceBloc, InvoiceState>(
-              builder: (context, state) {
-                if (state is InvoicesLoaded) {
-                  final sorted = index == 1
-                      ? state.invoices
-                      : state.invoices.where(
+            child: BlocBuilder<InvoiceBloc, List<Invoice>>(
+              builder: (context, invoices) {
+                final sorted = index == 1
+                    ? invoices
+                    : invoices
+                        .where(
                           (element) => index == 2
                               ? element.paymentMethod.isEmpty
                               : element.paymentMethod.isNotEmpty,
-                        );
+                        )
+                        .toList();
 
-                  return sorted.isEmpty
-                      ? const NoData()
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          itemCount: sorted.length,
-                          itemBuilder: (context, index) {
-                            return InvoiceTile(
-                              invoice: state.invoices[index],
-                              circleColor:
-                                  invoiceColors[index % invoiceColors.length],
-                            );
-                          },
-                        );
-                }
-
-                return const SizedBox();
+                return sorted.isEmpty
+                    ? const NoData()
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        itemCount: sorted.length,
+                        itemBuilder: (context, index) {
+                          return InvoiceTile(
+                            invoice: sorted[index],
+                            circleColor:
+                                invoiceColors[index % invoiceColors.length],
+                          );
+                        },
+                      );
               },
             ),
           ),

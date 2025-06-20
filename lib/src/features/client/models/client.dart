@@ -11,11 +11,11 @@ class Client {
   });
 
   final int id;
-  final String billTo;
-  final String name;
-  final String phone;
-  final String email;
-  final String address;
+  String billTo;
+  String name;
+  String phone;
+  String email;
+  String address;
 
   Map<String, dynamic> toMap() {
     return {

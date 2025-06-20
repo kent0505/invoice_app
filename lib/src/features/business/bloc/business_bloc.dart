@@ -5,14 +5,13 @@ import '../data/business_repository.dart';
 import '../models/business.dart';
 
 part 'business_event.dart';
-part 'business_state.dart';
 
-class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
+class BusinessBloc extends Bloc<BusinessEvent, List<Business>> {
   final BusinessRepository _repository;
 
   BusinessBloc({required BusinessRepository repository})
       : _repository = repository,
-        super(BusinessInitial()) {
+        super([]) {
     on<BusinessEvent>(
       (event, emit) => switch (event) {
         GetBusiness() => _getBusiness(event, emit),
@@ -25,15 +24,15 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
 
   void _getBusiness(
     GetBusiness event,
-    Emitter<BusinessState> emit,
+    Emitter<List<Business>> emit,
   ) async {
     final businesses = await _repository.getBusiness();
-    emit(BusinessLoaded(businesses: businesses));
+    emit(businesses);
   }
 
   void _addBusiness(
     AddBusiness event,
-    Emitter<BusinessState> emit,
+    Emitter<List<Business>> emit,
   ) async {
     await _repository.addBusiness(event.business);
     add(GetBusiness());
@@ -41,7 +40,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
 
   void _editBusiness(
     EditBusiness event,
-    Emitter<BusinessState> emit,
+    Emitter<List<Business>> emit,
   ) async {
     await _repository.editBusiness(event.business);
     add(GetBusiness());
@@ -49,7 +48,7 @@ class BusinessBloc extends Bloc<BusinessEvent, BusinessState> {
 
   void _deleteBusiness(
     DeleteBusiness event,
-    Emitter<BusinessState> emit,
+    Emitter<List<Business>> emit,
   ) async {
     await _repository.deleteBusiness(event.business);
     add(GetBusiness());

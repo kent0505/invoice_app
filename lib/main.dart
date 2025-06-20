@@ -80,22 +80,22 @@ void main() async {
           BlocProvider(
             create: (context) => InvoiceBloc(
               repository: context.read<InvoiceRepository>(),
-            )..add(GetInvoices()),
+            ),
           ),
           BlocProvider(
             create: (context) => BusinessBloc(
               repository: context.read<BusinessRepository>(),
-            )..add(GetBusiness()),
+            ),
           ),
           BlocProvider(
             create: (context) => ClientBloc(
               repository: context.read<ClientRepository>(),
-            )..add(GetClients()),
+            ),
           ),
           BlocProvider(
             create: (context) => ItemBloc(
               repository: context.read<ItemRepository>(),
-            )..add(GetItems()),
+            ),
           ),
           BlocProvider(
             create: (context) =>
@@ -108,21 +108,12 @@ void main() async {
                   ),
           ),
         ],
-        child: const MyApp(),
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          theme: theme,
+          routerConfig: routerConfig,
+        ),
       ),
     ),
   );
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: theme,
-      routerConfig: routerConfig,
-    );
-  }
 }

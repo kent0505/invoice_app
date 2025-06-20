@@ -5,14 +5,13 @@ import '../data/invoice_repository.dart';
 import '../models/invoice.dart';
 
 part 'invoice_event.dart';
-part 'invoice_state.dart';
 
-class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
+class InvoiceBloc extends Bloc<InvoiceEvent, List<Invoice>> {
   final InvoiceRepository _repository;
 
   InvoiceBloc({required InvoiceRepository repository})
       : _repository = repository,
-        super(InvoiceInitial()) {
+        super([]) {
     on<InvoiceEvent>(
       (event, emit) => switch (event) {
         GetInvoices() => _getInvoices(event, emit),
@@ -25,15 +24,15 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   void _getInvoices(
     GetInvoices event,
-    Emitter<InvoiceState> emit,
+    Emitter<List<Invoice>> emit,
   ) async {
     final invoices = await _repository.getInvoices();
-    emit(InvoicesLoaded(invoices: invoices));
+    emit(invoices);
   }
 
   void _addInvoice(
     AddInvoice event,
-    Emitter<InvoiceState> emit,
+    Emitter<List<Invoice>> emit,
   ) async {
     await _repository.addInvoice(event.invoice);
     add(GetInvoices());
@@ -41,7 +40,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   void _editInvoice(
     EditInvoice event,
-    Emitter<InvoiceState> emit,
+    Emitter<List<Invoice>> emit,
   ) async {
     await _repository.editInvoice(event.invoice);
     add(GetInvoices());
@@ -49,7 +48,7 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   void _deleteInvoice(
     DeleteInvoice event,
-    Emitter<InvoiceState> emit,
+    Emitter<List<Invoice>> emit,
   ) async {
     await _repository.deleteInvoice(event.invoice);
     add(GetInvoices());

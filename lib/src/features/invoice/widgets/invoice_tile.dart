@@ -10,8 +10,11 @@ import '../../../core/widgets/dialog_widget.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
+import '../../item/bloc/item_bloc.dart';
+import '../../item/models/item.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../screens/invoice_details_screen.dart';
 
 class InvoiceTile extends StatelessWidget {
   const InvoiceTile({
@@ -26,15 +29,13 @@ class InvoiceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Client? client;
-    final state = context.read<ClientBloc>().state;
-    if (state is ClientsLoaded) {
-      try {
-        client = state.clients.firstWhere(
-          (element) => element.id == invoice.clientID,
-        );
-      } catch (e) {
-        logger(e);
-      }
+    try {
+      client = context
+          .read<ClientBloc>()
+          .state
+          .firstWhere((element) => element.id == invoice.clientID);
+    } catch (e) {
+      logger(e);
     }
 
     return Slidable(
@@ -91,10 +92,10 @@ class InvoiceTile extends StatelessWidget {
         ),
         child: Button(
           onPressed: () {
-            // context.push(
-            //   InvoiceDetailsView.routeName,
-            //   extra: invoice,
-            // );
+            context.push(
+              InvoiceDetailsScreen.routePath,
+              extra: invoice,
+            );
           },
           child: Row(
             children: [
@@ -128,15 +129,28 @@ class InvoiceTile extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      'Invoice Send',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontFamily: AppFonts.w400,
-                      ),
+                    BlocBuilder<ItemBloc, List<Item>>(
+                      builder: (context, items) {
+                        double amount = 0;
+                        for (Item item in items) {
+                          if (item.invoiceID == invoice.id) {
+                            amount += double.tryParse(item.discountPrice) ?? 0;
+                          }
+                        }
+
+                        return Text(
+                          invoice.paymentMethod.isEmpty
+                              ? 'Invoice Send'
+                              : 'Received \$${amount.toStringAsFixed(2)}',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: AppFonts.w400,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

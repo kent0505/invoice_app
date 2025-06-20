@@ -82,7 +82,9 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
       title: titleController.text,
       type: typeController.text,
       price: priceController.text,
-      discountPrice: discountPriceController.text,
+      discountPrice: discountPriceController.text.isEmpty
+          ? priceController.text
+          : discountPriceController.text,
       tax: taxController.text,
     );
 

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/svg_widget.dart';
+import '../../invoice/bloc/invoice_bloc.dart';
+import '../../invoice/models/invoice.dart';
+import '../../item/bloc/item_bloc.dart';
+import '../../item/models/item.dart';
 import '../../settings/screens/settings_screen.dart';
 
 class TotalIncome extends StatelessWidget {
@@ -36,14 +41,36 @@ class TotalIncome extends StatelessWidget {
                     fontSize: 14,
                   ),
                 ),
-                Text(
-                  '\$${100.toStringAsFixed(2)}',
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 40,
-                    fontFamily: AppFonts.w800,
-                  ),
+                BlocBuilder<InvoiceBloc, List<Invoice>>(
+                  builder: (context, invoices) {
+                    final sorted = invoices.where((element) {
+                      return element.paymentMethod.isNotEmpty;
+                    }).toList();
+
+                    return BlocBuilder<ItemBloc, List<Item>>(
+                      builder: (context, items) {
+                        double amount = 0;
+                        for (Invoice invoice in sorted) {
+                          for (Item item in items) {
+                            if (item.invoiceID == invoice.id) {
+                              amount +=
+                                  double.tryParse(item.discountPrice) ?? 0;
+                            }
+                          }
+                        }
+
+                        return Text(
+                          '\$${amount.toStringAsFixed(2)}',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 40,
+                            fontFamily: AppFonts.w800,
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
