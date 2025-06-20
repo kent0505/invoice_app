@@ -106,14 +106,7 @@ class _EditClientScreenState extends State<EditClientScreen> {
       appBar: Appbar(
         title: 'Edit Client',
         right: Button(
-          onPressed: () {
-            DialogWidget.show(
-              context,
-              title: 'Delete?',
-              delete: true,
-              onPressed: onDelete,
-            );
-          },
+          onPressed: onDelete,
           child: const SvgWidget(Assets.delete),
         ),
       ),

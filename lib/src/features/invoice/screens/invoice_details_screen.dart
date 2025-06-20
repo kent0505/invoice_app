@@ -15,9 +15,10 @@ import '../../item/models/item.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../widgets/invoice_pay.dart';
+import 'edit_invoice_screen.dart';
 import 'invoice_preview_screen.dart';
 
-class InvoiceDetailsScreen extends StatelessWidget {
+class InvoiceDetailsScreen extends StatefulWidget {
   const InvoiceDetailsScreen({super.key, required this.invoice});
 
   final Invoice invoice;
@@ -25,8 +26,39 @@ class InvoiceDetailsScreen extends StatelessWidget {
   static const routePath = '/InvoiceDetailsScreen';
 
   @override
-  Widget build(BuildContext context) {
-    Client? client;
+  State<InvoiceDetailsScreen> createState() => _InvoiceDetailsScreenState();
+}
+
+class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
+  late Invoice invoice;
+  Client? client;
+
+  void onPreview() {
+    context.push(
+      InvoicePreviewScreen.routePath,
+      extra: invoice,
+    );
+  }
+
+  void onPromoPrinter() {}
+
+  void onPdfService() {}
+
+  void onPrint() {}
+
+  void onEdit() {
+    context.push(
+      EditInvoiceScreen.routePath,
+      extra: invoice,
+    );
+  }
+
+  void onShare() {}
+
+  @override
+  void initState() {
+    super.initState();
+    invoice = widget.invoice;
     try {
       client = context
           .read<ClientBloc>()
@@ -35,16 +67,14 @@ class InvoiceDetailsScreen extends StatelessWidget {
     } catch (e) {
       logger(e);
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: Appbar(
         right: Button(
-          onPressed: () {
-            context.push(
-              InvoicePreviewScreen.routePath,
-              extra: invoice,
-            );
-          },
+          onPressed: onPreview,
           child: const Text(
             'Preview',
             style: TextStyle(
@@ -193,12 +223,12 @@ class InvoiceDetailsScreen extends StatelessWidget {
                 const SizedBox(height: 30),
                 _OtherApp(
                   title: 'Promo Printer',
-                  onPressed: () {},
+                  onPressed: onPromoPrinter,
                 ),
                 const SizedBox(height: 10),
                 _OtherApp(
                   title: 'PDF service',
-                  onPressed: () {},
+                  onPressed: onPdfService,
                 ),
               ],
             ),
@@ -210,20 +240,20 @@ class InvoiceDetailsScreen extends StatelessWidget {
                   _Button(
                     title: 'Print',
                     asset: Assets.print,
-                    onPressed: () {},
+                    onPressed: onPrint,
                   ),
                   const Spacer(),
                   _Button(
                     title: 'Edit',
                     asset: Assets.edit,
-                    onPressed: () {},
+                    onPressed: onEdit,
                   ),
                 ],
               ),
               const SizedBox(height: 22),
               MainButton(
                 title: 'Share Invoice',
-                onPressed: () {},
+                onPressed: onShare,
               ),
             ],
           ),

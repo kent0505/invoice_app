@@ -12,6 +12,8 @@ import '../features/client/screens/edit_client_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/invoice/models/invoice.dart';
 import '../features/invoice/screens/create_invoice_screen.dart';
+import '../features/invoice/screens/edit_invoice_screen.dart';
+import '../features/invoice/screens/invoice_customize_screen.dart';
 import '../features/invoice/screens/invoice_details_screen.dart';
 import '../features/invoice/screens/invoice_preview_screen.dart';
 import '../features/item/models/item.dart';
@@ -58,6 +60,18 @@ final routerConfig = GoRouter(
     GoRoute(
       path: InvoicePreviewScreen.routePath,
       builder: (context, state) => InvoicePreviewScreen(
+        invoice: state.extra as Invoice,
+      ),
+    ),
+    GoRoute(
+      path: InvoiceCustomizeScreen.routePath,
+      builder: (context, state) => InvoiceCustomizeScreen(
+        invoice: state.extra as Invoice,
+      ),
+    ),
+    GoRoute(
+      path: EditInvoiceScreen.routePath,
+      builder: (context, state) => EditInvoiceScreen(
         invoice: state.extra as Invoice,
       ),
     ),

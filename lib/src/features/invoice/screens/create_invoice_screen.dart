@@ -37,7 +37,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   Business? business;
   Client? client;
   List<Item> items = [];
-
   double totalPrice = 0;
   bool active = false;
 
@@ -46,7 +45,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
       active = business != null && client != null && items.isNotEmpty;
       totalPrice = 0;
       for (Item item in items) {
-        totalPrice += double.tryParse(item.price) ?? 0;
+        totalPrice += double.tryParse(item.discountPrice) ?? 0;
       }
     });
   }
@@ -320,7 +319,6 @@ class _Dates extends StatelessWidget {
           Expanded(
             child: Text(
               formatInvoiceNumber(number),
-              // number.toString().padLeft(3, '0'),
               textAlign: TextAlign.end,
               style: const TextStyle(
                 color: Colors.black,

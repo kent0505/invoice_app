@@ -31,7 +31,7 @@ class InvoiceTile extends StatelessWidget {
     Client? client;
     try {
       client = context
-          .read<ClientBloc>()
+          .watch<ClientBloc>()
           .state
           .firstWhere((element) => element.id == invoice.clientID);
     } catch (e) {
