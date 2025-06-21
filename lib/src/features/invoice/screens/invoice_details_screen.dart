@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
-import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
@@ -14,6 +13,7 @@ import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_pay.dart';
 import 'edit_invoice_screen.dart';
 import 'invoice_preview_screen.dart';
@@ -72,18 +72,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Appbar(
-        right: Button(
-          onPressed: onPreview,
-          child: const Text(
-            'Preview',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-              fontFamily: AppFonts.w400,
-            ),
-          ),
-        ),
+      appBar: InvoiceAppbar(
+        title: '',
+        onPreview: onPreview,
       ),
       body: Column(
         children: [

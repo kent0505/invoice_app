@@ -54,6 +54,13 @@ final class ItemRepositoryImpl implements ItemRepository {
     List<Item> items = const [],
   }) async {
     try {
+      if (items.isNotEmpty) {
+        await _db.delete(
+          Tables.items,
+          where: 'id = ?',
+          whereArgs: [items.first.id],
+        );
+      }
       final data = items.isEmpty ? [item!] : items;
       for (final i in data) {
         await _db.insert(

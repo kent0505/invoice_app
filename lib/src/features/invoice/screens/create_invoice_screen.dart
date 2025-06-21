@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
-import '../../../core/widgets/button.dart';
-import '../../../core/widgets/divider_widget.dart';
+import '../../../core/widgets/date_pick.dart';
 import '../../../core/widgets/main_button.dart';
-import '../../../core/widgets/svg_widget.dart';
 import '../../../core/widgets/title_text.dart';
 import '../../business/models/business.dart';
 import '../../business/screens/business_screen.dart';
@@ -22,6 +20,9 @@ import '../../pro/screens/pro_page.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../widgets/invoice_appbar.dart';
+import '../widgets/invoice_dates.dart';
+import '../widgets/invoice_select_data.dart';
+import '../widgets/invoice_selected_data.dart';
 
 class CreateInvoiceScreen extends StatefulWidget {
   const CreateInvoiceScreen({super.key});
@@ -37,77 +38,88 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   int number = 0;
   int date = 0;
   int dueDate = 0;
-  Business? business;
-  Client? client;
+  List<Business> business = [];
+  List<Client> clients = [];
   List<Item> items = [];
-  // double totalPrice = 0;
   bool active = false;
 
   void checkActive() {
     setState(() {
-      active = business != null && client != null && items.isNotEmpty;
-      // calculateInvoiceMoney(items: items, invoiceID: invoiceID)
-      // totalPrice = 0;
-      // for (Item item in items) {
-      //   final basePrice = double.tryParse(item.discountPrice) ?? 0;
-      //   final taxRate = double.tryParse(item.tax) ?? 0;
-      //   final priceWithTax = basePrice + (basePrice * taxRate / 100);
-      //   totalPrice += priceWithTax;
-      // }
+      active = business.isNotEmpty && clients.isNotEmpty && items.isNotEmpty;
     });
   }
 
   void onPreview() {}
 
-  void onDate() {}
+  void onDate() {
+    DatePick.show(
+      context,
+      DateTime.fromMillisecondsSinceEpoch(date),
+    ).then((value) {
+      setState(() {
+        date = value.millisecondsSinceEpoch;
+      });
+    });
+  }
 
-  void onDueDate() {}
+  void onDueDate() {
+    DatePick.show(
+      context,
+      DateTime.fromMillisecondsSinceEpoch(getTimestamp()),
+    ).then((value) {
+      setState(() {
+        dueDate = value.millisecondsSinceEpoch;
+      });
+    });
+  }
 
-  void onSelectBusiness() async {
-    if (business == null) {
-      business = await context.push<Business?>(
-        BusinessScreen.routePath,
-        extra: true,
-      );
-      if (business != null) checkActive();
+  void onSelectBusiness() {
+    if (business.isEmpty) {
+      context
+          .push<Business?>(BusinessScreen.routePath, extra: true)
+          .then((value) {
+        if (value != null) {
+          business.add(value);
+          checkActive();
+        }
+      });
     } else {
-      business = null;
+      business.clear();
       checkActive();
     }
   }
 
-  void onSelectClient() async {
-    if (client == null) {
-      client = await context.push<Client?>(
-        ClientsScreen.routePath,
-        extra: true,
-      );
-      if (client != null) checkActive();
+  void onSelectClient() {
+    if (clients.isEmpty) {
+      context.push<Client?>(ClientsScreen.routePath, extra: true).then((value) {
+        if (value != null) {
+          clients.add(value);
+          checkActive();
+        }
+      });
     } else {
-      client = null;
+      clients.clear();
       checkActive();
     }
   }
 
   void onSelectItems() async {
-    Item? item = await context.push<Item?>(
-      ItemsScreen.routePath,
-      extra: true,
-    );
-    if (item != null) {
-      items.add(
-        Item(
-          id: id,
-          title: item.title,
-          type: item.type,
-          price: item.price,
-          discountPrice: item.discountPrice,
-          tax: item.tax,
-          invoiceID: id,
-        ),
-      );
-      checkActive();
-    }
+    context.push<Item?>(ItemsScreen.routePath, extra: true).then((value) {
+      if (value != null) {
+        items.add(
+          Item(
+            id: id,
+            title: value.title,
+            type: value.type,
+            price: value.price,
+            discountPrice: value.discountPrice,
+            tax: value.tax,
+            invoiceID: id,
+          ),
+        );
+        checkActive();
+      }
+    });
   }
 
   void removeItem(int index) {
@@ -126,8 +138,8 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 number: number,
                 date: date,
                 dueDate: dueDate,
-                businessID: business!.id,
-                clientID: client!.id,
+                businessID: business.first.id,
+                clientID: clients.first.id,
               ),
             ),
           );
@@ -165,11 +177,11 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 const Row(
                   children: [
                     SizedBox(
-                      width: 100,
+                      width: 120,
                       child: TitleText(title: 'Issued'),
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 120,
                       child: TitleText(title: 'Due'),
                     ),
                     Spacer(),
@@ -177,7 +189,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                   ],
                 ),
                 const SizedBox(height: 6),
-                _Dates(
+                InvoiceDates(
                   date: date,
                   dueDate: dueDate,
                   number: number,
@@ -185,31 +197,31 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                   onDueDate: onDueDate,
                 ),
                 const SizedBox(height: 16),
-                TitleText(title: 'Business account'),
+                const TitleText(title: 'Business account'),
                 const SizedBox(height: 6),
-                business == null
-                    ? _Select(
+                business.isEmpty
+                    ? InvoiceSelectData(
                         title: 'Choose Account',
                         onPressed: onSelectBusiness,
                       )
-                    : _Selected(
-                        title: business!.name,
+                    : InvoiceSelectedData(
+                        title: business.first.name,
                         onPressed: onSelectBusiness,
                       ),
                 const SizedBox(height: 16),
-                TitleText(title: 'Client'),
+                const TitleText(title: 'Client'),
                 const SizedBox(height: 6),
-                client == null
-                    ? _Select(
+                clients.isEmpty
+                    ? InvoiceSelectData(
                         title: 'Add Client',
                         onPressed: onSelectClient,
                       )
-                    : _Selected(
-                        title: client!.name,
+                    : InvoiceSelectedData(
+                        title: clients.first.name,
                         onPressed: onSelectClient,
                       ),
                 const SizedBox(height: 16),
-                TitleText(title: 'Items'),
+                const TitleText(title: 'Items'),
                 const SizedBox(height: 6),
                 Container(
                   decoration: BoxDecoration(
@@ -220,7 +232,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                     children: List.generate(
                       items.length,
                       (index) {
-                        return _Selected(
+                        return InvoiceSelectedData(
                           title: items[index].title,
                           onPressed: () {
                             removeItem(index);
@@ -231,12 +243,12 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                _Select(
+                InvoiceSelectData(
                   title: items.isEmpty ? 'Add Item' : 'Add another Item',
                   onPressed: onSelectItems,
                 ),
                 const SizedBox(height: 16),
-                TitleText(title: 'Summary'),
+                const TitleText(title: 'Summary'),
                 const SizedBox(height: 6),
                 Container(
                   height: 40,
@@ -257,7 +269,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                       ),
                       const Spacer(),
                       Text(
-                        // '${totalPrice.toStringAsFixed(2).replaceAll('.', ',')} \$',
                         calculateInvoiceMoney(items: items),
                         style: const TextStyle(
                           color: Colors.black,
@@ -282,174 +293,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 onPressed: onCreate,
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Dates extends StatelessWidget {
-  const _Dates({
-    required this.date,
-    required this.dueDate,
-    required this.number,
-    required this.onDate,
-    required this.onDueDate,
-  });
-
-  final int date;
-  final int dueDate;
-  final int number;
-  final VoidCallback onDate;
-  final VoidCallback onDueDate;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        children: [
-          _Issued(
-            date: date,
-            onPressed: onDate,
-          ),
-          const DividerWidget(),
-          _Issued(
-            date: dueDate,
-            onPressed: onDueDate,
-          ),
-          const DividerWidget(),
-          Expanded(
-            child: Text(
-              formatInvoiceNumber(number),
-              textAlign: TextAlign.end,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontFamily: AppFonts.w400,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-    );
-  }
-}
-
-class _Issued extends StatelessWidget {
-  const _Issued({
-    required this.date,
-    required this.onPressed,
-  });
-
-  final int date;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Button(
-      onPressed: onPressed,
-      child: SizedBox(
-        width: 100,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Text(
-            date == 0 ? '-' : formatTimestamp(date),
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 12,
-              fontFamily: AppFonts.w400,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Select extends StatelessWidget {
-  const _Select({
-    required this.title,
-    required this.onPressed,
-  });
-
-  final String title;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Button(
-        onPressed: onPressed,
-        minSize: 40,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SvgWidget(Assets.add),
-            const SizedBox(width: 10),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontFamily: AppFonts.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Selected extends StatelessWidget {
-  const _Selected({
-    required this.title,
-    required this.onPressed,
-  });
-
-  final String title;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        children: [
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 12,
-                fontFamily: AppFonts.w600,
-              ),
-            ),
-          ),
-          Button(
-            onPressed: onPressed,
-            minSize: 40,
-            child: const Icon(
-              Icons.close_rounded,
-              color: Color(0xffFF4400),
-            ),
           ),
         ],
       ),
