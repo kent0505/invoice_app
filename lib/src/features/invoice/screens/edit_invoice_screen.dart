@@ -45,7 +45,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   List<Item> items = [];
   bool active = true;
   bool hasSignature = false;
-  String? signature;
+  String signature = '';
 
   void checkActive() {
     setState(() {
@@ -64,6 +64,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
         if (value != null) {
           setState(() {
             signature = value;
+            logger(signature);
           });
         }
       },
@@ -160,7 +161,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               clientID: clients.first.id,
               paymentDate: widget.invoice.paymentDate,
               paymentMethod: widget.invoice.paymentMethod,
-              imageSignature: signature ?? '',
+              imageSignature: signature,
             ),
           ),
         );
@@ -330,10 +331,10 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
                 ),
                 const SizedBox(height: 16),
                 if (hasSignature) ...[
-                  SvgPicture.string(signature ?? ''),
+                  SvgPicture.string(signature),
                   const SizedBox(height: 16),
                   MainButton(
-                    title: signature == null
+                    title: signature.isEmpty
                         ? 'Create a signature'
                         : 'Change signature',
                     outlined: true,

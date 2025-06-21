@@ -8,6 +8,7 @@ import 'package:screenshot/screenshot.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
+import '../../../core/widgets/image_widget.dart';
 import '../../business/bloc/business_bloc.dart';
 import '../../business/models/business.dart';
 import '../../client/bloc/client_bloc.dart';
@@ -95,6 +96,8 @@ class InvoiceTemplate1 extends StatelessWidget {
                         height: 80,
                         width: 80,
                         fit: BoxFit.cover,
+                        errorBuilder: ImageWidget.errorBuilder,
+                        frameBuilder: ImageWidget.frameBuilder,
                       ),
                     ),
                   ),
@@ -245,23 +248,27 @@ class InvoiceTemplate1 extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'Signature:',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontFamily: AppFonts.w600,
+                  if (invoice.imageSignature.isNotEmpty ||
+                      business.imageSignature.isNotEmpty)
+                    Column(
+                      children: [
+                        const Text(
+                          'Signature:',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontFamily: AppFonts.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      SvgPicture.string(
-                        invoice.imageSignature,
-                        height: 40,
-                      ),
-                    ],
-                  ),
+                        const SizedBox(height: 10),
+                        SvgPicture.string(
+                          business.imageSignature.isEmpty
+                              ? invoice.imageSignature
+                              : business.imageSignature,
+                          height: 40,
+                        ),
+                      ],
+                    ),
                   const Spacer(),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

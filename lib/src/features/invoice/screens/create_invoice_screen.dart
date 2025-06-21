@@ -46,7 +46,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   List<Item> items = [];
   bool active = false;
   bool hasSignature = false;
-  String? signature;
+  String signature = '';
 
   void checkActive() {
     setState(() {
@@ -163,7 +163,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 dueDate: dueDate,
                 businessID: business.first.id,
                 clientID: clients.first.id,
-                imageSignature: signature ?? '',
+                imageSignature: signature,
               ),
             ),
           );
@@ -318,10 +318,10 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 ),
                 const SizedBox(height: 16),
                 if (hasSignature) ...[
-                  SvgPicture.string(signature ?? ''),
+                  SvgPicture.string(signature),
                   const SizedBox(height: 16),
                   MainButton(
-                    title: signature == null
+                    title: signature.isEmpty
                         ? 'Create a signature'
                         : 'Change signature',
                     outlined: true,

@@ -10,7 +10,7 @@ class Invoice {
     required this.clientID,
     this.paymentDate = 0,
     this.paymentMethod = '',
-    this.imageSignature = '',
+    required this.imageSignature,
   });
 
   final int id;
