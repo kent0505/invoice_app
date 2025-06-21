@@ -1,6 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
@@ -15,6 +23,7 @@ import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_pay.dart';
+import '../widgets/invoice_template1.dart';
 import 'edit_invoice_screen.dart';
 import 'invoice_preview_screen.dart';
 
@@ -30,8 +39,10 @@ class InvoiceDetailsScreen extends StatefulWidget {
 }
 
 class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
+  final screenshotController = ScreenshotController();
   late Invoice invoice;
   Client? client;
+  File file = File('');
 
   void onPreview() {
     context.push(
@@ -44,7 +55,38 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
 
   void onPdfService() {}
 
-  void onPrint() {}
+  Future<pw.Document> captureWidget() async {
+    final pdf = pw.Document();
+    final bytes = await InvoiceTemplate1.capture(screenshotController);
+    if (bytes != null) {
+      final dir = await getTemporaryDirectory();
+      file = File('${dir.path}/invoice.png');
+      await file.writeAsBytes(bytes);
+      pdf.addPage(
+        pw.Page(
+          margin: pw.EdgeInsets.zero,
+          pageFormat: PdfPageFormat.a4,
+          build: (context) {
+            return pw.Center(
+              child: pw.Image(
+                pw.MemoryImage(bytes),
+                fit: pw.BoxFit.contain,
+              ),
+            );
+          },
+        ),
+      );
+    }
+    return pdf;
+  }
+
+  void onPrint() async {
+    final pdf = await captureWidget();
+    Printing.layoutPdf(
+      format: PdfPageFormat.a4,
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+    );
+  }
 
   void onEdit() {
     context.push(
@@ -53,7 +95,15 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     );
   }
 
-  void onShare() {}
+  void onShare() async {
+    await captureWidget();
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        sharePositionOrigin: Rect.fromLTWH(100, 100, 200, 200),
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -82,102 +132,116 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Container(
-                  height: 130,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                      )
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      BlocBuilder<InvoiceBloc, List<Invoice>>(
-                        builder: (context, _) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                height: 22,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xffFF4400),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    invoice.paymentMethod.isEmpty
-                                        ? 'Not Paid'
-                                        : 'Paid',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontFamily: AppFonts.w400,
+                Stack(
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        height: 200,
+                        child: InvoiceTemplate1(
+                          invoice: widget.invoice,
+                          controller: screenshotController,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 130,
+                      margin: const EdgeInsets.only(top: 100),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 10,
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BlocBuilder<InvoiceBloc, List<Invoice>>(
+                            builder: (context, _) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 22,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
                                     ),
-                                  ),
-                                ),
-                              ),
-                              if (invoice.paymentMethod.isNotEmpty) ...[
-                                const SizedBox(width: 12),
-                                Container(
-                                  height: 22,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff94A3B8),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      invoice.paymentMethod,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: AppFonts.w400,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffFF4400),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        invoice.paymentMethod.isEmpty
+                                            ? 'Not Paid'
+                                            : 'Paid',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontFamily: AppFonts.w400,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        client?.name ?? '?',
-                        style: const TextStyle(
-                          color: Color(0xff7D81A3),
-                          fontSize: 16,
-                          fontFamily: AppFonts.w400,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      BlocBuilder<ItemBloc, List<Item>>(
-                        builder: (context, items) {
-                          return Text(
-                            calculateInvoiceMoney(
-                              items: items,
-                              invoiceID: invoice.id,
-                            ),
+                                  if (invoice.paymentMethod.isNotEmpty) ...[
+                                    const SizedBox(width: 12),
+                                    Container(
+                                      height: 22,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xff94A3B8),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          invoice.paymentMethod,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontFamily: AppFonts.w400,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            client?.name ?? '?',
                             style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 28,
-                              fontFamily: AppFonts.w600,
+                              color: Color(0xff7D81A3),
+                              fontSize: 16,
+                              fontFamily: AppFonts.w400,
                             ),
-                          );
-                        },
+                          ),
+                          const SizedBox(height: 8),
+                          BlocBuilder<ItemBloc, List<Item>>(
+                            builder: (context, items) {
+                              return Text(
+                                calculateInvoiceMoney(
+                                  items: items,
+                                  invoiceID: invoice.id,
+                                ),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 28,
+                                  fontFamily: AppFonts.w600,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 InvoicePay(invoice: invoice),

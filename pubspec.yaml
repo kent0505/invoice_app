@@ -19,6 +19,8 @@ dependencies:
   flutter_contacts: ^1.1.9+2
   flutter_slidable: ^4.0.0
   signature: ^6.3.0
+  screenshot: ^3.0.0
+  path_provider: ^2.1.5
   # pdf
   pdf: ^3.11.3
   printing: ^5.14.2

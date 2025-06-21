@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/date_pick.dart';
 import '../../../core/widgets/main_button.dart';
+import '../../../core/widgets/switch_button.dart';
 import '../../../core/widgets/title_text.dart';
 import '../../business/bloc/business_bloc.dart';
 import '../../business/models/business.dart';
 import '../../business/screens/business_screen.dart';
+import '../../business/screens/signature_screen.dart';
 import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../client/screens/clients_screen.dart';
@@ -41,11 +44,30 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   List<Client> clients = [];
   List<Item> items = [];
   bool active = true;
+  bool hasSignature = false;
+  String? signature;
 
   void checkActive() {
     setState(() {
       active = business.isNotEmpty && clients.isNotEmpty && items.isNotEmpty;
     });
+  }
+
+  void onSignature() {
+    hasSignature = !hasSignature;
+    checkActive();
+  }
+
+  void onAddSignature() async {
+    context.push<String?>(SignatureScreen.routePath).then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            signature = value;
+          });
+        }
+      },
+    );
   }
 
   void onPreview() {}
@@ -107,7 +129,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       if (value != null) {
         items.add(
           Item(
-            id: widget.invoice.id,
+            id: value.id,
             title: value.title,
             type: value.type,
             price: value.price,
@@ -138,6 +160,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               clientID: clients.first.id,
               paymentDate: widget.invoice.paymentDate,
               paymentMethod: widget.invoice.paymentMethod,
+              imageSignature: signature ?? '',
             ),
           ),
         );
@@ -150,6 +173,8 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     super.initState();
     date = widget.invoice.date;
     dueDate = widget.invoice.dueDate;
+    signature = widget.invoice.imageSignature;
+    hasSignature = widget.invoice.imageSignature.isNotEmpty;
     try {
       final b = context.read<BusinessBloc>().state.firstWhere((element) {
         return element.id == widget.invoice.businessID;
@@ -291,6 +316,30 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: TitleText(title: 'Signature'),
+                    ),
+                    SwitchButton(
+                      isActive: hasSignature,
+                      onPressed: onSignature,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (hasSignature) ...[
+                  SvgPicture.string(signature ?? ''),
+                  const SizedBox(height: 16),
+                  MainButton(
+                    title: signature == null
+                        ? 'Create a signature'
+                        : 'Change signature',
+                    outlined: true,
+                    onPressed: onAddSignature,
+                  ),
+                ],
                 // const SizedBox(height: 16),
                 // TitleText(title: 'Photos'),
               ],

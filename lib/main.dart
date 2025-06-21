@@ -98,13 +98,9 @@ void main() async {
             ),
           ),
           BlocProvider(
-            create: (context) =>
-                ProBloc(repository: context.read<ProRepository>())
-                  ..add(
-                    CheckPro(
-                      identifier: Identifiers.paywall1,
-                    ),
-                  ),
+            create: (context) => ProBloc(
+              repository: context.read<ProRepository>(),
+            )..add(CheckPro(identifier: Identifiers.paywall1)),
           ),
         ],
         child: MaterialApp.router(

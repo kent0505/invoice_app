@@ -63,6 +63,11 @@ final class InvoiceRepositoryImpl implements InvoiceRepository {
         where: 'id = ?',
         whereArgs: [invoice.id],
       );
+      await _db.delete(
+        Tables.items,
+        where: 'invoiceID = ?',
+        whereArgs: [invoice.id],
+      );
     } catch (e) {
       logger(e);
     }

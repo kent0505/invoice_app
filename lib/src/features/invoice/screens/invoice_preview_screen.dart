@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../models/invoice.dart';
+import '../widgets/invoice_template1.dart';
 import 'invoice_customize_screen.dart';
 
 class InvoicePreviewScreen extends StatelessWidget {
@@ -37,7 +39,13 @@ class InvoicePreviewScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
-        children: [],
+        padding: const EdgeInsets.all(16),
+        children: [
+          InvoiceTemplate1(
+            invoice: invoice,
+            controller: ScreenshotController(),
+          ),
+        ],
       ),
     );
   }

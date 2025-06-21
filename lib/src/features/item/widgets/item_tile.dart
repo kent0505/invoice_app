@@ -16,6 +16,10 @@ class ItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final discountPrice = double.tryParse(item.discountPrice) ?? 0;
+    final taxPercent = double.tryParse(item.tax) ?? 0;
+    final total = discountPrice + discountPrice * (taxPercent / 100);
+
     return Button(
       onPressed: onPressed,
       child: Container(
@@ -41,7 +45,7 @@ class ItemTile extends StatelessWidget {
               ),
             ),
             Text(
-              '\$${item.price}',
+              '\$${total.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Color(0xff7D81A3),
                 fontSize: 14,

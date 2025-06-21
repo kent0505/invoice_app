@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/date_pick.dart';
 import '../../../core/widgets/main_button.dart';
+import '../../../core/widgets/switch_button.dart';
 import '../../../core/widgets/title_text.dart';
 import '../../business/models/business.dart';
 import '../../business/screens/business_screen.dart';
+import '../../business/screens/signature_screen.dart';
 import '../../client/models/client.dart';
 import '../../client/screens/clients_screen.dart';
 import '../../item/bloc/item_bloc.dart';
@@ -42,11 +45,30 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   List<Client> clients = [];
   List<Item> items = [];
   bool active = false;
+  bool hasSignature = false;
+  String? signature;
 
   void checkActive() {
     setState(() {
       active = business.isNotEmpty && clients.isNotEmpty && items.isNotEmpty;
     });
+  }
+
+  void onSignature() {
+    hasSignature = !hasSignature;
+    checkActive();
+  }
+
+  void onAddSignature() async {
+    context.push<String?>(SignatureScreen.routePath).then(
+      (value) {
+        if (value != null) {
+          setState(() {
+            signature = value;
+          });
+        }
+      },
+    );
   }
 
   void onPreview() {}
@@ -108,7 +130,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
       if (value != null) {
         items.add(
           Item(
-            id: id,
+            id: value.id,
             title: value.title,
             type: value.type,
             price: value.price,
@@ -128,8 +150,9 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   }
 
   void onCreate() {
+    final isPro = context.read<ProBloc>().state.isPro;
     final available = context.read<ProRepository>().getAvailable();
-    if (available >= 1 || context.read<ProBloc>().state.isPro) {
+    if (isPro || available >= 1) {
       context.read<ProRepository>().saveAvailable(available - 1);
       context.read<InvoiceBloc>().add(
             AddInvoice(
@@ -140,6 +163,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 dueDate: dueDate,
                 businessID: business.first.id,
                 clientID: clients.first.id,
+                imageSignature: signature ?? '',
               ),
             ),
           );
@@ -280,6 +304,31 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    const Expanded(
+                      child: TitleText(title: 'Signature'),
+                    ),
+                    SwitchButton(
+                      isActive: hasSignature,
+                      onPressed: onSignature,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (hasSignature) ...[
+                  SvgPicture.string(signature ?? ''),
+                  const SizedBox(height: 16),
+                  MainButton(
+                    title: signature == null
+                        ? 'Create a signature'
+                        : 'Change signature',
+                    outlined: true,
+                    onPressed: onAddSignature,
+                  ),
+                ],
+
                 // const SizedBox(height: 16),
                 // TitleText(title: 'Photos'),
               ],

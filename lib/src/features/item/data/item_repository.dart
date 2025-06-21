@@ -57,8 +57,8 @@ final class ItemRepositoryImpl implements ItemRepository {
       if (items.isNotEmpty) {
         await _db.delete(
           Tables.items,
-          where: 'id = ?',
-          whereArgs: [items.first.id],
+          where: 'invoiceID = ?',
+          whereArgs: [items.first.invoiceID],
         );
       }
       final data = items.isEmpty ? [item!] : items;

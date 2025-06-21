@@ -149,7 +149,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
           MainButtonWrapper(
             children: [
               MainButton(
-                title: 'create a signature',
+                title: 'Create a signature',
                 outlined: true,
                 onPressed: onSignature,
               ),
