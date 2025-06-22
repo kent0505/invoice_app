@@ -23,7 +23,7 @@ class ItemBody extends StatelessWidget {
     required this.onHasDiscount,
     required this.onTaxable,
     required this.onContinue,
-    this.checkActive,
+    required this.checkActive,
   });
 
   final bool select;
@@ -40,7 +40,7 @@ class ItemBody extends StatelessWidget {
   final VoidCallback onHasDiscount;
   final VoidCallback onTaxable;
   final VoidCallback onContinue;
-  final void Function(String)? checkActive;
+  final void Function(String) checkActive;
 
   @override
   Widget build(BuildContext context) {

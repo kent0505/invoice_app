@@ -70,7 +70,15 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     context.push(
       InvoicePreviewScreen.routePath,
       extra: PreviewData(
-        invoice: widget.invoice,
+        invoice: Invoice(
+          id: widget.invoice.id,
+          number: widget.invoice.number,
+          date: date,
+          dueDate: dueDate,
+          businessID: 0,
+          clientID: 0,
+          imageSignature: hasSignature ? signature : '',
+        ),
         business: business,
         clients: clients,
         items: items,

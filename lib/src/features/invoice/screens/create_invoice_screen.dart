@@ -78,7 +78,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
           dueDate: dueDate,
           businessID: 0,
           clientID: 0,
-          imageSignature: signature,
+          imageSignature: hasSignature ? signature : '',
         ),
         business: business,
         clients: clients,

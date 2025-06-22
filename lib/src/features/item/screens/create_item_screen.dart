@@ -119,6 +119,7 @@ class _CreateItemScreenState extends State<CreateItemScreen> {
         typeController: typeController,
         discountPriceController: discountPriceController,
         taxController: taxController,
+        checkActive: checkActive,
         onSaveToItems: onSaveToItems,
         onHasDiscount: onHasDiscount,
         onTaxable: onTaxable,

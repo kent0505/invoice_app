@@ -14,12 +14,10 @@ import '../models/preview_data.dart';
 class InvoiceTemplate1 extends StatelessWidget {
   const InvoiceTemplate1({
     super.key,
-    // required this.invoice,
     required this.previewData,
     required this.controller,
   });
 
-  // final Invoice invoice;
   final PreviewData previewData;
   final ScreenshotController controller;
 
@@ -31,20 +29,6 @@ class InvoiceTemplate1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final businesses = context.watch<BusinessBloc>().state;
-    // Business? business = businesses.firstWhere(
-    //   (element) => element.id == invoice.businessID,
-    // );
-
-    // final clients = context.watch<ClientBloc>().state;
-    // Client? client = clients.firstWhere(
-    //   (element) => element.id == invoice.clientID,
-    // );
-
-    // final items = context.watch<ItemBloc>().state.where((element) {
-    //   return element.invoiceID == invoice.id;
-    // }).toList();
-
     final Set<int> seenIds = {};
     List<Item> uniqueItems = [];
 
@@ -70,6 +54,12 @@ class InvoiceTemplate1 extends StatelessWidget {
     }
 
     uniqueItems = uniqueItems.take(10).toList();
+
+    final signature = previewData.invoice.imageSignature.isNotEmpty
+        ? previewData.invoice.imageSignature
+        : previewData.business.isNotEmpty
+            ? previewData.business.first.imageSignature
+            : '';
 
     return FittedBox(
       child: Screenshot(
@@ -250,9 +240,7 @@ class InvoiceTemplate1 extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  if (previewData.invoice.imageSignature.isNotEmpty ||
-                      previewData.business.isNotEmpty &&
-                          previewData.business.first.imageSignature.isNotEmpty)
+                  if (signature.isNotEmpty)
                     Column(
                       children: [
                         const Text(
@@ -265,9 +253,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         SvgPicture.string(
-                          previewData.business.first.imageSignature.isEmpty
-                              ? previewData.invoice.imageSignature
-                              : previewData.business.first.imageSignature,
+                          signature,
                           height: 40,
                         ),
                       ],

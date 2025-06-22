@@ -77,29 +77,24 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => InvoiceBloc(
-              repository: context.read<InvoiceRepository>(),
-            ),
+            create: (context) =>
+                InvoiceBloc(repository: context.read<InvoiceRepository>()),
           ),
           BlocProvider(
-            create: (context) => BusinessBloc(
-              repository: context.read<BusinessRepository>(),
-            ),
+            create: (context) =>
+                BusinessBloc(repository: context.read<BusinessRepository>()),
           ),
           BlocProvider(
-            create: (context) => ClientBloc(
-              repository: context.read<ClientRepository>(),
-            ),
+            create: (context) =>
+                ClientBloc(repository: context.read<ClientRepository>()),
           ),
           BlocProvider(
-            create: (context) => ItemBloc(
-              repository: context.read<ItemRepository>(),
-            ),
+            create: (context) =>
+                ItemBloc(repository: context.read<ItemRepository>()),
           ),
           BlocProvider(
-            create: (context) => ProBloc(
-              repository: context.read<ProRepository>(),
-            ),
+            create: (context) =>
+                ProBloc(repository: context.read<ProRepository>()),
           ),
         ],
         child: MaterialApp.router(

@@ -133,6 +133,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
         discountPriceController: discountPriceController,
         taxController: taxController,
         onSaveToItems: () {},
+        checkActive: checkActive,
         onHasDiscount: onHasDiscount,
         onTaxable: onTaxable,
         onContinue: onEdit,

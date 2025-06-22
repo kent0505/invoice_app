@@ -9,6 +9,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
@@ -62,9 +63,29 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     );
   }
 
-  void onPromoPrinter() {}
+  void onPromoPrinter() async {
+    try {
+      if (!await launchUrl(
+        Uri.parse('https://pub.dev/'),
+      )) {
+        throw 'Could not launch url';
+      }
+    } catch (e) {
+      logger(e);
+    }
+  }
 
-  void onPdfService() {}
+  void onPdfService() async {
+    try {
+      if (!await launchUrl(
+        Uri.parse('https://www.google.com/'),
+      )) {
+        throw 'Could not launch url';
+      }
+    } catch (e) {
+      logger(e);
+    }
+  }
 
   Future<pw.Document> captureWidget() async {
     final pdf = pw.Document();
