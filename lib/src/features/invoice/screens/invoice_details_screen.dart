@@ -54,12 +54,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   void onPreview() {
     context.push(
       InvoicePreviewScreen.routePath,
-      extra: PreviewData(
-        invoice: invoice,
-        business: business,
-        clients: clients,
-        items: items,
-      ),
+      extra: getData(),
     );
   }
 
@@ -137,19 +132,31 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     );
   }
 
+  PreviewData getData() {
+    return PreviewData(
+      invoice: context.read<InvoiceBloc>().state.firstWhere((element) {
+        return element.id == invoice.id;
+      }),
+      business: context.read<BusinessBloc>().state.where((element) {
+        return element.id == invoice.businessID;
+      }).toList(),
+      clients: context.read<ClientBloc>().state.where((element) {
+        return element.id == invoice.clientID;
+      }).toList(),
+      items: context.read<ItemBloc>().state.where((element) {
+        return element.invoiceID == invoice.id;
+      }).toList(),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     invoice = widget.invoice;
-    business = context.read<BusinessBloc>().state.where((element) {
-      return element.id == invoice.businessID;
-    }).toList();
-    clients = context.read<ClientBloc>().state.where((element) {
-      return element.id == invoice.clientID;
-    }).toList();
-    items = context.read<ItemBloc>().state.where((element) {
-      return element.invoiceID == invoice.id;
-    }).toList();
+    final data = getData();
+    business = data.business;
+    clients = data.clients;
+    items = data.items;
     try {
       client = context
           .read<ClientBloc>()
