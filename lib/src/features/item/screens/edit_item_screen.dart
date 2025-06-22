@@ -6,14 +6,10 @@ import '../../../core/constants.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/dialog_widget.dart';
-import '../../../core/widgets/divider_widget.dart';
-import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
-import '../../../core/widgets/switch_button.dart';
-import '../../../core/widgets/title_text.dart';
 import '../bloc/item_bloc.dart';
 import '../models/item.dart';
-import '../widgets/item_field.dart';
+import '../widgets/item_body.dart';
 
 class EditItemScreen extends StatefulWidget {
   const EditItemScreen({super.key, required this.item});
@@ -125,108 +121,21 @@ class _EditItemScreenState extends State<EditItemScreen> {
           child: const SvgWidget(Assets.delete),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                ItemField(
-                  controller: titleController,
-                  hintText: 'Title',
-                  onChanged: checkActive,
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  height: 22,
-                  child: const Row(
-                    children: [
-                      TitleText(title: 'Unit  Price'),
-                      Spacer(),
-                      TitleText(title: 'Unit Type'),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ItemField(
-                          controller: priceController,
-                          hintText: 'Price',
-                          keyboardType: TextInputType.number,
-                          onChanged: checkActive,
-                        ),
-                      ),
-                      const DividerWidget(),
-                      Expanded(
-                        child: ItemField(
-                          controller: typeController,
-                          hintText: 'Optional',
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: TitleText(title: 'Discount'),
-                    ),
-                    SwitchButton(
-                      isActive: hasDiscount,
-                      onPressed: onHasDiscount,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                if (hasDiscount)
-                  ItemField(
-                    controller: discountPriceController,
-                    hintText: 'Discount Price',
-                    keyboardType: TextInputType.number,
-                    onChanged: checkActive,
-                  ),
-                const SizedBox(height: 26),
-                Row(
-                  children: [
-                    const Expanded(
-                      child: TitleText(title: 'Taxable?'),
-                    ),
-                    SwitchButton(
-                      isActive: isTaxable,
-                      onPressed: onTaxable,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 6),
-                if (isTaxable)
-                  ItemField(
-                    controller: taxController,
-                    hintText: 'Tax %',
-                    keyboardType: TextInputType.number,
-                    onChanged: checkActive,
-                  ),
-              ],
-            ),
-          ),
-          MainButtonWrapper(
-            children: [
-              MainButton(
-                title: 'Edit',
-                active: active,
-                onPressed: onEdit,
-              ),
-            ],
-          ),
-        ],
+      body: ItemBody(
+        select: false,
+        saveToItems: false,
+        hasDiscount: hasDiscount,
+        isTaxable: isTaxable,
+        active: active,
+        titleController: titleController,
+        priceController: priceController,
+        typeController: typeController,
+        discountPriceController: discountPriceController,
+        taxController: taxController,
+        onSaveToItems: () {},
+        onHasDiscount: onHasDiscount,
+        onTaxable: onTaxable,
+        onContinue: onEdit,
       ),
     );
   }

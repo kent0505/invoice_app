@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
-import '../../../core/widgets/main_button.dart';
 import '../bloc/business_bloc.dart';
 import '../models/business.dart';
-import '../widgets/business_field.dart';
-import '../widgets/business_logo.dart';
+import '../widgets/business_body.dart';
 import 'signature_screen.dart';
 
 class CreateBusinessScreen extends StatefulWidget {
@@ -30,7 +26,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
   final addressController = TextEditingController();
 
   XFile file = XFile('');
-  String? signature = '';
+  String signature = '';
   bool active = false;
 
   void checkActive(String _) {
@@ -69,7 +65,7 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
               email: emailController.text,
               address: addressController.text,
               imageLogo: file.path,
-              imageSignature: signature ?? '',
+              imageSignature: signature,
             ),
           ),
         );
@@ -90,78 +86,18 @@ class _CreateBusinessScreenState extends State<CreateBusinessScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const Appbar(title: 'Business'),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                BusinessLogo(
-                  file: file,
-                  onPressed: onAddLogo,
-                ),
-                const SizedBox(height: 32),
-                const Text(
-                  'Business Information',
-                  style: TextStyle(
-                    color: Color(0xff7D81A3),
-                    fontSize: 12,
-                    fontFamily: AppFonts.w400,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Column(
-                    children: [
-                      BusinessField(
-                        title: 'Name',
-                        controller: nameController,
-                        onChanged: checkActive,
-                      ),
-                      BusinessField(
-                        title: 'Phone',
-                        controller: phoneController,
-                        keyboardType: TextInputType.phone,
-                        onChanged: checkActive,
-                      ),
-                      BusinessField(
-                        title: 'E-Mail',
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      BusinessField(
-                        title: 'Address',
-                        controller: addressController,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                SvgPicture.string(signature ?? ''),
-              ],
-            ),
-          ),
-          MainButtonWrapper(
-            children: [
-              MainButton(
-                title: 'Create a signature',
-                outlined: true,
-                onPressed: onSignature,
-              ),
-              const SizedBox(height: 8),
-              MainButton(
-                title: 'Save',
-                active: active,
-                onPressed: onSave,
-              ),
-            ],
-          ),
-        ],
+      body: BusinessBody(
+        active: active,
+        file: file,
+        nameController: nameController,
+        phoneController: phoneController,
+        emailController: emailController,
+        addressController: addressController,
+        signature: signature,
+        onAddLogo: onAddLogo,
+        onSignature: onSignature,
+        onSave: onSave,
+        onChanged: checkActive,
       ),
     );
   }

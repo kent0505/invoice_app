@@ -7,13 +7,10 @@ import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/dialog_widget.dart';
-import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
-import '../../business/widgets/business_field.dart';
 import '../bloc/client_bloc.dart';
 import '../models/client.dart';
-import '../widgets/client_bill_to.dart';
-import '../widgets/client_import_contact.dart';
+import '../widgets/client_body.dart';
 
 class EditClientScreen extends StatefulWidget {
   const EditClientScreen({super.key, required this.client});
@@ -110,75 +107,16 @@ class _EditClientScreenState extends State<EditClientScreen> {
           child: const SvgWidget(Assets.delete),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                ClientBillTo(
-                  controller: billToController,
-                  onChanged: checkActive,
-                ),
-                const SizedBox(height: 20),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: Text(
-                    'Contacts',
-                    style: TextStyle(
-                      color: Color(0xff7D81A3),
-                      fontSize: 12,
-                      fontFamily: AppFonts.w400,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Column(
-                    children: [
-                      BusinessField(
-                        title: 'Name',
-                        controller: nameController,
-                        onChanged: checkActive,
-                      ),
-                      BusinessField(
-                        title: 'Phone',
-                        controller: phoneController,
-                        keyboardType: TextInputType.phone,
-                        onChanged: checkActive,
-                      ),
-                      BusinessField(
-                        title: 'E-Mail',
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                      BusinessField(
-                        title: 'Address',
-                        controller: addressController,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ClientImportContact(onPressed: onContact),
-              ],
-            ),
-          ),
-          MainButtonWrapper(
-            children: [
-              MainButton(
-                title: 'Edit',
-                active: active,
-                onPressed: onEdit,
-              ),
-            ],
-          ),
-        ],
+      body: ClientBody(
+        active: active,
+        billToController: billToController,
+        nameController: nameController,
+        phoneController: phoneController,
+        emailController: emailController,
+        addressController: addressController,
+        onContact: onContact,
+        onContinue: onEdit,
+        onChanged: checkActive,
       ),
     );
   }
