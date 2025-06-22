@@ -78,6 +78,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         invoice: Invoice(
           id: id,
           number: number,
+          template: 1,
           date: date,
           dueDate: dueDate,
           businessID: 0,
@@ -88,6 +89,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         business: business,
         clients: clients,
         items: items,
+        customize: false,
       ),
     );
   }
@@ -192,6 +194,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
               invoice: Invoice(
                 id: id,
                 number: number,
+                template: 1,
                 date: date,
                 dueDate: dueDate,
                 businessID: business.first.id,

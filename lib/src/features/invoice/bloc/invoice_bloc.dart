@@ -50,8 +50,10 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
     Emitter<InvoiceState> emit,
   ) async {
     await _repository.editInvoice(event.invoice);
-    await _repository.deletePhotos(event.invoice);
-    await _repository.addPhotos(event.photos);
+    if (event.photos.isNotEmpty) {
+      await _repository.deletePhotos(event.invoice);
+      await _repository.addPhotos(event.photos);
+    }
     add(GetInvoices());
   }
 

@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:screenshot/screenshot.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
@@ -15,17 +13,9 @@ class InvoiceTemplate1 extends StatelessWidget {
   const InvoiceTemplate1({
     super.key,
     required this.previewData,
-    required this.controller,
   });
 
   final PreviewData previewData;
-  final ScreenshotController controller;
-
-  static Future<Uint8List?> capture(
-    ScreenshotController controller,
-  ) async {
-    return await controller.capture();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,230 +51,221 @@ class InvoiceTemplate1 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
-    return FittedBox(
-      child: Screenshot(
-        controller: controller,
-        child: Container(
-          width: 500,
-          height: 500 * 1.414,
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-          child: Column(
+    return Container(
+      width: 500,
+      height: 500 * 1.414,
+      padding: const EdgeInsets.all(10),
+      color: Colors.white,
+      child: Column(
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    height: 80,
-                    child: previewData.business.isEmpty
+              SizedBox(
+                height: 80,
+                child: previewData.business.isEmpty
+                    ? const SizedBox()
+                    : previewData.business.first.imageLogo.isEmpty
                         ? const SizedBox()
-                        : previewData.business.first.imageLogo.isEmpty
-                            ? const SizedBox()
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.file(
-                                  File(previewData.business.first.imageLogo),
-                                  height: 80,
-                                  width: 80,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: ImageWidget.errorBuilder,
-                                  frameBuilder: ImageWidget.frameBuilder,
-                                ),
-                              ),
-                  ),
-                  const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        formatTimestamp(previewData.invoice.date),
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: AppFonts.w400,
-                        ),
-                      ),
-                      Text(
-                        'INVOICE # ${previewData.invoice.number}',
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontFamily: AppFonts.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (previewData.clients.isNotEmpty)
-                          _From(
-                            name: previewData.clients.first.name,
-                            phone: previewData.clients.first.phone,
-                            email: previewData.clients.first.email,
-                          ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        if (previewData.business.isNotEmpty)
-                          _From(
-                            name: previewData.business.first.name,
-                            phone: previewData.business.first.phone,
-                            email: previewData.business.first.email,
-                            isClient: false,
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Container(
-                height: 40,
-                color: Color(0xff8E8E93).withValues(alpha: 0.2),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _ItemRowName(title: 'Name'),
-                    ),
-                    const SizedBox(
-                      width: 80,
-                      child: _ItemRowName(title: 'QTY'),
-                    ),
-                    const SizedBox(
-                      width: 80,
-                      child: _ItemRowName(title: 'Price'),
-                    ),
-                    const SizedBox(
-                      width: 80,
-                      child: _ItemRowName(title: 'Amount'),
-                    ),
-                  ],
-                ),
-              ),
-              Column(
-                children: List.generate(
-                  uniqueItems.length,
-                  (index) {
-                    double amount = 0;
-                    for (Item item in previewData.items) {
-                      if (item.id == uniqueItems[index].id) {
-                        amount += double.tryParse(item.price) ?? 0;
-                      }
-                    }
-
-                    return Container(
-                      height: 32,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: Color(0xff8E8E93).withValues(alpha: 0.2),
-                          ),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _ItemRowData(
-                              data: uniqueItems[index].title,
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.file(
+                              File(previewData.business.first.imageLogo),
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: ImageWidget.errorBuilder,
+                              frameBuilder: ImageWidget.frameBuilder,
                             ),
                           ),
-                          const _Divider(),
-                          SizedBox(
-                            width: 80,
-                            child: _ItemRowData(
-                              data: previewData.items
-                                  .where((element) =>
-                                      element.id == uniqueItems[index].id)
-                                  .length
-                                  .toString(),
-                            ),
-                          ),
-                          const _Divider(),
-                          SizedBox(
-                            width: 80,
-                            child: _ItemRowData(
-                              data:
-                                  (double.tryParse(uniqueItems[index].price) ??
-                                          0)
-                                      .toStringAsFixed(2),
-                            ),
-                          ),
-                          const _Divider(),
-                          SizedBox(
-                            width: 80,
-                            child: _ItemRowData(
-                              data: amount.toStringAsFixed(2),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
               ),
               const Spacer(),
-              const SizedBox(height: 10),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (signature.isNotEmpty)
-                    Column(
-                      children: [
-                        const Text(
-                          'Signature:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
-                            fontFamily: AppFonts.w600,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        SvgPicture.string(
-                          signature,
-                          height: 40,
-                        ),
-                      ],
+                  Text(
+                    formatTimestamp(previewData.invoice.date),
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: AppFonts.w400,
                     ),
-                  const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _Amount(
-                        data: 'Subtotal: \$${subtotal.toStringAsFixed(2)}',
-                      ),
-                      _Amount(
-                        data:
-                            'Discount: \$${(subtotal - discount).toStringAsFixed(2)}',
-                      ),
-                      _Amount(
-                        data: 'Tax: \$${(tax).toStringAsFixed(2)}',
-                      ),
-                      _Amount(
-                        data: 'Total: \$${(discount + tax).toStringAsFixed(2)}',
-                        bold: true,
-                      ),
-                    ],
+                  ),
+                  Text(
+                    'INVOICE # ${previewData.invoice.number}',
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontFamily: AppFonts.w600,
+                    ),
                   ),
                 ],
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (previewData.clients.isNotEmpty)
+                      _From(
+                        name: previewData.clients.first.name,
+                        phone: previewData.clients.first.phone,
+                        email: previewData.clients.first.email,
+                      ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (previewData.business.isNotEmpty)
+                      _From(
+                        name: previewData.business.first.name,
+                        phone: previewData.business.first.phone,
+                        email: previewData.business.first.email,
+                        isClient: false,
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Container(
+            height: 40,
+            color: Color(0xff8E8E93).withValues(alpha: 0.2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _ItemRowName(title: 'Name'),
+                ),
+                const SizedBox(
+                  width: 80,
+                  child: _ItemRowName(title: 'QTY'),
+                ),
+                const SizedBox(
+                  width: 80,
+                  child: _ItemRowName(title: 'Price'),
+                ),
+                const SizedBox(
+                  width: 80,
+                  child: _ItemRowName(title: 'Amount'),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            children: List.generate(
+              uniqueItems.length,
+              (index) {
+                double amount = 0;
+                for (Item item in previewData.items) {
+                  if (item.id == uniqueItems[index].id) {
+                    amount += double.tryParse(item.price) ?? 0;
+                  }
+                }
+
+                return Container(
+                  height: 32,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        width: 1,
+                        color: Color(0xff8E8E93).withValues(alpha: 0.2),
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _ItemRowData(
+                          data: uniqueItems[index].title,
+                        ),
+                      ),
+                      const _Divider(),
+                      SizedBox(
+                        width: 80,
+                        child: _ItemRowData(
+                          data: previewData.items
+                              .where((element) =>
+                                  element.id == uniqueItems[index].id)
+                              .length
+                              .toString(),
+                        ),
+                      ),
+                      const _Divider(),
+                      SizedBox(
+                        width: 80,
+                        child: _ItemRowData(
+                          data: (double.tryParse(uniqueItems[index].price) ?? 0)
+                              .toStringAsFixed(2),
+                        ),
+                      ),
+                      const _Divider(),
+                      SizedBox(
+                        width: 80,
+                        child: _ItemRowData(
+                          data: amount.toStringAsFixed(2),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const Spacer(),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              if (signature.isNotEmpty)
+                Column(
+                  children: [
+                    const Text(
+                      'Signature:',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontFamily: AppFonts.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SvgPicture.string(
+                      signature,
+                      height: 40,
+                    ),
+                  ],
+                ),
+              const Spacer(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _Amount(
+                    data: 'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                  ),
+                  _Amount(
+                    data:
+                        'Discount: \$${(subtotal - discount).toStringAsFixed(2)}',
+                  ),
+                  _Amount(
+                    data: 'Tax: \$${(tax).toStringAsFixed(2)}',
+                  ),
+                  _Amount(
+                    data: 'Total: \$${(discount + tax).toStringAsFixed(2)}',
+                    bold: true,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

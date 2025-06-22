@@ -22,13 +22,13 @@ import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
+import '../widgets/invoice_template.dart';
 import '../widgets/photos_list.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../models/preview_data.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_pay.dart';
-import '../widgets/invoice_template1.dart';
 import 'edit_invoice_screen.dart';
 import 'invoice_preview_screen.dart';
 
@@ -85,7 +85,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
 
   Future<pw.Document> captureWidget() async {
     final pdf = pw.Document();
-    final bytes = await InvoiceTemplate1.capture(screenshotController);
+    final bytes = await InvoiceTemplate.capture(screenshotController);
     if (bytes != null) {
       final dir = await getTemporaryDirectory();
       file = File('${dir.path}/invoice.png');
@@ -190,7 +190,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                     Center(
                       child: SizedBox(
                         height: 200,
-                        child: InvoiceTemplate1(
+                        child: InvoiceTemplate(
                           previewData: PreviewData(
                             invoice: invoice,
                             business: business,

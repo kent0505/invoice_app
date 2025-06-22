@@ -75,6 +75,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
         invoice: Invoice(
           id: widget.invoice.id,
           number: widget.invoice.number,
+          template: 1,
           date: date,
           dueDate: dueDate,
           businessID: 0,
@@ -185,6 +186,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
             invoice: Invoice(
               id: widget.invoice.id,
               number: widget.invoice.number,
+              template: 1,
               date: date,
               dueDate: dueDate,
               businessID: business.first.id,

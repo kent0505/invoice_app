@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
+import '../../../core/utils.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/svg_widget.dart';
@@ -47,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
           // const SizedBox(height: 22),
           BlocBuilder<ProBloc, Pro>(
             builder: (context, state) {
-              return state.isPro
+              return state.isPro && isIOS()
                   ? Column(
                       children: [
                         Row(

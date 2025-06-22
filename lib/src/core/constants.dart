@@ -36,6 +36,11 @@ abstract final class Assets {
   static const settings = 'assets/settings.svg';
   static const share = 'assets/share.svg';
   static const star = 'assets/star.svg';
+  static const template1 = 'assets/template1.png';
+  static const template2 = 'assets/template2.png';
+  static const template3 = 'assets/template3.png';
+  static const template4 = 'assets/template4.png';
+  static const template5 = 'assets/template5.png';
   static const user = 'assets/user.svg';
 }
 

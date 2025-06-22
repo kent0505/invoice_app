@@ -9,10 +9,12 @@ class PreviewData {
     required this.business,
     required this.clients,
     required this.items,
+    this.customize = true,
   });
 
   final Invoice invoice;
   final List<Business> business;
   final List<Client> clients;
   final List<Item> items;
+  final bool customize;
 }
