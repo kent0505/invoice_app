@@ -5,14 +5,14 @@ import 'package:screenshot/screenshot.dart';
 import '../../../core/constants.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/button.dart';
-import '../models/invoice.dart';
+import '../models/preview_data.dart';
 import '../widgets/invoice_template1.dart';
 import 'invoice_customize_screen.dart';
 
 class InvoicePreviewScreen extends StatelessWidget {
-  const InvoicePreviewScreen({super.key, required this.invoice});
+  const InvoicePreviewScreen({super.key, required this.previewData});
 
-  final Invoice invoice;
+  final PreviewData previewData;
 
   static const routePath = '/InvoicePreviewScreen';
 
@@ -25,7 +25,7 @@ class InvoicePreviewScreen extends StatelessWidget {
           onPressed: () {
             context.push(
               InvoiceCustomizeScreen.routePath,
-              extra: invoice,
+              extra: previewData.invoice,
             );
           },
           child: const Text(
@@ -42,7 +42,7 @@ class InvoicePreviewScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           InvoiceTemplate1(
-            invoice: invoice,
+            previewData: previewData,
             controller: ScreenshotController(),
           ),
         ],

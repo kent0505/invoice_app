@@ -15,12 +15,15 @@ import '../../../core/utils.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
+import '../../business/bloc/business_bloc.dart';
+import '../../business/models/business.dart';
 import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../models/preview_data.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_pay.dart';
 import '../widgets/invoice_template1.dart';
@@ -41,13 +44,21 @@ class InvoiceDetailsScreen extends StatefulWidget {
 class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   final screenshotController = ScreenshotController();
   late Invoice invoice;
+  List<Business> business = [];
+  List<Client> clients = [];
+  List<Item> items = [];
   Client? client;
   File file = File('');
 
   void onPreview() {
     context.push(
       InvoicePreviewScreen.routePath,
-      extra: invoice,
+      extra: PreviewData(
+        invoice: invoice,
+        business: business,
+        clients: clients,
+        items: items,
+      ),
     );
   }
 
@@ -109,6 +120,15 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   void initState() {
     super.initState();
     invoice = widget.invoice;
+    business = context.read<BusinessBloc>().state.where((element) {
+      return element.id == invoice.businessID;
+    }).toList();
+    clients = context.read<ClientBloc>().state.where((element) {
+      return element.id == invoice.clientID;
+    }).toList();
+    items = context.read<ItemBloc>().state.where((element) {
+      return element.invoiceID == invoice.id;
+    }).toList();
     try {
       client = context
           .read<ClientBloc>()
@@ -138,7 +158,12 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                       child: SizedBox(
                         height: 200,
                         child: InvoiceTemplate1(
-                          invoice: widget.invoice,
+                          previewData: PreviewData(
+                            invoice: invoice,
+                            business: business,
+                            clients: clients,
+                            items: items,
+                          ),
                           controller: screenshotController,
                         ),
                       ),

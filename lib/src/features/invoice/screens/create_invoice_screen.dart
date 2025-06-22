@@ -18,8 +18,10 @@ import '../../pro/data/pro_repository.dart';
 import '../../pro/screens/pro_page.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../models/preview_data.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_body.dart';
+import 'invoice_preview_screen.dart';
 
 class CreateInvoiceScreen extends StatefulWidget {
   const CreateInvoiceScreen({super.key});
@@ -65,7 +67,25 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     );
   }
 
-  void onPreview() {}
+  void onPreview() {
+    context.push(
+      InvoicePreviewScreen.routePath,
+      extra: PreviewData(
+        invoice: Invoice(
+          id: id,
+          number: number,
+          date: date,
+          dueDate: dueDate,
+          businessID: 0,
+          clientID: 0,
+          imageSignature: signature,
+        ),
+        business: business,
+        clients: clients,
+        items: items,
+      ),
+    );
+  }
 
   void onDate() {
     DatePick.show(

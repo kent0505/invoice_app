@@ -2,29 +2,25 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/image_widget.dart';
-import '../../business/bloc/business_bloc.dart';
-import '../../business/models/business.dart';
-import '../../client/bloc/client_bloc.dart';
-import '../../client/models/client.dart';
-import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
-import '../models/invoice.dart';
+import '../models/preview_data.dart';
 
 class InvoiceTemplate1 extends StatelessWidget {
   const InvoiceTemplate1({
     super.key,
-    required this.invoice,
+    // required this.invoice,
+    required this.previewData,
     required this.controller,
   });
 
-  final Invoice invoice;
+  // final Invoice invoice;
+  final PreviewData previewData;
   final ScreenshotController controller;
 
   static Future<Uint8List?> capture(
@@ -35,19 +31,19 @@ class InvoiceTemplate1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final businesses = context.watch<BusinessBloc>().state;
-    Business? business = businesses.firstWhere(
-      (element) => element.id == invoice.businessID,
-    );
+    // final businesses = context.watch<BusinessBloc>().state;
+    // Business? business = businesses.firstWhere(
+    //   (element) => element.id == invoice.businessID,
+    // );
 
-    final clients = context.watch<ClientBloc>().state;
-    Client? client = clients.firstWhere(
-      (element) => element.id == invoice.clientID,
-    );
+    // final clients = context.watch<ClientBloc>().state;
+    // Client? client = clients.firstWhere(
+    //   (element) => element.id == invoice.clientID,
+    // );
 
-    final items = context.watch<ItemBloc>().state.where((element) {
-      return element.invoiceID == invoice.id;
-    }).toList();
+    // final items = context.watch<ItemBloc>().state.where((element) {
+    //   return element.invoiceID == invoice.id;
+    // }).toList();
 
     final Set<int> seenIds = {};
     List<Item> uniqueItems = [];
@@ -56,7 +52,7 @@ class InvoiceTemplate1 extends StatelessWidget {
     double discount = 0;
     double tax = 0;
 
-    for (final item in items) {
+    for (final item in previewData.items) {
       if (!seenIds.contains(item.id)) {
         seenIds.add(item.id);
         uniqueItems.add(item);
@@ -91,24 +87,26 @@ class InvoiceTemplate1 extends StatelessWidget {
                 children: [
                   SizedBox(
                     height: 80,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.file(
-                        File(business.imageLogo),
-                        height: 80,
-                        width: 80,
-                        fit: BoxFit.cover,
-                        errorBuilder: ImageWidget.errorBuilder,
-                        frameBuilder: ImageWidget.frameBuilder,
-                      ),
-                    ),
+                    child: previewData.business.isEmpty
+                        ? const SizedBox()
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.file(
+                              File(previewData.business.first.imageLogo),
+                              height: 80,
+                              width: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: ImageWidget.errorBuilder,
+                              frameBuilder: ImageWidget.frameBuilder,
+                            ),
+                          ),
                   ),
                   const Spacer(),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        formatTimestamp(invoice.date),
+                        formatTimestamp(previewData.invoice.date),
                         textAlign: TextAlign.end,
                         style: const TextStyle(
                           color: Colors.black,
@@ -117,7 +115,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'INVOICE # ${invoice.number}',
+                        'INVOICE # ${previewData.invoice.number}',
                         textAlign: TextAlign.end,
                         style: const TextStyle(
                           color: Colors.black,
@@ -136,11 +134,12 @@ class InvoiceTemplate1 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _From(
-                          name: client.name,
-                          phone: client.phone,
-                          email: client.email,
-                        ),
+                        if (previewData.clients.isNotEmpty)
+                          _From(
+                            name: previewData.clients.first.name,
+                            phone: previewData.clients.first.phone,
+                            email: previewData.clients.first.email,
+                          ),
                       ],
                     ),
                   ),
@@ -149,12 +148,13 @@ class InvoiceTemplate1 extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        _From(
-                          name: business.name,
-                          phone: business.phone,
-                          email: business.email,
-                          isClient: false,
-                        ),
+                        if (previewData.business.isNotEmpty)
+                          _From(
+                            name: previewData.business.first.name,
+                            phone: previewData.business.first.phone,
+                            email: previewData.business.first.email,
+                            isClient: false,
+                          ),
                       ],
                     ),
                   ),
@@ -189,7 +189,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                   uniqueItems.length,
                   (index) {
                     double amount = 0;
-                    for (Item item in items) {
+                    for (Item item in previewData.items) {
                       if (item.id == uniqueItems[index].id) {
                         amount += double.tryParse(item.price) ?? 0;
                       }
@@ -216,7 +216,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                           SizedBox(
                             width: 80,
                             child: _ItemRowData(
-                              data: items
+                              data: previewData.items
                                   .where((element) =>
                                       element.id == uniqueItems[index].id)
                                   .length
@@ -250,8 +250,9 @@ class InvoiceTemplate1 extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  if (invoice.imageSignature.isNotEmpty ||
-                      business.imageSignature.isNotEmpty)
+                  if (previewData.invoice.imageSignature.isNotEmpty ||
+                      previewData.business.isNotEmpty &&
+                          previewData.business.first.imageSignature.isNotEmpty)
                     Column(
                       children: [
                         const Text(
@@ -264,9 +265,9 @@ class InvoiceTemplate1 extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         SvgPicture.string(
-                          business.imageSignature.isEmpty
-                              ? invoice.imageSignature
-                              : business.imageSignature,
+                          previewData.business.first.imageSignature.isEmpty
+                              ? previewData.invoice.imageSignature
+                              : previewData.business.first.imageSignature,
                           height: 40,
                         ),
                       ],
