@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants.dart';
+import '../../../core/utils.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../invoice/bloc/invoice_bloc.dart';
 import '../../invoice/screens/create_invoice_screen.dart';
 import '../../invoice/widgets/invoice_tile.dart';
+import '../../pro/screens/pro_sheet.dart';
 import '../widgets/filter_tab.dart';
 import '../widgets/total_income.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.onboard});
+
+  final bool onboard;
 
   static const routePath = '/HomeScreen';
 
@@ -48,6 +53,23 @@ class _HomeScreenState extends State<HomeScreen> {
       CreateInvoiceScreen.routePath,
       extra: 'xyz',
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.onboard && isIOS()) {
+        Future.delayed(const Duration(seconds: 1), () {
+          if (mounted) {
+            ProSheet.show(
+              context,
+              identifier: Identifiers.paywall1,
+            );
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -89,9 +111,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: BlocBuilder<InvoiceBloc, InvoiceState>(
               builder: (context, state) {
                 if (state is InvoiceLoaded) {
+                  final invoices = state.invoices.reversed.toList();
                   final sorted = index == 1
-                      ? state.invoices.reversed.toList()
-                      : state.invoices.reversed
+                      ? invoices
+                      : invoices
                           .where(
                             (element) => index == 2
                                 ? element.paymentMethod.isEmpty

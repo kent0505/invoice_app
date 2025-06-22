@@ -82,9 +82,9 @@ class _ItemsScreenState extends State<ItemsScreen> {
                     ? const NoData()
                     : ListView.builder(
                         padding: const EdgeInsets.all(16),
-                        itemCount: items.length,
+                        itemCount: sorted.length,
                         itemBuilder: (context, index) {
-                          final item = items[index];
+                          final item = sorted[index];
 
                           return ItemTile(
                             item: item,

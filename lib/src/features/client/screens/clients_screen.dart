@@ -73,9 +73,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     ? const NoData()
                     : ListView.builder(
                         padding: const EdgeInsets.all(16),
-                        itemCount: clients.length,
+                        itemCount: sorted.length,
                         itemBuilder: (context, index) {
-                          final client = clients[index];
+                          final client = sorted[index];
 
                           return ClientTile(
                             client: client,

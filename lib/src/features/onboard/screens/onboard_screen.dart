@@ -26,7 +26,10 @@ class _OnboardScreenState extends State<OnboardScreen> {
   void onSkip() async {
     await context.read<OnboardRepository>().removeOnboard();
     if (mounted) {
-      context.go(HomeScreen.routePath);
+      context.go(
+        HomeScreen.routePath,
+        extra: true,
+      );
     }
   }
 
@@ -109,7 +112,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                               : index == 1
                                   ? 'Generate, edit, and send invoices from your phone.'
                                   : 'User-friendly interface with flexible settings.',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontFamily: AppFonts.w600,
@@ -122,7 +125,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                   ? 'Keep track of your history, monitor payments, and automate your workflow.'
                                   : 'Work easily — anywhere, anytime.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontFamily: AppFonts.w400,
@@ -311,7 +314,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                                 alignment: Alignment.centerLeft,
                                 width: 252,
                                 decoration: BoxDecoration(
-                                  color: Color(0xffF3F3F1),
+                                  color: const Color(0xffF3F3F1),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: ImageWidget(

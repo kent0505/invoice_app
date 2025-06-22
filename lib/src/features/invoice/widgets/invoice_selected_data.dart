@@ -7,10 +7,12 @@ class InvoiceSelectedData extends StatelessWidget {
   const InvoiceSelectedData({
     super.key,
     required this.title,
+    this.amount = 1,
     required this.onPressed,
   });
 
   final String title;
+  final int amount;
   final VoidCallback onPressed;
 
   @override
@@ -34,6 +36,16 @@ class InvoiceSelectedData extends StatelessWidget {
               ),
             ),
           ),
+          if (amount > 1)
+            Text(
+              'x$amount',
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+                fontFamily: AppFonts.w600,
+              ),
+            ),
+          const SizedBox(width: 16),
           Button(
             onPressed: onPressed,
             minSize: 40,

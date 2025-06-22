@@ -51,7 +51,7 @@ Future<XFile> pickImage() async {
 
 Future<List<XFile>> pickImages() async {
   try {
-    final image = await ImagePicker().pickMultiImage();
+    final image = await ImagePicker().pickMultiImage(limit: 6);
     return image;
   } catch (e) {
     logger(e);

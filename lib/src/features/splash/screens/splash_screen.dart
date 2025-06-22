@@ -38,7 +38,10 @@ class _SplashScreenState extends State<SplashScreen> {
           if (context.read<OnboardRepository>().isOnboard()) {
             context.go(OnboardScreen.routePath);
           } else {
-            context.go(HomeScreen.routePath);
+            context.go(
+              HomeScreen.routePath,
+              extra: false,
+            );
           }
         }
       },

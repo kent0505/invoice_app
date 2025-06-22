@@ -135,7 +135,6 @@ class InvoiceBody extends StatelessWidget {
                         title: items[index].title,
                         onPressed: () {
                           onRemoveItem(index);
-                          // removeItem(index);
                         },
                       );
                     },

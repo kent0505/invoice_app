@@ -88,7 +88,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     final bytes = await InvoiceTemplate.capture(screenshotController);
     if (bytes != null) {
       final dir = await getTemporaryDirectory();
-      file = File('${dir.path}/invoice.png');
+      file = File('${dir.path}/invoice_${invoice.number}.png');
       await file.writeAsBytes(bytes);
       pdf.addPage(
         pw.Page(
