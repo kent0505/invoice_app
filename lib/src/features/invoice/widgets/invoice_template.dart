@@ -2,14 +2,15 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:invoice_app/src/core/utils.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../../core/utils.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../models/preview_data.dart';
 import 'invoice_template1.dart';
 import 'invoice_template2.dart';
+import 'invoice_template3.dart';
 
 class InvoiceTemplate extends StatelessWidget {
   const InvoiceTemplate({
@@ -47,6 +48,18 @@ class InvoiceTemplate extends StatelessWidget {
               return switch (invoice?.template) {
                 1 => InvoiceTemplate1(previewData: previewData),
                 2 => InvoiceTemplate2(previewData: previewData),
+                3 => InvoiceTemplate3(
+                    previewData: previewData,
+                    color: const Color(0xff1455CD),
+                  ),
+                4 => InvoiceTemplate3(
+                    previewData: previewData,
+                    color: const Color(0xff004C08),
+                  ),
+                5 => InvoiceTemplate3(
+                    previewData: previewData,
+                    color: const Color(0xff4C0001),
+                  ),
                 _ => InvoiceTemplate1(previewData: previewData),
               };
             }
