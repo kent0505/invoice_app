@@ -68,6 +68,8 @@ class _ItemsScreenState extends State<ItemsScreen> {
                   return element.invoiceID == 0;
                 }).toList();
 
+                items = items.reversed.toList();
+
                 final sorted = searchController.text.isEmpty
                     ? items
                     : items.where((client) {

@@ -60,6 +60,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
           Expanded(
             child: BlocBuilder<ClientBloc, List<Client>>(
               builder: (context, clients) {
+                clients = clients.reversed.toList();
                 final sorted = searchController.text.isEmpty
                     ? clients
                     : clients.where((client) {

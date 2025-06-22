@@ -37,7 +37,7 @@ class BusinessScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   itemCount: businesses.length,
                   itemBuilder: (context, index) {
-                    final business = businesses[index];
+                    final business = businesses.reversed.toList()[index];
 
                     return BusinessTile(
                       business: business,

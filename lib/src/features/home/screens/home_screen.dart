@@ -82,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: BlocBuilder<InvoiceBloc, List<Invoice>>(
               builder: (context, invoices) {
                 final sorted = index == 1
-                    ? invoices
-                    : invoices
+                    ? invoices.reversed.toList()
+                    : invoices.reversed
                         .where(
                           (element) => index == 2
                               ? element.paymentMethod.isEmpty

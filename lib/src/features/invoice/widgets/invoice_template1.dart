@@ -50,7 +50,7 @@ class InvoiceTemplate1 extends StatelessWidget {
     }).toList();
 
     final Set<int> seenIds = {};
-    final List<Item> uniqueItems = [];
+    List<Item> uniqueItems = [];
 
     double subtotal = 0;
     double discount = 0;
@@ -72,6 +72,8 @@ class InvoiceTemplate1 extends StatelessWidget {
       final itemTax = discountPrice * (taxPercent / 100);
       tax += itemTax;
     }
+
+    uniqueItems = uniqueItems.take(10).toList();
 
     return FittedBox(
       child: Screenshot(
