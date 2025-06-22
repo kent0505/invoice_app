@@ -10,7 +10,7 @@ abstract interface class ProRepository {
   Future<void> saveShowCount(int value);
   int getAvailable();
   Future<void> saveAvailable(int value);
-  Future<bool> getPro();
+  // Future<bool> getPro();
   Future<Offering?> getOffering(String identifier);
 }
 
@@ -39,13 +39,13 @@ final class ProRepositoryImpl implements ProRepository {
     await _prefs.setInt(Keys.available, value);
   }
 
-  @override
-  Future<bool> getPro() async {
-    CustomerInfo customerInfo = await Purchases.getCustomerInfo().timeout(
-      const Duration(seconds: 3),
-    );
-    return customerInfo.entitlements.active.isNotEmpty;
-  }
+  // @override
+  // Future<bool> getPro() async {
+  //   CustomerInfo customerInfo = await Purchases.getCustomerInfo().timeout(
+  //     const Duration(seconds: 3),
+  //   );
+  //   return customerInfo.entitlements.active.isNotEmpty;
+  // }
 
   @override
   Future<Offering?> getOffering(String identifier) async {

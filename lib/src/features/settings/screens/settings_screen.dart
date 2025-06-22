@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
@@ -8,6 +9,8 @@ import '../../../core/widgets/svg_widget.dart';
 import '../../business/screens/business_screen.dart';
 import '../../client/screens/clients_screen.dart';
 import '../../item/screens/items_screen.dart';
+import '../../pro/bloc/pro_bloc.dart';
+import '../../pro/models/pro.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -42,33 +45,43 @@ class SettingsScreen extends StatelessWidget {
           //   ),
           // ),
           // const SizedBox(height: 22),
-          // const Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     SvgWidget(Assets.star),
-          //     SizedBox(width: 5),
-          //     Text(
-          //       'Plus Weekly',
-          //       textAlign: TextAlign.center,
-          //       style: TextStyle(
-          //         color: Colors.black,
-          //         fontSize: 10,
-          //         fontFamily: AppFonts.w600,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // const SizedBox(height: 4),
-          // Text(
-          //   'Renews on 12.05.2025',
-          //   textAlign: TextAlign.center,
-          //   style: const TextStyle(
-          //     color: Color(0xff748098),
-          //     fontSize: 8,
-          //     fontFamily: AppFonts.w400,
-          //   ),
-          // ),
-          // const SizedBox(height: 14),
+          BlocBuilder<ProBloc, Pro>(
+            builder: (context, state) {
+              return state.isPro
+                  ? Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SvgWidget(Assets.star),
+                            const SizedBox(width: 5),
+                            Text(
+                              state.title,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 10,
+                                fontFamily: AppFonts.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Renews on ${state.expireDate}',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: Color(0xff748098),
+                            fontSize: 8,
+                            fontFamily: AppFonts.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                      ],
+                    )
+                  : const SizedBox();
+            },
+          ),
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
