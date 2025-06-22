@@ -79,17 +79,19 @@ class InvoiceTemplate1 extends StatelessWidget {
                     height: 80,
                     child: previewData.business.isEmpty
                         ? const SizedBox()
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.file(
-                              File(previewData.business.first.imageLogo),
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: ImageWidget.errorBuilder,
-                              frameBuilder: ImageWidget.frameBuilder,
-                            ),
-                          ),
+                        : previewData.business.first.imageLogo.isEmpty
+                            ? const SizedBox()
+                            : ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.file(
+                                  File(previewData.business.first.imageLogo),
+                                  height: 80,
+                                  width: 80,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: ImageWidget.errorBuilder,
+                                  frameBuilder: ImageWidget.frameBuilder,
+                                ),
+                              ),
                   ),
                   const Spacer(),
                   Column(

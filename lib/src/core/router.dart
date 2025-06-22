@@ -11,12 +11,14 @@ import '../features/client/screens/create_client_screen.dart';
 import '../features/client/screens/edit_client_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/invoice/models/invoice.dart';
+import '../features/invoice/models/photo.dart';
 import '../features/invoice/models/preview_data.dart';
 import '../features/invoice/screens/create_invoice_screen.dart';
 import '../features/invoice/screens/edit_invoice_screen.dart';
 import '../features/invoice/screens/invoice_customize_screen.dart';
 import '../features/invoice/screens/invoice_details_screen.dart';
 import '../features/invoice/screens/invoice_preview_screen.dart';
+import '../features/invoice/screens/photo_screen.dart';
 import '../features/item/models/item.dart';
 import '../features/item/screens/create_item_screen.dart';
 import '../features/item/screens/edit_item_screen.dart';
@@ -59,7 +61,9 @@ final routerConfig = GoRouter(
     // invoice
     GoRoute(
       path: CreateInvoiceScreen.routePath,
-      builder: (context, state) => const CreateInvoiceScreen(),
+      builder: (context, state) => CreateInvoiceScreen(
+        isEstimate: state.extra as String,
+      ),
     ),
     GoRoute(
       path: InvoiceDetailsScreen.routePath,
@@ -83,6 +87,12 @@ final routerConfig = GoRouter(
       path: EditInvoiceScreen.routePath,
       builder: (context, state) => EditInvoiceScreen(
         invoice: state.extra as Invoice,
+      ),
+    ),
+    GoRoute(
+      path: PhotoScreen.routePath,
+      builder: (context, state) => PhotoScreen(
+        photo: state.extra as Photo,
       ),
     ),
 

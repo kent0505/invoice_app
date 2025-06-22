@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/no_data.dart';
 import '../../invoice/bloc/invoice_bloc.dart';
-import '../../invoice/models/invoice.dart';
 import '../../invoice/screens/create_invoice_screen.dart';
 import '../../invoice/widgets/invoice_tile.dart';
 import '../widgets/filter_tab.dart';
@@ -38,10 +37,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onCreate() {
-    context.push(CreateInvoiceScreen.routePath);
+    context.push(
+      CreateInvoiceScreen.routePath,
+      extra: '',
+    );
   }
 
-  void onEstimates() {}
+  void onEstimates() {
+    context.push(
+      CreateInvoiceScreen.routePath,
+      extra: 'xyz',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,31 +86,35 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: BlocBuilder<InvoiceBloc, List<Invoice>>(
-              builder: (context, invoices) {
-                final sorted = index == 1
-                    ? invoices.reversed.toList()
-                    : invoices.reversed
-                        .where(
-                          (element) => index == 2
-                              ? element.paymentMethod.isEmpty
-                              : element.paymentMethod.isNotEmpty,
-                        )
-                        .toList();
+            child: BlocBuilder<InvoiceBloc, InvoiceState>(
+              builder: (context, state) {
+                if (state is InvoiceLoaded) {
+                  final sorted = index == 1
+                      ? state.invoices.reversed.toList()
+                      : state.invoices.reversed
+                          .where(
+                            (element) => index == 2
+                                ? element.paymentMethod.isEmpty
+                                : element.paymentMethod.isNotEmpty,
+                          )
+                          .toList();
 
-                return sorted.isEmpty
-                    ? const NoData()
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        itemCount: sorted.length,
-                        itemBuilder: (context, index) {
-                          return InvoiceTile(
-                            invoice: sorted[index],
-                            circleColor:
-                                invoiceColors[index % invoiceColors.length],
-                          );
-                        },
-                      );
+                  return sorted.isEmpty
+                      ? const NoData()
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          itemCount: sorted.length,
+                          itemBuilder: (context, index) {
+                            return InvoiceTile(
+                              invoice: sorted[index],
+                              circleColor:
+                                  invoiceColors[index % invoiceColors.length],
+                            );
+                          },
+                        );
+                }
+
+                return const SizedBox();
               },
             ),
           ),

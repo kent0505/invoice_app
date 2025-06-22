@@ -11,6 +11,7 @@ class Invoice {
     this.paymentDate = 0,
     this.paymentMethod = '',
     required this.imageSignature,
+    required this.isEstimate,
   });
 
   final int id;
@@ -22,6 +23,7 @@ class Invoice {
   int paymentDate;
   String paymentMethod;
   String imageSignature;
+  String isEstimate;
 
   Map<String, dynamic> toMap() {
     return {
@@ -34,6 +36,7 @@ class Invoice {
       'paymentDate': paymentDate,
       'paymentMethod': paymentMethod,
       'imageSignature': imageSignature,
+      'isEstimate': isEstimate,
     };
   }
 
@@ -48,6 +51,7 @@ class Invoice {
       paymentDate: map['paymentDate'],
       paymentMethod: map['paymentMethod'],
       imageSignature: map['imageSignature'],
+      isEstimate: map['isEstimate'],
     );
   }
 
@@ -61,7 +65,8 @@ class Invoice {
       clientID INTEGER,
       paymentDate INTEGER,
       paymentMethod TEXT,
-      imageSignature TEXT
+      imageSignature TEXT,
+      isEstimate TEXT
     )
     ''';
 }

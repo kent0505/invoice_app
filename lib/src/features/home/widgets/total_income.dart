@@ -41,39 +41,43 @@ class TotalIncome extends StatelessWidget {
                     fontSize: 14,
                   ),
                 ),
-                BlocBuilder<InvoiceBloc, List<Invoice>>(
-                  builder: (context, invoices) {
-                    final sorted = invoices.where((element) {
-                      return element.paymentMethod.isNotEmpty;
-                    }).toList();
+                BlocBuilder<InvoiceBloc, InvoiceState>(
+                  builder: (context, state) {
+                    if (state is InvoiceLoaded) {
+                      final sorted = state.invoices.where((element) {
+                        return element.paymentMethod.isNotEmpty;
+                      }).toList();
 
-                    return BlocBuilder<ItemBloc, List<Item>>(
-                      builder: (context, items) {
-                        double amount = 0;
-                        for (Invoice invoice in sorted) {
-                          for (Item item in items) {
-                            if (item.invoiceID == invoice.id) {
-                              final basePrice =
-                                  double.tryParse(item.discountPrice) ?? 0;
-                              final taxRate = double.tryParse(item.tax) ?? 0;
-                              final priceWithTax =
-                                  basePrice + (basePrice * taxRate / 100);
-                              amount += priceWithTax;
+                      return BlocBuilder<ItemBloc, List<Item>>(
+                        builder: (context, items) {
+                          double amount = 0;
+                          for (Invoice invoice in sorted) {
+                            for (Item item in items) {
+                              if (item.invoiceID == invoice.id) {
+                                final basePrice =
+                                    double.tryParse(item.discountPrice) ?? 0;
+                                final taxRate = double.tryParse(item.tax) ?? 0;
+                                final priceWithTax =
+                                    basePrice + (basePrice * taxRate / 100);
+                                amount += priceWithTax;
+                              }
                             }
                           }
-                        }
 
-                        return Text(
-                          '\$${amount.toStringAsFixed(2)}',
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 40,
-                            fontFamily: AppFonts.w800,
-                          ),
-                        );
-                      },
-                    );
+                          return Text(
+                            '\$${amount.toStringAsFixed(2)}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 40,
+                              fontFamily: AppFonts.w800,
+                            ),
+                          );
+                        },
+                      );
+                    }
+
+                    return const SizedBox();
                   },
                 ),
               ],

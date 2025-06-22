@@ -55,4 +55,5 @@ abstract final class Tables {
   static const business = 'business';
   static const clients = 'clients';
   static const items = 'items';
+  static const photos = 'photos';
 }

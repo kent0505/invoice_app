@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants.dart';
@@ -9,6 +10,9 @@ import '../../../core/widgets/title_text.dart';
 import '../../business/models/business.dart';
 import '../../client/models/client.dart';
 import '../../item/models/item.dart';
+import '../bloc/invoice_bloc.dart';
+import 'photos_list.dart';
+import '../models/photo.dart';
 import 'invoice_dates.dart';
 import 'invoice_select_data.dart';
 import 'invoice_selected_data.dart';
@@ -22,6 +26,8 @@ class InvoiceBody extends StatelessWidget {
     required this.business,
     required this.clients,
     required this.items,
+    required this.photos,
+    required this.isEstimate,
     required this.signature,
     required this.hasSignature,
     required this.active,
@@ -33,6 +39,7 @@ class InvoiceBody extends StatelessWidget {
     required this.onDate,
     required this.onDueDate,
     required this.onCreate,
+    required this.onAddPhotos,
     required this.onRemoveItem,
   });
 
@@ -42,6 +49,8 @@ class InvoiceBody extends StatelessWidget {
   final List<Business> business;
   final List<Client> clients;
   final List<Item> items;
+  final List<Photo> photos;
+  final String isEstimate;
   final String signature;
   final bool hasSignature;
   final bool active;
@@ -53,6 +62,7 @@ class InvoiceBody extends StatelessWidget {
   final VoidCallback onDate;
   final VoidCallback onDueDate;
   final VoidCallback onCreate;
+  final VoidCallback onAddPhotos;
   final void Function(int) onRemoveItem;
 
   @override
@@ -194,9 +204,21 @@ class InvoiceBody extends StatelessWidget {
                   onPressed: onAddSignature,
                 ),
               ],
-
-              // const SizedBox(height: 16),
-              // TitleText(title: 'Photos'),
+              if (isEstimate.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                TitleText(title: 'Photos'),
+                const SizedBox(height: 6),
+                InvoiceSelectData(
+                  title: 'Add Photo',
+                  onPressed: onAddPhotos,
+                ),
+                const SizedBox(height: 16),
+                BlocBuilder<InvoiceBloc, InvoiceState>(
+                  builder: (context, state) {
+                    return PhotosList(photos: photos);
+                  },
+                ),
+              ],
             ],
           ),
         ),

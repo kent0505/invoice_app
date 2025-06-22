@@ -16,6 +16,7 @@ import '../../item/models/item.dart';
 import '../../item/screens/items_screen.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../models/photo.dart';
 import '../models/preview_data.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_body.dart';
@@ -38,6 +39,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   List<Business> business = [];
   List<Client> clients = [];
   List<Item> items = [];
+  List<Photo> photos = [];
   bool active = true;
   bool hasSignature = false;
   String signature = '';
@@ -78,6 +80,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
           businessID: 0,
           clientID: 0,
           imageSignature: hasSignature ? signature : '',
+          isEstimate: widget.invoice.isEstimate,
         ),
         business: business,
         clients: clients,
@@ -162,6 +165,20 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     checkActive();
   }
 
+  void onAddPhotos() async {
+    final images = await pickImages();
+    if (images.isNotEmpty) {
+      photos = [];
+      for (final image in images) {
+        photos.add(Photo(
+          id: widget.invoice.id,
+          path: image.path,
+        ));
+      }
+      setState(() {});
+    }
+  }
+
   void onEdit() {
     context.read<InvoiceBloc>().add(
           EditInvoice(
@@ -175,6 +192,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               paymentDate: widget.invoice.paymentDate,
               paymentMethod: widget.invoice.paymentMethod,
               imageSignature: signature,
+              isEstimate: widget.invoice.isEstimate,
             ),
           ),
         );
@@ -208,6 +226,14 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     items = context.read<ItemBloc>().state.where((element) {
       return element.invoiceID == widget.invoice.id;
     }).toList();
+
+    final state = context.read<InvoiceBloc>().state;
+    if (state is InvoiceLoaded) {
+      photos = state.photos.where((element) {
+        return element.id == widget.invoice.id;
+      }).toList();
+    }
+
     checkActive();
   }
 
@@ -215,7 +241,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: InvoiceAppbar(
-        title: 'Edit invoice',
+        title: widget.invoice.isEstimate.isEmpty
+            ? 'Edit invoice'
+            : 'Edit estimate',
         onPreview: onPreview,
       ),
       body: InvoiceBody(
@@ -225,6 +253,8 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
         business: business,
         clients: clients,
         items: items,
+        photos: photos,
+        isEstimate: widget.invoice.isEstimate,
         signature: signature,
         hasSignature: hasSignature,
         active: active,
@@ -236,6 +266,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
         onDate: onDate,
         onDueDate: onDueDate,
         onCreate: onEdit,
+        onAddPhotos: onAddPhotos,
         onRemoveItem: removeItem,
       ),
     );

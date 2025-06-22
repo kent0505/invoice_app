@@ -3,15 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/invoice_repository.dart';
 import '../models/invoice.dart';
+import '../models/photo.dart';
 
 part 'invoice_event.dart';
+part 'invoice_state.dart';
 
-class InvoiceBloc extends Bloc<InvoiceEvent, List<Invoice>> {
+class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
   final InvoiceRepository _repository;
 
   InvoiceBloc({required InvoiceRepository repository})
       : _repository = repository,
-        super([]) {
+        super(InvoiceInitial()) {
     on<InvoiceEvent>(
       (event, emit) => switch (event) {
         GetInvoices() => _getInvoices(event, emit),
@@ -24,33 +26,42 @@ class InvoiceBloc extends Bloc<InvoiceEvent, List<Invoice>> {
 
   void _getInvoices(
     GetInvoices event,
-    Emitter<List<Invoice>> emit,
+    Emitter<InvoiceState> emit,
   ) async {
     final invoices = await _repository.getInvoices();
-    emit(invoices);
+    final photos = await _repository.getPhotos();
+    emit(InvoiceLoaded(
+      invoices: invoices,
+      photos: photos,
+    ));
   }
 
   void _addInvoice(
     AddInvoice event,
-    Emitter<List<Invoice>> emit,
+    Emitter<InvoiceState> emit,
   ) async {
     await _repository.addInvoice(event.invoice);
+    await _repository.addPhotos(event.photos);
     add(GetInvoices());
   }
 
   void _editInvoice(
     EditInvoice event,
-    Emitter<List<Invoice>> emit,
+    Emitter<InvoiceState> emit,
   ) async {
     await _repository.editInvoice(event.invoice);
+    await _repository.deletePhotos(event.invoice);
+    await _repository.addPhotos(event.photos);
     add(GetInvoices());
   }
 
   void _deleteInvoice(
     DeleteInvoice event,
-    Emitter<List<Invoice>> emit,
+    Emitter<InvoiceState> emit,
   ) async {
     await _repository.deleteInvoice(event.invoice);
+    await _repository.deleteItems(event.invoice);
+    await _repository.deletePhotos(event.invoice);
     add(GetInvoices());
   }
 }

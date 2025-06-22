@@ -49,6 +49,16 @@ Future<XFile> pickImage() async {
   }
 }
 
+Future<List<XFile>> pickImages() async {
+  try {
+    final image = await ImagePicker().pickMultiImage();
+    return image;
+  } catch (e) {
+    logger(e);
+    return [];
+  }
+}
+
 Future<Client> getContact(BuildContext context) async {
   final isGranted = await FlutterContacts.requestPermission(readonly: true);
   if (isGranted) {

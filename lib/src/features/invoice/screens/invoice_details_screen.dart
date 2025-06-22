@@ -22,6 +22,7 @@ import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
+import '../widgets/photos_list.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../models/preview_data.dart';
@@ -133,10 +134,14 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   }
 
   PreviewData getData() {
+    final state = context.read<InvoiceBloc>().state;
+
     return PreviewData(
-      invoice: context.read<InvoiceBloc>().state.firstWhere((element) {
-        return element.id == invoice.id;
-      }),
+      invoice: state is InvoiceLoaded
+          ? state.invoices.firstWhere((element) {
+              return element.id == invoice.id;
+            })
+          : invoice,
       business: context.read<BusinessBloc>().state.where((element) {
         return element.id == invoice.businessID;
       }).toList(),
@@ -212,7 +217,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          BlocBuilder<InvoiceBloc, List<Invoice>>(
+                          BlocBuilder<InvoiceBloc, InvoiceState>(
                             builder: (context, _) {
                               return Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -298,7 +303,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 ),
                 const SizedBox(height: 20),
                 InvoicePay(invoice: invoice),
-                BlocBuilder<InvoiceBloc, List<Invoice>>(
+                BlocBuilder<InvoiceBloc, InvoiceState>(
                   builder: (context, state) {
                     return invoice.paymentDate == 0
                         ? const SizedBox()
@@ -324,6 +329,23 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                   data: formatInvoiceNumber(invoice.number),
                 ),
                 const SizedBox(height: 30),
+                BlocBuilder<InvoiceBloc, InvoiceState>(
+                  builder: (context, state) {
+                    if (state is InvoiceLoaded &&
+                        invoice.isEstimate.isNotEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: PhotosList(
+                          photos: state.photos.where((element) {
+                            return element.id == invoice.id;
+                          }).toList(),
+                        ),
+                      );
+                    }
+
+                    return const SizedBox();
+                  },
+                ),
                 _OtherApp(
                   title: 'Promo Printer',
                   onPressed: onPromoPrinter,

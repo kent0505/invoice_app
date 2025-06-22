@@ -18,13 +18,16 @@ import '../../pro/data/pro_repository.dart';
 import '../../pro/screens/pro_page.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
+import '../models/photo.dart';
 import '../models/preview_data.dart';
 import '../widgets/invoice_appbar.dart';
 import '../widgets/invoice_body.dart';
 import 'invoice_preview_screen.dart';
 
 class CreateInvoiceScreen extends StatefulWidget {
-  const CreateInvoiceScreen({super.key});
+  const CreateInvoiceScreen({super.key, required this.isEstimate});
+
+  final String isEstimate;
 
   static const routePath = '/CreateInvoiceScreen';
 
@@ -40,6 +43,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   List<Business> business = [];
   List<Client> clients = [];
   List<Item> items = [];
+  List<Photo> photos = [];
   bool active = false;
   bool hasSignature = false;
   String signature = '';
@@ -79,6 +83,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
           businessID: 0,
           clientID: 0,
           imageSignature: hasSignature ? signature : '',
+          isEstimate: widget.isEstimate,
         ),
         business: business,
         clients: clients,
@@ -163,6 +168,20 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     checkActive();
   }
 
+  void onAddPhotos() async {
+    final images = await pickImages();
+    if (images.isNotEmpty) {
+      photos = [];
+      for (final image in images) {
+        photos.add(Photo(
+          id: id,
+          path: image.path,
+        ));
+      }
+      setState(() {});
+    }
+  }
+
   void onCreate() {
     final isPro = context.read<ProBloc>().state.isPro;
     final available = context.read<ProRepository>().getAvailable();
@@ -178,7 +197,9 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
                 businessID: business.first.id,
                 clientID: clients.first.id,
                 imageSignature: signature,
+                isEstimate: widget.isEstimate,
               ),
+              photos: photos,
             ),
           );
       context.read<ItemBloc>().add(AddItem(items: items));
@@ -196,14 +217,17 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     super.initState();
     id = getTimestamp();
     date = id;
-    number = context.read<InvoiceBloc>().state.length + 1;
+    final state = context.read<InvoiceBloc>().state;
+    if (state is InvoiceLoaded) {
+      number = state.invoices.length + 1;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: InvoiceAppbar(
-        title: 'New invoice',
+        title: widget.isEstimate.isEmpty ? 'New invoice' : 'New estimate',
         onPreview: onPreview,
       ),
       body: InvoiceBody(
@@ -213,6 +237,8 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         business: business,
         clients: clients,
         items: items,
+        photos: photos,
+        isEstimate: widget.isEstimate,
         signature: signature,
         hasSignature: hasSignature,
         active: active,
@@ -224,6 +250,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         onDate: onDate,
         onDueDate: onDueDate,
         onCreate: onCreate,
+        onAddPhotos: onAddPhotos,
         onRemoveItem: removeItem,
       ),
     );

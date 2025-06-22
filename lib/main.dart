@@ -17,6 +17,7 @@ import 'src/features/client/models/client.dart';
 import 'src/features/invoice/bloc/invoice_bloc.dart';
 import 'src/features/invoice/data/invoice_repository.dart';
 import 'src/features/invoice/models/invoice.dart';
+import 'src/features/invoice/models/photo.dart';
 import 'src/features/item/bloc/item_bloc.dart';
 import 'src/features/item/data/item_repository.dart';
 import 'src/features/item/models/item.dart';
@@ -46,6 +47,7 @@ void main() async {
     version: 1,
     onCreate: (db, version) async {
       await db.execute(Invoice.sql);
+      await db.execute(Photo.sql);
       await db.execute(Business.sql);
       await db.execute(Client.sql);
       await db.execute(Item.sql);
