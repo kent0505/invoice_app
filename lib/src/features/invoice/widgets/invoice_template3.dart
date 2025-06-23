@@ -46,7 +46,7 @@ class InvoiceTemplate3 extends StatelessWidget {
 
     final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
 
-    uniqueItems = uniqueItems.take(isEstimate ? 6 : 10).toList();
+    uniqueItems = uniqueItems.take(isEstimate ? 7 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
@@ -183,6 +183,23 @@ class InvoiceTemplate3 extends StatelessWidget {
                 ],
               ),
             ],
+          ),
+          Spacer(),
+          SizedBox(
+            // width: 150,
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: List.generate(previewData.photos.length, (index) {
+                return Image.file(
+                  File(previewData.photos[index].path),
+                  frameBuilder: ImageWidget.frameBuilder,
+                  errorBuilder: ImageWidget.errorBuilder,
+                  width: 76,
+                  height: 76,
+                  fit: BoxFit.cover,
+                );
+              }),
+            ),
           ),
         ],
       ),

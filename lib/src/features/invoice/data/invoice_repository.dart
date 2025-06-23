@@ -103,7 +103,13 @@ final class InvoiceRepositoryImpl implements InvoiceRepository {
 
   @override
   Future<void> deletePhotos(Invoice invoice) async {
-    try {} catch (e) {
+    try {
+      await _db.delete(
+        Tables.photos,
+        where: 'id = ?',
+        whereArgs: [invoice.id],
+      );
+    } catch (e) {
       logger(e);
     }
   }

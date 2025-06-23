@@ -33,7 +33,7 @@ void main() async {
   ]);
 
   final prefs = await SharedPreferences.getInstance();
-  // await prefs.clear();
+  await prefs.clear();
 
   await Purchases.configure(
     PurchasesConfiguration('appl_XOzrSgcIeAVfozHHQbvIJjGyatM'),

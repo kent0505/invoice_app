@@ -22,6 +22,7 @@ import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
+import '../models/photo.dart';
 import '../widgets/invoice_template.dart';
 import '../widgets/photos_list.dart';
 import '../bloc/invoice_bloc.dart';
@@ -49,6 +50,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   List<Business> business = [];
   List<Client> clients = [];
   List<Item> items = [];
+  List<Photo> photos = [];
   Client? client;
   File file = File('');
 
@@ -88,8 +90,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
     final bytes = await InvoiceTemplate.capture(screenshotController);
     if (bytes != null) {
       final dir = await getTemporaryDirectory();
-      file = File('${dir.path}/invoice_${invoice.number}.png');
-      await file.writeAsBytes(bytes);
+      final name = invoice.isEstimate.isEmpty ? 'invoice' : 'estimate';
+      // file = File('${dir.path}/${name}_${invoice.number}.png');
+      // await file.writeAsBytes(bytes);
       pdf.addPage(
         pw.Page(
           margin: pw.EdgeInsets.zero,
@@ -104,6 +107,8 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
           },
         ),
       );
+      file = File('${dir.path}/${name}_${invoice.number}.pdf');
+      await file.writeAsBytes(await pdf.save());
     }
     return pdf;
   }
@@ -151,6 +156,13 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
       items: context.read<ItemBloc>().state.where((element) {
         return element.invoiceID == invoice.id;
       }).toList(),
+      photos: state is InvoiceLoaded
+          ? state.photos.where(
+              (element) {
+                return element.id == invoice.id;
+              },
+            ).toList()
+          : [],
     );
   }
 
@@ -196,6 +208,7 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                             business: business,
                             clients: clients,
                             items: items,
+                            photos: photos,
                           ),
                           controller: screenshotController,
                         ),
@@ -325,7 +338,8 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                 ),
                 const _Divider(),
                 _Data(
-                  title: 'Invoice #',
+                  title:
+                      invoice.isEstimate.isEmpty ? 'Invoice #' : 'Estimate #',
                   data: formatInvoiceNumber(invoice.number),
                 ),
                 const SizedBox(height: 30),
@@ -377,7 +391,9 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
               ),
               const SizedBox(height: 22),
               MainButton(
-                title: 'Share Invoice',
+                title: invoice.isEstimate.isEmpty
+                    ? 'Share Invoice'
+                    : 'Share Estimate',
                 onPressed: onShare,
               ),
             ],

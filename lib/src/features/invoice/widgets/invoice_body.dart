@@ -63,7 +63,7 @@ class InvoiceBody extends StatelessWidget {
   final VoidCallback onDueDate;
   final VoidCallback onCreate;
   final VoidCallback onAddPhotos;
-  final void Function(int) onRemoveItem;
+  final void Function(Item) onRemoveItem;
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +127,36 @@ class InvoiceBody extends StatelessWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Column(
-                  children: List.generate(
-                    items.length,
-                    (index) {
-                      return InvoiceSelectedData(
-                        title: items[index].title,
-                        onPressed: () {
-                          onRemoveItem(index);
-                        },
-                      );
-                    },
-                  ),
-                ),
+                child: Builder(builder: (context) {
+                  final uniqueInvoiceIDs = <int>{};
+                  final uniqueItems = <Item>[];
+
+                  for (final item in items) {
+                    if (uniqueInvoiceIDs.add(item.id)) {
+                      uniqueItems.add(item);
+                    }
+                  }
+
+                  return Column(
+                    children: List.generate(
+                      uniqueItems.length,
+                      (index) {
+                        return InvoiceSelectedData(
+                          title: uniqueItems[index].title,
+                          amount: items.where((element) {
+                            return element.id == uniqueItems[index].id;
+                          }).length,
+                          onPressed: () {
+                            onRemoveItem(uniqueItems[index]);
+                          },
+                        );
+                      },
+                    ),
+                  );
+                }),
               ),
               const SizedBox(height: 6),
+              // if (items.map((e) => e.id).toSet().length < 10)
               InvoiceSelectData(
                 title: items.isEmpty ? 'Add Item' : 'Add another Item',
                 onPressed: onSelectItems,

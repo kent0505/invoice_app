@@ -86,6 +86,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
         business: business,
         clients: clients,
         items: items,
+        photos: photos,
       ),
     );
   }
@@ -161,8 +162,8 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     });
   }
 
-  void removeItem(int index) {
-    items.removeAt(index);
+  void removeItem(Item item) {
+    items.remove(item);
     checkActive();
   }
 
@@ -196,9 +197,11 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               imageSignature: hasSignature ? signature : '',
               isEstimate: widget.invoice.isEstimate,
             ),
+            photos: photos,
           ),
         );
-    context.read<ItemBloc>().add(AddItem(items: items));
+    context.read<ItemBloc>().add(AddItems(id: widget.invoice.id, items: items));
+
     context.pop();
   }
 

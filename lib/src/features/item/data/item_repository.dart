@@ -9,12 +9,11 @@ abstract interface class ItemRepository {
 
   Future<List<Item>> getInvoiceItems(int invoiceID);
   Future<List<Item>> getItems();
-  Future<void> addItem(
-    Item? item, {
-    List<Item> items,
-  });
+  Future<void> addItem(Item item);
+  Future<void> addItems(List<Item> items);
   Future<void> editItem(Item item);
   Future<void> deleteItem(Item item);
+  Future<void> deleteItems(int id);
 }
 
 final class ItemRepositoryImpl implements ItemRepository {
@@ -49,23 +48,24 @@ final class ItemRepositoryImpl implements ItemRepository {
   }
 
   @override
-  Future<void> addItem(
-    Item? item, {
-    List<Item> items = const [],
-  }) async {
+  Future<void> addItem(Item item) async {
     try {
-      if (items.isNotEmpty) {
-        await _db.delete(
-          Tables.items,
-          where: 'invoiceID = ?',
-          whereArgs: [items.first.invoiceID],
-        );
-      }
-      final data = items.isEmpty ? [item!] : items;
-      for (final i in data) {
+      await _db.insert(
+        Tables.items,
+        item.toMap(),
+      );
+    } catch (e) {
+      logger(e);
+    }
+  }
+
+  @override
+  Future<void> addItems(List<Item> items) async {
+    try {
+      for (final item in items) {
         await _db.insert(
           Tables.items,
-          i.toMap(),
+          item.toMap(),
         );
       }
     } catch (e) {
@@ -94,6 +94,19 @@ final class ItemRepositoryImpl implements ItemRepository {
         Tables.items,
         where: 'id = ?',
         whereArgs: [item.id],
+      );
+    } catch (e) {
+      logger(e);
+    }
+  }
+
+  @override
+  Future<void> deleteItems(int id) async {
+    try {
+      await _db.delete(
+        Tables.items,
+        where: 'invoiceID = ?',
+        whereArgs: [id],
       );
     } catch (e) {
       logger(e);

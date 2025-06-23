@@ -89,6 +89,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
         business: business,
         clients: clients,
         items: items,
+        photos: photos,
         customize: false,
       ),
     );
@@ -165,8 +166,8 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     });
   }
 
-  void removeItem(int index) {
-    items.removeAt(index);
+  void removeItem(Item item) {
+    items.remove(item);
     checkActive();
   }
 
@@ -205,7 +206,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
               photos: photos,
             ),
           );
-      context.read<ItemBloc>().add(AddItem(items: items));
+      context.read<ItemBloc>().add(AddItems(id: id, items: items));
       context.pop();
     } else {
       context.push(

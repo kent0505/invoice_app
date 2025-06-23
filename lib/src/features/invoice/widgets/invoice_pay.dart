@@ -139,9 +139,11 @@ class InvoicePay extends StatelessWidget {
         child: Row(
           children: [
             const SizedBox(width: 8),
-            const Expanded(
+            Expanded(
               child: Text(
-                'Has Invoice Been Paid?',
+                invoice.isEstimate.isEmpty
+                    ? 'Has Invoice Been Paid?'
+                    : 'Has Estimate Been Paid?',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 12,

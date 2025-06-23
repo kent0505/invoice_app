@@ -37,6 +37,9 @@ class _OnboardScreenState extends State<OnboardScreen> {
     setState(() {
       index = value;
     });
+    if (index == 3) {
+      onSkip();
+    }
   }
 
   @override
@@ -140,7 +143,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                 Center(
                   child: SmoothPageIndicator(
                     controller: pageController,
-                    count: 3,
+                    count: 4,
                     effect: const ScaleEffect(
                       dotHeight: 8,
                       dotWidth: 8,
@@ -327,6 +330,7 @@ class _OnboardScreenState extends State<OnboardScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox()
                     ],
                   ),
                 ),

@@ -92,7 +92,7 @@ class ItemBody extends StatelessWidget {
                       child: ItemField(
                         controller: priceController,
                         hintText: 'Price',
-                        keyboardType: TextInputType.number,
+                        decimal: true,
                         onChanged: checkActive,
                       ),
                     ),
@@ -124,7 +124,7 @@ class ItemBody extends StatelessWidget {
                 ItemField(
                   controller: discountPriceController,
                   hintText: 'Discount Price',
-                  keyboardType: TextInputType.number,
+                  decimal: true,
                   onChanged: checkActive,
                 ),
               const SizedBox(height: 26),
@@ -144,7 +144,7 @@ class ItemBody extends StatelessWidget {
                 ItemField(
                   controller: taxController,
                   hintText: 'Tax %',
-                  keyboardType: TextInputType.number,
+                  decimal: true,
                   onChanged: checkActive,
                 ),
             ],

@@ -16,6 +16,7 @@ class ItemBloc extends Bloc<ItemEvent, List<Item>> {
       (event, emit) => switch (event) {
         GetItems() => _getItems(event, emit),
         AddItem() => _addItem(event, emit),
+        AddItems() => _addItems(event, emit),
         EditItem() => _editItem(event, emit),
         DeleteItem() => _deleteItem(event, emit),
       },
@@ -34,10 +35,16 @@ class ItemBloc extends Bloc<ItemEvent, List<Item>> {
     AddItem event,
     Emitter<List<Item>> emit,
   ) async {
-    await _repository.addItem(
-      event.item,
-      items: event.items,
-    );
+    await _repository.addItem(event.item);
+    add(GetItems());
+  }
+
+  void _addItems(
+    AddItems event,
+    Emitter<List<Item>> emit,
+  ) async {
+    await _repository.deleteItems(event.id);
+    await _repository.addItems(event.items);
     add(GetItems());
   }
 

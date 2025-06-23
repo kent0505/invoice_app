@@ -6,12 +6,18 @@ sealed class ItemEvent {}
 final class GetItems extends ItemEvent {}
 
 final class AddItem extends ItemEvent {
-  AddItem({
-    this.item,
-    this.items = const [],
+  AddItem({required this.item});
+
+  final Item item;
+}
+
+final class AddItems extends ItemEvent {
+  AddItems({
+    required this.id,
+    required this.items,
   });
 
-  final Item? item;
+  final int id;
   final List<Item> items;
 }
 

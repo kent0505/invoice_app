@@ -42,7 +42,7 @@ class InvoiceTemplate1 extends StatelessWidget {
 
     final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
 
-    uniqueItems = uniqueItems.take(isEstimate ? 6 : 10).toList();
+    uniqueItems = uniqueItems.take(isEstimate ? 8 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
@@ -144,20 +144,20 @@ class InvoiceTemplate1 extends StatelessWidget {
           Container(
             height: 40,
             color: Color(0xff8E8E93).withValues(alpha: 0.2),
-            child: Row(
+            child: const Row(
               children: [
                 Expanded(
                   child: _ItemRowName(title: 'Name'),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 80,
                   child: _ItemRowName(title: 'QTY'),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 80,
                   child: _ItemRowName(title: 'Price'),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 80,
                   child: _ItemRowName(title: 'Amount'),
                 ),
@@ -223,6 +223,19 @@ class InvoiceTemplate1 extends StatelessWidget {
                 );
               },
             ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: List.generate(previewData.photos.length, (index) {
+              return Image.file(
+                File(previewData.photos[index].path),
+                frameBuilder: ImageWidget.frameBuilder,
+                errorBuilder: ImageWidget.errorBuilder,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              );
+            }),
           ),
           const Spacer(),
           const SizedBox(height: 10),

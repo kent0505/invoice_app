@@ -10,6 +10,7 @@ class ItemField extends StatelessWidget {
     required this.hintText,
     this.keyboardType,
     this.textAlign = TextAlign.start,
+    this.decimal = false,
     this.onChanged,
   });
 
@@ -17,6 +18,7 @@ class ItemField extends StatelessWidget {
   final String hintText;
   final TextInputType? keyboardType;
   final TextAlign textAlign;
+  final bool decimal;
   final void Function(String)? onChanged;
 
   @override
@@ -30,11 +32,13 @@ class ItemField extends StatelessWidget {
       child: TextField(
         controller: controller,
         textAlign: textAlign,
-        keyboardType: keyboardType,
+        keyboardType: decimal
+            ? TextInputType.numberWithOptions(decimal: true)
+            : keyboardType,
         textCapitalization: TextCapitalization.sentences,
         inputFormatters: [
           LengthLimitingTextInputFormatter(50),
-          if (keyboardType == TextInputType.number) DecimalInputFormatter()
+          if (decimal) DecimalInputFormatter()
         ],
         style: const TextStyle(
           color: Colors.black,

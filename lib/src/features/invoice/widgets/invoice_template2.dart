@@ -41,7 +41,7 @@ class InvoiceTemplate2 extends StatelessWidget {
 
     final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
 
-    uniqueItems = uniqueItems.take(isEstimate ? 6 : 10).toList();
+    uniqueItems = uniqueItems.take(isEstimate ? 8 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
@@ -135,9 +135,38 @@ class InvoiceTemplate2 extends StatelessWidget {
               ),
             ),
           _Signature(signature: signature),
+          Positioned(
+            bottom: 100,
+            right: 10,
+            child: _Amount(
+              subtotal: subtotal,
+              discount: discount,
+              tax: tax,
+              previewData: previewData,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: SizedBox(
+              width: 150,
+              child: Wrap(
+                children: List.generate(previewData.photos.length, (index) {
+                  return Image.file(
+                    File(previewData.photos[index].path),
+                    frameBuilder: ImageWidget.frameBuilder,
+                    errorBuilder: ImageWidget.errorBuilder,
+                    width: 75,
+                    height: 75,
+                    fit: BoxFit.cover,
+                  );
+                }),
+              ),
+            ),
+          ),
           Column(
             children: [
-              const SizedBox(height: 200),
+              const Spacer(),
               const _DataTitleRow(),
               Column(
                 children: List.generate(
@@ -166,35 +195,7 @@ class InvoiceTemplate2 extends StatelessWidget {
                   },
                 ),
               ),
-              Container(
-                color: const Color(0xffD9D9D9),
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 242,
-                      child: previewData.invoice.paymentMethod.isEmpty
-                          ? const SizedBox()
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _Text(
-                                  'Payment Method:',
-                                  bold: true,
-                                ),
-                                _Text(previewData.invoice.paymentMethod),
-                              ],
-                            ),
-                    ),
-                    const Spacer(),
-                    _Amount(
-                      subtotal: subtotal,
-                      discount: discount,
-                      tax: tax,
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 225),
             ],
           ),
         ],
@@ -212,6 +213,7 @@ class _Logo extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 130,
+      width: 130,
       child: path.isEmpty
           ? const SizedBox()
           : Padding(
@@ -417,17 +419,20 @@ class _Amount extends StatelessWidget {
     required this.subtotal,
     required this.discount,
     required this.tax,
+    required this.previewData,
   });
 
   final double subtotal;
   final double discount;
   final double tax;
+  final PreviewData previewData;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: 150,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _AmountRow(
             title: 'Subtotal:',
@@ -444,6 +449,21 @@ class _Amount extends StatelessWidget {
           _AmountRow(
             title: 'Total:',
             data: discount + tax,
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            child: previewData.invoice.paymentMethod.isEmpty
+                ? const SizedBox()
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _Text(
+                        'Payment Method:',
+                        bold: true,
+                      ),
+                      _Text(previewData.invoice.paymentMethod),
+                    ],
+                  ),
           ),
         ],
       ),
