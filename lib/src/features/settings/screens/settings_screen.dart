@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:in_app_review/in_app_review.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
@@ -126,25 +128,50 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
+
                 _Tile(
-                  title: 'Privacy',
-                  onPressed: () {},
+                  title: 'Privacy Policy',
+                  onPressed: () async {
+                    final Uri url = Uri.parse(
+                        'https://docs.google.com/document/d/13WZ7lio-8L5SXEA00rpU28H1bpckcBx_4PLjzTeHqg0/edit?usp=sharing');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
+                    }
+                  },
                 ),
                 _Tile(
-                  title: 'Terms',
-                  onPressed: () {},
+                  title: 'Terms & Conditions',
+                  onPressed: () async {
+                    final Uri url = Uri.parse(
+                        'https://docs.google.com/document/d/123xMfvJu0xCYnm8-mYv9YcCIhBr5NqFhwP7fewTeNvI/edit?usp=sharing');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
+                    }
+                  },
                 ),
                 _Tile(
-                  title: 'Contact',
-                  onPressed: () {},
+                  title: 'Contact us',
+                  onPressed: () async {
+                    final Uri url =
+                        Uri.parse('https://forms.gle/eG28LimZKZVWbhd7A');
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
+                    }
+                  },
                 ),
                 _Tile(
                   title: 'Rate App',
-                  onPressed: () {},
-                ),
-                _Tile(
-                  title: 'Share App',
-                  onPressed: () {},
+                  onPressed: () async {
+                    final InAppReview inAppReview = InAppReview.instance;
+                    if (await inAppReview.isAvailable()) {
+                      await inAppReview.requestReview();
+                    } else {
+                      await inAppReview.openStoreListing();
+                    }
+                  },
                 ),
               ],
             ),
