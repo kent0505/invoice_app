@@ -50,32 +50,35 @@ class InvoiceTile extends StatelessWidget {
               bottom: 6,
               right: 16,
             ),
-            child: Button(
-              onPressed: () {
-                DialogWidget.show(
-                  context,
-                  title: 'Delete?',
-                  delete: true,
-                  onPressed: () {
-                    context
-                        .read<InvoiceBloc>()
-                        .add(DeleteInvoice(invoice: invoice));
-                    context.pop();
-                  },
-                );
-              },
-              child: Container(
-                height: 85,
-                width: 85,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(6),
+            child: Builder(builder: (ctx) {
+              return Button(
+                onPressed: () {
+                  DialogWidget.show(
+                    context,
+                    title: 'Delete?',
+                    delete: true,
+                    onPressed: () {
+                      Slidable.of(ctx)?.close();
+                      context
+                          .read<InvoiceBloc>()
+                          .add(DeleteInvoice(invoice: invoice));
+                      context.pop();
+                    },
+                  );
+                },
+                child: Container(
+                  height: 85,
+                  width: 85,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Center(
+                    child: const SvgWidget(Assets.delete),
+                  ),
                 ),
-                child: Center(
-                  child: const SvgWidget(Assets.delete),
-                ),
-              ),
-            ),
+              );
+            }),
           ),
         ],
       ),

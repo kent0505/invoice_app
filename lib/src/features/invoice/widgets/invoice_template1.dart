@@ -10,10 +10,7 @@ import '../../item/models/item.dart';
 import '../models/preview_data.dart';
 
 class InvoiceTemplate1 extends StatelessWidget {
-  const InvoiceTemplate1({
-    super.key,
-    required this.previewData,
-  });
+  const InvoiceTemplate1({super.key, required this.previewData});
 
   final PreviewData previewData;
 
@@ -43,7 +40,9 @@ class InvoiceTemplate1 extends StatelessWidget {
       tax += itemTax;
     }
 
-    uniqueItems = uniqueItems.take(10).toList();
+    final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
+
+    uniqueItems = uniqueItems.take(isEstimate ? 6 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
@@ -92,7 +91,9 @@ class InvoiceTemplate1 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'INVOICE # ${previewData.invoice.number}',
+                    isEstimate
+                        ? 'ESTIMATE # ${previewData.invoice.number}'
+                        : 'INVOICE # ${previewData.invoice.number}',
                     textAlign: TextAlign.end,
                     style: const TextStyle(
                       color: Colors.black,
@@ -116,6 +117,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         name: previewData.clients.first.name,
                         phone: previewData.clients.first.phone,
                         email: previewData.clients.first.email,
+                        isEstimate: isEstimate,
                       ),
                   ],
                 ),
@@ -131,6 +133,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         phone: previewData.business.first.phone,
                         email: previewData.business.first.email,
                         isClient: false,
+                        isEstimate: isEstimate,
                       ),
                   ],
                 ),
@@ -277,22 +280,26 @@ class _From extends StatelessWidget {
     required this.phone,
     required this.email,
     this.isClient = true,
+    required this.isEstimate,
   });
 
   final String name;
-
   final String phone;
   final String email;
   final bool isClient;
+  final bool isEstimate;
 
   @override
   Widget build(BuildContext context) {
+    final to = isEstimate ? 'ESTIMATE TO:' : 'INVOICE TO:';
+    final from = isEstimate ? 'ESTIMATE FROM:' : 'INVOICE FROM:';
+
     return Column(
       crossAxisAlignment:
           isClient ? CrossAxisAlignment.start : CrossAxisAlignment.end,
       children: [
         Text(
-          isClient ? 'INVOICE TO:' : 'INVOICE FROM:',
+          isClient ? to : from,
           style: const TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -300,9 +307,8 @@ class _From extends StatelessWidget {
           ),
         ),
         _FromData(title: name),
-        // _FromData(title: to),
         _FromData(title: 'Phone: $phone'),
-        if (email.isNotEmpty) _FromData(title: 'Email: $email'),
+        _FromData(title: 'Email: $email'),
       ],
     );
   }

@@ -44,7 +44,9 @@ class InvoiceTemplate3 extends StatelessWidget {
       tax += itemTax;
     }
 
-    uniqueItems = uniqueItems.take(10).toList();
+    final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
+
+    uniqueItems = uniqueItems.take(isEstimate ? 6 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
@@ -62,7 +64,9 @@ class InvoiceTemplate3 extends StatelessWidget {
           Row(
             children: [
               Text(
-                'INVOICE #${previewData.invoice.number}',
+                isEstimate
+                    ? 'ESTIMATE #${previewData.invoice.number}'
+                    : 'INVOICE #${previewData.invoice.number}',
                 style: TextStyle(
                   color: color,
                   fontSize: 20,
