@@ -44,17 +44,13 @@ class InvoiceTemplate2 extends StatelessWidget {
 
     final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
 
-    uniqueItems = uniqueItems.take(isEstimate ? 8 : 10).toList();
+    uniqueItems = uniqueItems.take(isEstimate ? 10 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
         : previewData.business.isNotEmpty
             ? previewData.business.first.imageSignature
             : '';
-
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
 
     return Container(
       width: 500,
@@ -77,15 +73,29 @@ class InvoiceTemplate2 extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 26,
+            top: 20,
             right: 20,
-            child: Text(
-              dates,
-              style: TextStyle(
-                color: const Color(0xff1b1509),
-                fontSize: 12,
-                fontFamily: AppFonts.w600,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  'Date: ${formatTimestamp2(previewData.invoice.date)}',
+                  style: TextStyle(
+                    color: const Color(0xff1b1509),
+                    fontSize: 12,
+                    fontFamily: AppFonts.w600,
+                  ),
+                ),
+                if (previewData.invoice.dueDate != 0)
+                  Text(
+                    'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                    style: TextStyle(
+                      color: const Color(0xff1b1509),
+                      fontSize: 12,
+                      fontFamily: AppFonts.w600,
+                    ),
+                  ),
+              ],
             ),
           ),
           if (previewData.clients.isNotEmpty)
@@ -367,7 +377,7 @@ class _DataTitleRow extends StatelessWidget {
       child: const Row(
         children: [
           Expanded(
-            child: _DataTitle('Product Description'),
+            child: _DataTitle('Product'),
           ),
           SizedBox(
             width: 80,

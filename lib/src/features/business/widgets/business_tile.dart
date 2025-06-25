@@ -81,7 +81,9 @@ class _BusinessTileState extends State<BusinessTile> {
                         width: 56,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: const Color(0xffFF4400),
+                          color: widget.business.imageLogo.isEmpty
+                              ? const Color(0xffFF4400)
+                              : null,
                         ),
                         child: widget.business.imageLogo.isEmpty
                             ? const Center(

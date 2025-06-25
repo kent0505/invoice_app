@@ -178,8 +178,11 @@ Future<Map<String, dynamic>?> _fetchAppleSearchAdsData() async {
     if (appleSearchAdsToken != null) {
       const url = 'https://api-adservices.apple.com/api/v1/';
       final headers = {'Content-Type': 'text/plain'};
-      final response = await http.post(Uri.parse(url),
-          headers: headers, body: appleSearchAdsToken);
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: appleSearchAdsToken,
+      );
       if (response.statusCode == 200) {
         return json.decode(response.body);
       }

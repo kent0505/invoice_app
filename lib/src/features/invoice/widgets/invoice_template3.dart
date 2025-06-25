@@ -57,10 +57,6 @@ class InvoiceTemplate3 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
-
     return Container(
       width: 500,
       height: 500 * 1.414,
@@ -84,20 +80,29 @@ class InvoiceTemplate3 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    dates,
+                    'Date: ${formatTimestamp2(previewData.invoice.date)}',
                     style: TextStyle(
                       color: color,
                       fontSize: 12,
                       fontFamily: AppFonts.w600,
                     ),
                   ),
+                  if (previewData.invoice.dueDate != 0)
+                    Text(
+                      'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 12,
+                        fontFamily: AppFonts.w600,
+                      ),
+                    ),
                 ],
               ),
               const Spacer(),
               _Logo(path: previewData.business.first.imageLogo),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Row(
             children: [
               if (previewData.clients.isNotEmpty)
@@ -115,8 +120,8 @@ class InvoiceTemplate3 extends StatelessWidget {
                         bold: true,
                       ),
                       _Text(previewData.clients.first.phone),
-                      // _Text(previewData.clients.first.email),
-                      // _Text(previewData.clients.first.address),
+                      _Text(previewData.clients.first.email),
+                      _Text(previewData.clients.first.address),
                     ],
                   ),
                 ),
@@ -135,14 +140,14 @@ class InvoiceTemplate3 extends StatelessWidget {
                         bold: true,
                       ),
                       _Text(previewData.business.first.phone),
-                      // _Text(previewData.business.first.email),
-                      // _Text(previewData.business.first.address),
+                      _Text(previewData.business.first.email),
+                      _Text(previewData.business.first.address),
                     ],
                   ),
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           Column(
             children: [
               _DataTitleRow(color: color),
@@ -173,7 +178,7 @@ class InvoiceTemplate3 extends StatelessWidget {
                   },
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -355,7 +360,7 @@ class _DataTitleRow extends StatelessWidget {
       child: const Row(
         children: [
           Expanded(
-            child: _DataTitle('Product Description'),
+            child: _DataTitle('Product'),
           ),
           SizedBox(
             width: 80,
@@ -411,14 +416,14 @@ class _Signature extends StatelessWidget {
                 'Signature:',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 16,
+                  fontSize: 12,
                   fontFamily: AppFonts.w600,
                 ),
               ),
               const SizedBox(height: 10),
               SvgPicture.string(
                 signature,
-                height: 40,
+                height: 36,
               ),
             ],
           );

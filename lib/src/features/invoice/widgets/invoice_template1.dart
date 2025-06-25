@@ -52,10 +52,6 @@ class InvoiceTemplate1 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
-
     final currency = context.read<SettingsRepository>().getCurrency();
 
     return Container(
@@ -90,15 +86,6 @@ class InvoiceTemplate1 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    dates,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontFamily: AppFonts.w400,
-                    ),
-                  ),
-                  Text(
                     isEstimate
                         ? 'ESTIMATE # ${previewData.invoice.number}'
                         : 'INVOICE # ${previewData.invoice.number}',
@@ -109,6 +96,26 @@ class InvoiceTemplate1 extends StatelessWidget {
                       fontFamily: AppFonts.w600,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Date: ${formatTimestamp2(previewData.invoice.date)}',
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: AppFonts.w400,
+                    ),
+                  ),
+                  if (previewData.invoice.dueDate != 0)
+                    Text(
+                      'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: AppFonts.w400,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -125,6 +132,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         name: previewData.clients.first.name,
                         phone: previewData.clients.first.phone,
                         email: previewData.clients.first.email,
+                        address: previewData.clients.first.address,
                         isEstimate: isEstimate,
                       ),
                   ],
@@ -140,6 +148,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                         name: previewData.business.first.name,
                         phone: previewData.business.first.phone,
                         email: previewData.business.first.email,
+                        address: previewData.business.first.address,
                         isClient: false,
                         isEstimate: isEstimate,
                       ),
@@ -148,9 +157,9 @@ class InvoiceTemplate1 extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Container(
-            height: 40,
+            height: 32,
             color: Color(0xff8E8E93).withValues(alpha: 0.2),
             child: const Row(
               children: [
@@ -302,6 +311,7 @@ class _From extends StatelessWidget {
     required this.name,
     required this.phone,
     required this.email,
+    required this.address,
     this.isClient = true,
     required this.isEstimate,
   });
@@ -309,6 +319,7 @@ class _From extends StatelessWidget {
   final String name;
   final String phone;
   final String email;
+  final String address;
   final bool isClient;
   final bool isEstimate;
 
@@ -325,13 +336,14 @@ class _From extends StatelessWidget {
           isClient ? to : from,
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: AppFonts.w600,
           ),
         ),
         _FromData(title: name),
         _FromData(title: 'Phone: $phone'),
-        _FromData(title: 'Email: $email'),
+        if (email.isNotEmpty) _FromData(title: 'Email: $email'),
+        if (address.isNotEmpty) _FromData(title: 'Address: $address'),
       ],
     );
   }
