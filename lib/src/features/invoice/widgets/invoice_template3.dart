@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants.dart';
+import '../../../core/utils.dart';
 import '../../../core/widgets/image_widget.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../models/preview_data.dart';
 
 class InvoiceTemplate3 extends StatelessWidget {
@@ -54,6 +57,10 @@ class InvoiceTemplate3 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
+    final dates = previewData.invoice.dueDate != 0
+        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
+        : formatTimestamp2(previewData.invoice.date);
+
     return Container(
       width: 500,
       height: 500 * 1.414,
@@ -63,17 +70,30 @@ class InvoiceTemplate3 extends StatelessWidget {
         children: [
           Row(
             children: [
-              Text(
-                isEstimate
-                    ? 'ESTIMATE #${previewData.invoice.number}'
-                    : 'INVOICE #${previewData.invoice.number}',
-                style: TextStyle(
-                  color: color,
-                  fontSize: 20,
-                  fontFamily: AppFonts.w600,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    isEstimate
+                        ? 'ESTIMATE #${previewData.invoice.number}'
+                        : 'INVOICE #${previewData.invoice.number}',
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 20,
+                      fontFamily: AppFonts.w600,
+                    ),
+                  ),
+                  Text(
+                    dates,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 12,
+                      fontFamily: AppFonts.w600,
+                    ),
+                  ),
+                ],
               ),
-              Spacer(),
+              const Spacer(),
               _Logo(path: previewData.business.first.imageLogo),
             ],
           ),
@@ -184,7 +204,7 @@ class InvoiceTemplate3 extends StatelessWidget {
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           SizedBox(
             // width: 150,
             child: Wrap(
@@ -433,7 +453,7 @@ class _Amount extends StatelessWidget {
             data: subtotal - discount,
           ),
           _AmountRow(
-            title: 'Tax %:',
+            title: 'Tax ${((tax / discount) * 100).toStringAsFixed(2)}%:',
             data: tax,
           ),
           const SizedBox(height: 4),
@@ -465,6 +485,8 @@ class _AmountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.read<SettingsRepository>().getCurrency();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -480,7 +502,7 @@ class _AmountRow extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            '\$${data.toStringAsFixed(2)}',
+            '$currency${data.toStringAsFixed(2)}',
             textAlign: TextAlign.end,
             style: TextStyle(
               color: color,

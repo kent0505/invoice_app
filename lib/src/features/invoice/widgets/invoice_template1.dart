@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/image_widget.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../models/preview_data.dart';
 
 class InvoiceTemplate1 extends StatelessWidget {
@@ -50,6 +52,12 @@ class InvoiceTemplate1 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
+    final dates = previewData.invoice.dueDate != 0
+        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
+        : formatTimestamp2(previewData.invoice.date);
+
+    final currency = context.read<SettingsRepository>().getCurrency();
+
     return Container(
       width: 500,
       height: 500 * 1.414,
@@ -82,7 +90,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    formatTimestamp(previewData.invoice.date),
+                    dates,
                     textAlign: TextAlign.end,
                     style: const TextStyle(
                       color: Colors.black,
@@ -264,17 +272,19 @@ class InvoiceTemplate1 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _Amount(
-                    data: 'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                    data: 'Subtotal: $currency${subtotal.toStringAsFixed(2)}',
                   ),
                   _Amount(
                     data:
-                        'Discount: \$${(subtotal - discount).toStringAsFixed(2)}',
+                        'Discount: $currency${(subtotal - discount).toStringAsFixed(2)}',
                   ),
                   _Amount(
-                    data: 'Tax: \$${(tax).toStringAsFixed(2)}',
+                    data:
+                        'Tax ${((tax / discount) * 100).toStringAsFixed(2)}%: $currency${(tax).toStringAsFixed(2)}',
                   ),
                   _Amount(
-                    data: 'Total: \$${(discount + tax).toStringAsFixed(2)}',
+                    data:
+                        'Total: $currency${(discount + tax).toStringAsFixed(2)}',
                     bold: true,
                   ),
                 ],

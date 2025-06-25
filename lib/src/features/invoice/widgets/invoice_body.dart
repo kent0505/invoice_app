@@ -10,6 +10,7 @@ import '../../../core/widgets/title_text.dart';
 import '../../business/models/business.dart';
 import '../../client/models/client.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../bloc/invoice_bloc.dart';
 import 'photos_list.dart';
 import '../models/photo.dart';
@@ -67,6 +68,8 @@ class InvoiceBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.read<SettingsRepository>().getCurrency();
+
     return Column(
       children: [
         Expanded(
@@ -183,7 +186,10 @@ class InvoiceBody extends StatelessWidget {
                     ),
                     const Spacer(),
                     Text(
-                      calculateInvoiceMoney(items: items),
+                      calculateInvoiceMoney(
+                        items: items,
+                        currency: currency,
+                      ),
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 12,

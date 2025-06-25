@@ -14,6 +14,7 @@ import '../../client/screens/clients_screen.dart';
 import '../../item/screens/items_screen.dart';
 import '../../pro/bloc/pro_bloc.dart';
 import '../../pro/models/pro.dart';
+import 'currency_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -128,7 +129,13 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
-
+                _Tile(
+                  title: 'Currency',
+                  hasIcon: true,
+                  onPressed: () {
+                    context.push(CurrencyScreen.routePath);
+                  },
+                ),
                 _Tile(
                   title: 'Privacy Policy',
                   onPressed: () async {

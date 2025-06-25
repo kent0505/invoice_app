@@ -33,6 +33,7 @@ import 'src/features/item/models/item.dart';
 import 'src/features/pro/bloc/pro_bloc.dart';
 import 'src/features/pro/data/pro_repository.dart';
 import 'src/features/onboard/data/onboard_repository.dart';
+import 'src/features/settings/data/settings_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,6 +113,9 @@ void main() async {
       providers: [
         RepositoryProvider<OnboardRepository>(
           create: (context) => OnboardRepositoryImpl(prefs: prefs),
+        ),
+        RepositoryProvider<SettingsRepository>(
+          create: (context) => SettingsRepositoryImpl(prefs: prefs),
         ),
         RepositoryProvider<ProRepository>(
           create: (context) => ProRepositoryImpl(prefs: prefs),

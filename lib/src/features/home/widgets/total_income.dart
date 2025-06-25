@@ -9,6 +9,7 @@ import '../../invoice/bloc/invoice_bloc.dart';
 import '../../invoice/models/invoice.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../../settings/screens/settings_screen.dart';
 
 class TotalIncome extends StatelessWidget {
@@ -44,6 +45,9 @@ class TotalIncome extends StatelessWidget {
                 BlocBuilder<InvoiceBloc, InvoiceState>(
                   builder: (context, state) {
                     if (state is InvoiceLoaded) {
+                      final currency =
+                          context.read<SettingsRepository>().getCurrency();
+
                       final sorted = state.invoices.where((element) {
                         return element.paymentMethod.isNotEmpty;
                       }).toList();
@@ -65,7 +69,7 @@ class TotalIncome extends StatelessWidget {
                           }
 
                           return Text(
-                            '\$${amount.toStringAsFixed(2)}',
+                            '$currency${amount.toStringAsFixed(2)}',
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: Colors.black,

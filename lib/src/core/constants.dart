@@ -48,6 +48,7 @@ abstract final class Keys {
   static const onboard = 'onboard';
   static const showCount = 'showCount';
   static const available = 'available';
+  static const currency = 'currency';
 }
 
 abstract final class Identifiers {

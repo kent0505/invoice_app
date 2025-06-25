@@ -22,8 +22,12 @@ int getTimestamp() {
 
 String formatTimestamp(int timestamp) {
   final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
-  final formatter = DateFormat('d MMMM yyyy');
-  return formatter.format(date);
+  return DateFormat('d MMMM yyyy').format(date);
+}
+
+String formatTimestamp2(int timestamp) {
+  final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  return DateFormat('dd.MM.yyyy').format(date);
 }
 
 String formatSmartDate(int timestamp) {
@@ -98,6 +102,7 @@ String formatInvoiceNumber(int number) {
 
 String calculateInvoiceMoney({
   required List<Item> items,
+  required String currency,
   int invoiceID = 0,
 }) {
   double amount = items
@@ -109,5 +114,5 @@ String calculateInvoiceMoney({
     return sum + priceWithTax;
   });
 
-  return '\$${amount.toStringAsFixed(2).replaceAll('.', ',')}';
+  return '$currency${amount.toStringAsFixed(2).replaceAll('.', ',')}';
 }

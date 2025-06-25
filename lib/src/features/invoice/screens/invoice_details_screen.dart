@@ -17,12 +17,11 @@ import '../../../core/widgets/button.dart';
 import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../../business/bloc/business_bloc.dart';
-import '../../business/models/business.dart';
 import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
-import '../models/photo.dart';
+import '../../settings/data/settings_repository.dart';
 import '../widgets/invoice_template.dart';
 import '../widgets/photos_list.dart';
 import '../bloc/invoice_bloc.dart';
@@ -47,11 +46,7 @@ class InvoiceDetailsScreen extends StatefulWidget {
 class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   final screenshotController = ScreenshotController();
   late Invoice invoice;
-  List<Business> business = [];
-  List<Client> clients = [];
-  List<Item> items = [];
-  List<Photo> photos = [];
-  Client? client;
+
   File file = File('');
 
   void onPreview() {
@@ -170,18 +165,6 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
   void initState() {
     super.initState();
     invoice = widget.invoice;
-    final data = getData();
-    business = data.business;
-    clients = data.clients;
-    items = data.items;
-    try {
-      client = context
-          .read<ClientBloc>()
-          .state
-          .firstWhere((element) => element.id == invoice.clientID);
-    } catch (e) {
-      logger(e);
-    }
   }
 
   @override
@@ -202,15 +185,21 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                     Center(
                       child: SizedBox(
                         height: 200,
-                        child: InvoiceTemplate(
-                          previewData: PreviewData(
-                            invoice: invoice,
-                            business: business,
-                            clients: clients,
-                            items: items,
-                            photos: photos,
-                          ),
-                          controller: screenshotController,
+                        child: BlocBuilder<InvoiceBloc, InvoiceState>(
+                          builder: (context, state) {
+                            final data = getData();
+
+                            return InvoiceTemplate(
+                              previewData: PreviewData(
+                                invoice: invoice,
+                                business: data.business,
+                                clients: data.clients,
+                                items: data.items,
+                                photos: data.photos,
+                              ),
+                              controller: screenshotController,
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -285,20 +274,55 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                             },
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            client?.name ?? '?',
-                            style: const TextStyle(
-                              color: Color(0xff7D81A3),
-                              fontSize: 16,
-                              fontFamily: AppFonts.w400,
-                            ),
+                          BlocBuilder<InvoiceBloc, InvoiceState>(
+                            builder: (context, state) {
+                              if (state is InvoiceLoaded) {
+                                Client? client;
+
+                                for (final i in state.invoices) {
+                                  if (i.id == invoice.id) {
+                                    invoice = i;
+                                    break;
+                                  }
+                                }
+
+                                try {
+                                  client = context
+                                      .read<ClientBloc>()
+                                      .state
+                                      .firstWhere(
+                                    (element) {
+                                      return element.id == invoice.clientID;
+                                    },
+                                  );
+                                } catch (e) {
+                                  logger(e);
+                                }
+
+                                return Text(
+                                  client?.name ?? '?',
+                                  style: const TextStyle(
+                                    color: Color(0xff7D81A3),
+                                    fontSize: 16,
+                                    fontFamily: AppFonts.w400,
+                                  ),
+                                );
+                              }
+
+                              return const SizedBox();
+                            },
                           ),
                           const SizedBox(height: 8),
                           BlocBuilder<ItemBloc, List<Item>>(
                             builder: (context, items) {
+                              final currency = context
+                                  .read<SettingsRepository>()
+                                  .getCurrency();
+
                               return Text(
                                 calculateInvoiceMoney(
                                   items: items,
+                                  currency: currency,
                                   invoiceID: invoice.id,
                                 ),
                                 style: const TextStyle(

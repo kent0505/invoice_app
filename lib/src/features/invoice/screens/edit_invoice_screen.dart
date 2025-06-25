@@ -200,8 +200,8 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
             photos: photos,
           ),
         );
+    // сперва удаляет старые затем добавляет новые
     context.read<ItemBloc>().add(AddItems(id: widget.invoice.id, items: items));
-
     context.pop();
   }
 

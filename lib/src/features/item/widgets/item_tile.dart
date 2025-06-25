@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/widgets/button.dart';
+import '../../settings/data/settings_repository.dart';
 import '../models/item.dart';
 
 class ItemTile extends StatelessWidget {
@@ -19,6 +21,7 @@ class ItemTile extends StatelessWidget {
     final discountPrice = double.tryParse(item.discountPrice) ?? 0;
     final taxPercent = double.tryParse(item.tax) ?? 0;
     final total = discountPrice + discountPrice * (taxPercent / 100);
+    final currency = context.read<SettingsRepository>().getCurrency();
 
     return Button(
       onPressed: onPressed,
@@ -45,7 +48,7 @@ class ItemTile extends StatelessWidget {
               ),
             ),
             Text(
-              '\$${total.toStringAsFixed(2)}',
+              '$currency${total.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: Color(0xff7D81A3),
                 fontSize: 14,

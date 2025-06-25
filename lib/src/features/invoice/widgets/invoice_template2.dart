@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../core/constants.dart';
+import '../../../core/utils.dart';
 import '../../../core/widgets/image_widget.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../models/preview_data.dart';
 
 class InvoiceTemplate2 extends StatelessWidget {
@@ -49,6 +52,10 @@ class InvoiceTemplate2 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
+    final dates = previewData.invoice.dueDate != 0
+        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
+        : formatTimestamp2(previewData.invoice.date);
+
     return Container(
       width: 500,
       height: 500 * 1.414,
@@ -69,6 +76,18 @@ class InvoiceTemplate2 extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            top: 26,
+            right: 20,
+            child: Text(
+              dates,
+              style: TextStyle(
+                color: const Color(0xff1b1509),
+                fontSize: 12,
+                fontFamily: AppFonts.w600,
+              ),
+            ),
+          ),
           if (previewData.clients.isNotEmpty)
             Positioned(
               top: 20,
@@ -80,29 +99,35 @@ class InvoiceTemplate2 extends StatelessWidget {
                     children: [
                       SizedBox(
                         height: 30,
-                        child: Text(
-                          isEstimate
-                              ? 'ESTIMATE ${previewData.invoice.number}'
-                              : 'INVOICE #${previewData.invoice.number}',
-                          style: TextStyle(
-                            color: const Color(0xff1B1509),
-                            fontSize: 20,
-                            fontFamily: AppFonts.w600,
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                              isEstimate
+                                  ? 'ESTIMATE ${previewData.invoice.number}'
+                                  : 'INVOICE #${previewData.invoice.number}',
+                              style: const TextStyle(
+                                color: Color(0xff1B1509),
+                                fontSize: 20,
+                                fontFamily: AppFonts.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 10),
-                      _Text(
-                        'Billing to:',
-                        bold: true,
-                      ),
-                      _Text(
-                        previewData.clients.first.name,
-                        bold: true,
-                      ),
-                      _Text(previewData.clients.first.phone),
-                      _Text(previewData.clients.first.email),
-                      _Text(previewData.clients.first.address),
+                      if (previewData.clients.isNotEmpty) ...[
+                        _Text(
+                          'Billing to:',
+                          bold: true,
+                        ),
+                        _Text(
+                          previewData.clients.first.name,
+                          bold: true,
+                        ),
+                        _Text(previewData.clients.first.phone),
+                        _Text(previewData.clients.first.email),
+                        _Text(previewData.clients.first.address),
+                      ],
                     ],
                   ),
                 ],
@@ -118,7 +143,7 @@ class InvoiceTemplate2 extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const SizedBox(height: 40),
-                      _Text(
+                      const _Text(
                         'Billing from:',
                         bold: true,
                       ),
@@ -274,6 +299,8 @@ class _Data extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.read<SettingsRepository>().getCurrency();
+
     return Container(
       height: 30,
       decoration: BoxDecoration(color: color),
@@ -284,7 +311,7 @@ class _Data extends StatelessWidget {
           ),
           SizedBox(
             width: 80,
-            child: _DataText('\$${price.toStringAsFixed(2)}'),
+            child: _DataText('$currency${price.toStringAsFixed(2)}'),
           ),
           SizedBox(
             width: 80,
@@ -292,7 +319,7 @@ class _Data extends StatelessWidget {
           ),
           SizedBox(
             width: 80,
-            child: _DataText('\$${total.toStringAsFixed(2)}'),
+            child: _DataText('$currency${total.toStringAsFixed(2)}'),
           ),
         ],
       ),
@@ -443,7 +470,7 @@ class _Amount extends StatelessWidget {
             data: subtotal - discount,
           ),
           _AmountRow(
-            title: 'Tax %:',
+            title: 'Tax ${((tax / discount) * 100).toStringAsFixed(2)}%:',
             data: tax,
           ),
           _AmountRow(
@@ -482,6 +509,8 @@ class _AmountRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.read<SettingsRepository>().getCurrency();
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -491,7 +520,7 @@ class _AmountRow extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            '\$${data.toStringAsFixed(2)}',
+            '$currency${data.toStringAsFixed(2)}',
             textAlign: TextAlign.end,
             style: const TextStyle(
               color: Colors.black,

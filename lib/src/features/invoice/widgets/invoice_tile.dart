@@ -12,6 +12,7 @@ import '../../client/bloc/client_bloc.dart';
 import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
+import '../../settings/data/settings_repository.dart';
 import '../bloc/invoice_bloc.dart';
 import '../models/invoice.dart';
 import '../screens/invoice_details_screen.dart';
@@ -37,6 +38,8 @@ class InvoiceTile extends StatelessWidget {
     } catch (e) {
       logger(e);
     }
+
+    final currency = context.read<SettingsRepository>().getCurrency();
 
     return Slidable(
       closeOnScroll: true,
@@ -141,6 +144,7 @@ class InvoiceTile extends StatelessWidget {
                                   : 'Estimate Send'
                               : 'Received ${calculateInvoiceMoney(
                                   items: items,
+                                  currency: currency,
                                   invoiceID: invoice.id,
                                 )}',
                           maxLines: 2,
