@@ -4,7 +4,7 @@ class Invoice {
   Invoice({
     required this.id,
     required this.number,
-    required this.template,
+    this.template = 1,
     required this.date,
     required this.dueDate,
     required this.businessID,
@@ -74,4 +74,6 @@ class Invoice {
       isEstimate TEXT
     )
     ''';
+
+  static const drop = 'DROP TABLE IF EXISTS ${Tables.invoices};';
 }

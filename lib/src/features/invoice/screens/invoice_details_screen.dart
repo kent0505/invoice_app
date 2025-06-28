@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -18,7 +19,6 @@ import '../../../core/widgets/main_button.dart';
 import '../../../core/widgets/svg_widget.dart';
 import '../../business/bloc/business_bloc.dart';
 import '../../client/bloc/client_bloc.dart';
-import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
 import '../../settings/data/settings_repository.dart';
@@ -277,8 +277,6 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                           BlocBuilder<InvoiceBloc, InvoiceState>(
                             builder: (context, state) {
                               if (state is InvoiceLoaded) {
-                                Client? client;
-
                                 for (final i in state.invoices) {
                                   if (i.id == invoice.id) {
                                     invoice = i;
@@ -286,18 +284,14 @@ class _InvoiceDetailsScreenState extends State<InvoiceDetailsScreen> {
                                   }
                                 }
 
-                                try {
-                                  client = context
-                                      .read<ClientBloc>()
-                                      .state
-                                      .firstWhere(
-                                    (element) {
-                                      return element.id == invoice.clientID;
-                                    },
-                                  );
-                                } catch (e) {
-                                  logger(e);
-                                }
+                                final client = context
+                                    .read<ClientBloc>()
+                                    .state
+                                    .firstWhereOrNull(
+                                  (element) {
+                                    return element.id == invoice.clientID;
+                                  },
+                                );
 
                                 return Text(
                                   client?.name ?? '?',

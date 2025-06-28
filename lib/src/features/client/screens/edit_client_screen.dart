@@ -35,7 +35,6 @@ class _EditClientScreenState extends State<EditClientScreen> {
   void checkActive(String _) {
     setState(() {
       active = [
-        billToController,
         nameController,
         phoneController,
       ].every((element) => element.text.isNotEmpty);

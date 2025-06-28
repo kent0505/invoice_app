@@ -4,14 +4,9 @@ import 'package:flutter/services.dart';
 import '../../../core/constants.dart';
 
 class ClientBillTo extends StatelessWidget {
-  const ClientBillTo({
-    super.key,
-    required this.controller,
-    required this.onChanged,
-  });
+  const ClientBillTo({super.key, required this.controller});
 
   final TextEditingController controller;
-  final void Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +40,6 @@ class ClientBillTo extends StatelessWidget {
         ),
         hintText: 'Bill To',
       ),
-      onChanged: onChanged,
       onTapOutside: (_) {
         FocusManager.instance.primaryFocus?.unfocus();
       },

@@ -34,21 +34,24 @@ class BusinessField extends StatelessWidget {
           fontFamily: AppFonts.w400,
         ),
         decoration: InputDecoration(
-          prefixIcon: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 100,
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: AppFonts.w400,
+          prefixIcon: SizedBox(
+            width: 100,
+            height: 44,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontFamily: AppFonts.w400,
+                      height: 1,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 11),
           focusedBorder: UnderlineInputBorder(

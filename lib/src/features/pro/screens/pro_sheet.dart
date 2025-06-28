@@ -22,6 +22,7 @@ class ProSheet extends StatefulWidget {
         context: context,
         isScrollControlled: true,
         isDismissible: false,
+        enableDrag: false,
         builder: (context) {
           return ProSheet(identifier: identifier);
         },

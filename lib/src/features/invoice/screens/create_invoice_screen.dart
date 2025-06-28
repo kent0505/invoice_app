@@ -175,7 +175,7 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
     final images = await pickImages();
     if (images.isNotEmpty) {
       photos = [];
-      for (final image in images) {
+      for (final image in images.take(6)) {
         photos.add(Photo(
           id: id,
           path: image.path,
@@ -195,7 +195,6 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
               invoice: Invoice(
                 id: id,
                 number: number,
-                template: 1,
                 date: date,
                 dueDate: dueDate,
                 businessID: business.first.id,

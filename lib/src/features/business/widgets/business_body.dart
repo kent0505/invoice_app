@@ -13,9 +13,14 @@ class BusinessBody extends StatelessWidget {
     required this.active,
     required this.file,
     required this.nameController,
+    required this.businessNameController,
     required this.phoneController,
     required this.emailController,
     required this.addressController,
+    required this.vatController,
+    required this.bankController,
+    required this.ibanController,
+    required this.bicController,
     required this.signature,
     required this.onAddLogo,
     required this.onSignature,
@@ -26,9 +31,14 @@ class BusinessBody extends StatelessWidget {
   final bool active;
   final XFile file;
   final TextEditingController nameController;
+  final TextEditingController businessNameController;
   final TextEditingController phoneController;
   final TextEditingController emailController;
   final TextEditingController addressController;
+  final TextEditingController vatController;
+  final TextEditingController bankController;
+  final TextEditingController ibanController;
+  final TextEditingController bicController;
   final String signature;
   final VoidCallback onAddLogo;
   final VoidCallback onSignature;
@@ -71,6 +81,10 @@ class BusinessBody extends StatelessWidget {
                       onChanged: onChanged,
                     ),
                     BusinessField(
+                      title: 'Business name',
+                      controller: businessNameController,
+                    ),
+                    BusinessField(
                       title: 'Phone',
                       controller: phoneController,
                       keyboardType: TextInputType.phone,
@@ -84,6 +98,34 @@ class BusinessBody extends StatelessWidget {
                     BusinessField(
                       title: 'Address',
                       controller: addressController,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Column(
+                  children: [
+                    BusinessField(
+                      title: 'VAT No.',
+                      controller: vatController,
+                    ),
+                    BusinessField(
+                      title: 'Bank',
+                      controller: bankController,
+                    ),
+                    BusinessField(
+                      title: 'IBAN',
+                      controller: ibanController,
+                    ),
+                    BusinessField(
+                      title: 'BIC',
+                      controller: bicController,
                     ),
                   ],
                 ),

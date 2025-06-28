@@ -98,13 +98,29 @@ void main() async {
   // await deleteDatabase(path);
   final db = await openDatabase(
     path,
-    version: 1,
+    version: 2,
     onCreate: (db, version) async {
       await db.execute(Invoice.sql);
       await db.execute(Photo.sql);
       await db.execute(Business.sql);
       await db.execute(Client.sql);
       await db.execute(Item.sql);
+    },
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        // удаляет старые таблицы и создает заново
+        await db.execute(Invoice.drop);
+        await db.execute(Photo.drop);
+        await db.execute(Business.drop);
+        await db.execute(Client.drop);
+        await db.execute(Item.drop);
+
+        await db.execute(Invoice.sql);
+        await db.execute(Photo.sql);
+        await db.execute(Business.sql);
+        await db.execute(Client.sql);
+        await db.execute(Item.sql);
+      }
     },
   );
 

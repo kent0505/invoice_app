@@ -28,27 +28,6 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Center(
-          //   child: Container(
-          //     height: 50,
-          //     width: 50,
-          //     decoration: BoxDecoration(
-          //       color: Colors.white,
-          //       borderRadius: BorderRadius.circular(10),
-          //     ),
-          //   ),
-          // ),
-          // const SizedBox(height: 4),
-          // Text(
-          //   'User',
-          //   textAlign: TextAlign.center,
-          //   style: const TextStyle(
-          //     color: Colors.black,
-          //     fontSize: 16,
-          //     fontFamily: AppFonts.w600,
-          //   ),
-          // ),
-          // const SizedBox(height: 22),
           BlocBuilder<ProBloc, Pro>(
             builder: (context, state) {
               return state.isPro && isIOS()

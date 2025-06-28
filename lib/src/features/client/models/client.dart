@@ -49,4 +49,6 @@ class Client {
       address TEXT
     )
     ''';
+
+  static const drop = 'DROP TABLE IF EXISTS ${Tables.clients};';
 }

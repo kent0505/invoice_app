@@ -54,4 +54,6 @@ class Item {
       invoiceID INTEGER
     )
     ''';
+
+  static const drop = 'DROP TABLE IF EXISTS ${Tables.items};';
 }

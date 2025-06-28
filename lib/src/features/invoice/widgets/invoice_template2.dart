@@ -63,6 +63,109 @@ class InvoiceTemplate2 extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          // RIGHT SIDE
+          Padding(
+            padding: EdgeInsets.all(10).copyWith(left: 160),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isEstimate
+                            ? 'ESTIMATE ${previewData.invoice.number}'
+                            : 'INVOICE #${previewData.invoice.number}',
+                        style: const TextStyle(
+                          color: Color(0xff1B1509),
+                          fontSize: 20,
+                          fontFamily: AppFonts.w600,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      dates,
+                      style: const TextStyle(
+                        color: Color(0xff1b1509),
+                        fontSize: 12,
+                        fontFamily: AppFonts.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (previewData.clients.isNotEmpty) ...[
+                            _Text(
+                              'Billing to:',
+                              bold: true,
+                            ),
+                            _Text(
+                              previewData.clients.first.name,
+                              bold: true,
+                            ),
+                            _Text(previewData.clients.first.phone),
+                            _Text(previewData.clients.first.email),
+                            _Text(previewData.clients.first.address),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (previewData.business.isNotEmpty) ...[
+                            const _Text(
+                              'Billing from:',
+                              bold: true,
+                            ),
+                            _Text(
+                              previewData.business.first.name,
+                              bold: true,
+                            ),
+                            _Text(previewData.business.first.phone),
+                            _Text(previewData.business.first.email),
+                            _Text(previewData.business.first.address),
+                            if (previewData.business.first.vat.isNotEmpty)
+                              _Text(
+                                  'VAT No: ${previewData.business.first.vat}'),
+                            if (previewData.business.first.bank.isNotEmpty)
+                              _Text('Bank: ${previewData.business.first.bank}'),
+                            if (previewData.business.first.iban.isNotEmpty)
+                              _Text('IBAN: ${previewData.business.first.iban}'),
+                            if (previewData.business.first.bic.isNotEmpty)
+                              _Text('BIC: ${previewData.business.first.bic}'),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(),
+                Row(
+                  children: [
+                    _Signature(signature: signature),
+                    Spacer(),
+                    _Amount(
+                      subtotal: subtotal,
+                      discount: discount,
+                      tax: tax,
+                      previewData: previewData,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // LEFT SIDE
           Positioned(
             left: 0,
             child: Container(
@@ -72,123 +175,31 @@ class InvoiceTemplate2 extends StatelessWidget {
               child: Column(
                 children: [
                   _Logo(path: previewData.business.first.imageLogo),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 26,
-            right: 20,
-            child: Text(
-              dates,
-              style: TextStyle(
-                color: const Color(0xff1b1509),
-                fontSize: 12,
-                fontFamily: AppFonts.w600,
-              ),
-            ),
-          ),
-          if (previewData.clients.isNotEmpty)
-            Positioned(
-              top: 20,
-              left: 170,
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                        child: Row(
-                          children: [
-                            Text(
-                              isEstimate
-                                  ? 'ESTIMATE ${previewData.invoice.number}'
-                                  : 'INVOICE #${previewData.invoice.number}',
-                              style: const TextStyle(
-                                color: Color(0xff1B1509),
-                                fontSize: 20,
-                                fontFamily: AppFonts.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                  const Spacer(),
+                  SizedBox(
+                    width: 150,
+                    child: Wrap(
+                      children: List.generate(
+                        previewData.photos.length,
+                        (index) {
+                          return Image.file(
+                            File(previewData.photos[index].path),
+                            frameBuilder: ImageWidget.frameBuilder,
+                            errorBuilder: ImageWidget.errorBuilder,
+                            width: 75,
+                            height: 75,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
-                      const SizedBox(height: 10),
-                      if (previewData.clients.isNotEmpty) ...[
-                        _Text(
-                          'Billing to:',
-                          bold: true,
-                        ),
-                        _Text(
-                          previewData.clients.first.name,
-                          bold: true,
-                        ),
-                        _Text(previewData.clients.first.phone),
-                        _Text(previewData.clients.first.email),
-                        _Text(previewData.clients.first.address),
-                      ],
-                    ],
+                    ),
                   ),
                 ],
               ),
             ),
-          if (previewData.business.isNotEmpty)
-            Positioned(
-              top: 20,
-              right: 20,
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const SizedBox(height: 40),
-                      const _Text(
-                        'Billing from:',
-                        bold: true,
-                      ),
-                      _Text(
-                        previewData.business.first.name,
-                        bold: true,
-                      ),
-                      _Text(previewData.business.first.phone),
-                      _Text(previewData.business.first.email),
-                      _Text(previewData.business.first.address),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          _Signature(signature: signature),
-          Positioned(
-            bottom: 100,
-            right: 10,
-            child: _Amount(
-              subtotal: subtotal,
-              discount: discount,
-              tax: tax,
-              previewData: previewData,
-            ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: SizedBox(
-              width: 150,
-              child: Wrap(
-                children: List.generate(previewData.photos.length, (index) {
-                  return Image.file(
-                    File(previewData.photos[index].path),
-                    frameBuilder: ImageWidget.frameBuilder,
-                    errorBuilder: ImageWidget.errorBuilder,
-                    width: 75,
-                    height: 75,
-                    fit: BoxFit.cover,
-                  );
-                }),
-              ),
-            ),
-          ),
+
+          // PRODUCTS LIST
           Column(
             children: [
               const Spacer(),
@@ -243,16 +254,13 @@ class _Logo extends StatelessWidget {
           ? const SizedBox()
           : Padding(
               padding: const EdgeInsets.all(10),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(130),
-                child: Image.file(
-                  File(path),
-                  height: 130,
-                  width: 130,
-                  fit: BoxFit.cover,
-                  errorBuilder: ImageWidget.errorBuilder,
-                  frameBuilder: ImageWidget.frameBuilder,
-                ),
+              child: Image.file(
+                File(path),
+                height: 130,
+                width: 130,
+                fit: BoxFit.cover,
+                errorBuilder: ImageWidget.errorBuilder,
+                frameBuilder: ImageWidget.frameBuilder,
               ),
             ),
     );
@@ -272,6 +280,7 @@ class _Text extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       data,
+      maxLines: 2,
       style: TextStyle(
         color: Colors.black,
         fontSize: 12,
@@ -417,26 +426,22 @@ class _Signature extends StatelessWidget {
   Widget build(BuildContext context) {
     return signature.isEmpty
         ? const SizedBox()
-        : Positioned(
-            bottom: 10,
-            right: 10,
-            child: Column(
-              children: [
-                const Text(
-                  'Signature:',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: AppFonts.w600,
-                  ),
+        : Column(
+            children: [
+              const Text(
+                'Signature:',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontFamily: AppFonts.w600,
                 ),
-                const SizedBox(height: 10),
-                SvgPicture.string(
-                  signature,
-                  height: 40,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              SvgPicture.string(
+                signature,
+                height: 40,
+              ),
+            ],
           );
   }
 }

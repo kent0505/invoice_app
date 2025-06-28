@@ -1,15 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:collection/collection.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/button.dart';
 import '../../../core/widgets/dialog_widget.dart';
+import '../../../core/widgets/image_widget.dart';
 import '../../../core/widgets/svg_widget.dart';
+import '../../business/bloc/business_bloc.dart';
+import '../../business/models/business.dart';
 import '../../client/bloc/client_bloc.dart';
-import '../../client/models/client.dart';
 import '../../item/bloc/item_bloc.dart';
 import '../../item/models/item.dart';
 import '../../settings/data/settings_repository.dart';
@@ -29,15 +34,11 @@ class InvoiceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Client? client;
-    try {
-      client = context
-          .watch<ClientBloc>()
-          .state
-          .firstWhere((element) => element.id == invoice.clientID);
-    } catch (e) {
-      logger(e);
-    }
+    final client = context.watch<ClientBloc>().state.firstWhereOrNull(
+      (element) {
+        return element.id == invoice.clientID;
+      },
+    );
 
     final currency = context.read<SettingsRepository>().getCurrency();
 
@@ -109,13 +110,33 @@ class InvoiceTile extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: circleColor,
                 radius: 28,
-                child: Text(
-                  client?.name[0] ?? '?',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontFamily: AppFonts.w600,
-                  ),
+                child: BlocBuilder<BusinessBloc, List<Business>>(
+                  builder: (context, state) {
+                    final business = state.firstWhereOrNull((element) {
+                      return element.id == invoice.businessID;
+                    });
+
+                    return business == null
+                        ? Text(
+                            client?.name[0] ?? '?',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: AppFonts.w600,
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(28),
+                            child: Image.file(
+                              File(business.imageLogo),
+                              height: 28 * 2,
+                              width: 28 * 2,
+                              fit: BoxFit.cover,
+                              errorBuilder: ImageWidget.errorBuilder,
+                              frameBuilder: ImageWidget.frameBuilder,
+                            ),
+                          );
+                  },
                 ),
               ),
               const SizedBox(width: 10),

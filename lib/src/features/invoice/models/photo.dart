@@ -29,4 +29,6 @@ class Photo {
       path TEXT
     )
     ''';
+
+  static const drop = 'DROP TABLE IF EXISTS ${Tables.photos};';
 }

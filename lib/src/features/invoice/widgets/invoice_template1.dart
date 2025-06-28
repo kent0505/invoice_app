@@ -7,6 +7,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/constants.dart';
 import '../../../core/utils.dart';
 import '../../../core/widgets/image_widget.dart';
+import '../../business/models/business.dart';
+import '../../client/models/client.dart';
 import '../../item/models/item.dart';
 import '../../settings/data/settings_repository.dart';
 import '../models/preview_data.dart';
@@ -73,16 +75,13 @@ class InvoiceTemplate1 extends StatelessWidget {
                     ? const SizedBox()
                     : previewData.business.first.imageLogo.isEmpty
                         ? const SizedBox()
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.file(
-                              File(previewData.business.first.imageLogo),
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
-                              errorBuilder: ImageWidget.errorBuilder,
-                              frameBuilder: ImageWidget.frameBuilder,
-                            ),
+                        : Image.file(
+                            File(previewData.business.first.imageLogo),
+                            height: 80,
+                            width: 80,
+                            fit: BoxFit.cover,
+                            errorBuilder: ImageWidget.errorBuilder,
+                            frameBuilder: ImageWidget.frameBuilder,
                           ),
               ),
               const Spacer(),
@@ -94,7 +93,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                     textAlign: TextAlign.end,
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 16,
+                      fontSize: 14,
                       fontFamily: AppFonts.w400,
                     ),
                   ),
@@ -115,16 +114,15 @@ class InvoiceTemplate1 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (previewData.clients.isNotEmpty)
-                      _From(
-                        name: previewData.clients.first.name,
-                        phone: previewData.clients.first.phone,
-                        email: previewData.clients.first.email,
+                      _Client(
+                        client: previewData.clients.first,
                         isEstimate: isEstimate,
                       ),
                   ],
@@ -136,11 +134,8 @@ class InvoiceTemplate1 extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     if (previewData.business.isNotEmpty)
-                      _From(
-                        name: previewData.business.first.name,
-                        phone: previewData.business.first.phone,
-                        email: previewData.business.first.email,
-                        isClient: false,
+                      _Business(
+                        business: previewData.business.first,
                         isEstimate: isEstimate,
                       ),
                   ],
@@ -148,9 +143,9 @@ class InvoiceTemplate1 extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Container(
-            height: 40,
+            height: 32,
             color: Color(0xff8E8E93).withValues(alpha: 0.2),
             child: const Row(
               children: [
@@ -184,7 +179,7 @@ class InvoiceTemplate1 extends StatelessWidget {
                 }
 
                 return Container(
-                  height: 32,
+                  height: 30,
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
@@ -234,40 +229,35 @@ class InvoiceTemplate1 extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Row(
-            children: List.generate(previewData.photos.length, (index) {
-              return Image.file(
-                File(previewData.photos[index].path),
-                frameBuilder: ImageWidget.frameBuilder,
-                errorBuilder: ImageWidget.errorBuilder,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-              );
-            }),
-          ),
-          const Spacer(),
-          const SizedBox(height: 10),
-          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              if (signature.isNotEmpty)
-                Column(
-                  children: [
-                    const Text(
-                      'Signature:',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontFamily: AppFonts.w600,
-                      ),
+              if (previewData.invoice.isEstimate.isNotEmpty) ...[
+                SizedBox(
+                  width: 80 * 3,
+                  child: Wrap(
+                    children: List.generate(
+                      previewData.photos.length,
+                      (index) {
+                        return Image.file(
+                          File(previewData.photos[index].path),
+                          frameBuilder: ImageWidget.frameBuilder,
+                          errorBuilder: ImageWidget.errorBuilder,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
-                    const SizedBox(height: 10),
-                    SvgPicture.string(
-                      signature,
-                      height: 40,
-                    ),
-                  ],
+                  ),
                 ),
-              const Spacer(),
+              ] else if (signature.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                SvgPicture.string(
+                  signature,
+                  height: 40,
+                ),
+              ],
+              Spacer(),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -297,60 +287,105 @@ class InvoiceTemplate1 extends StatelessWidget {
   }
 }
 
-class _From extends StatelessWidget {
-  const _From({
-    required this.name,
-    required this.phone,
-    required this.email,
-    this.isClient = true,
+class _Client extends StatelessWidget {
+  const _Client({
+    required this.client,
     required this.isEstimate,
   });
 
-  final String name;
-  final String phone;
-  final String email;
-  final bool isClient;
+  final Client client;
   final bool isEstimate;
 
   @override
   Widget build(BuildContext context) {
     final to = isEstimate ? 'ESTIMATE TO:' : 'INVOICE TO:';
-    final from = isEstimate ? 'ESTIMATE FROM:' : 'INVOICE FROM:';
 
     return Column(
-      crossAxisAlignment:
-          isClient ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          isClient ? to : from,
+          to,
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 20,
+            fontSize: 18,
             fontFamily: AppFonts.w600,
           ),
         ),
-        _FromData(title: name),
-        _FromData(title: 'Phone: $phone'),
-        _FromData(title: 'Email: $email'),
+        _FromData(title: client.name),
+        _FromData(title: 'Phone: ${client.phone}'),
+        _FromData(title: 'Email: ${client.email}'),
+        _FromData(
+          title: 'Address: ${client.address}',
+          maxLines: 2,
+        ),
+      ],
+    );
+  }
+}
+
+class _Business extends StatelessWidget {
+  const _Business({
+    required this.business,
+    required this.isEstimate,
+  });
+
+  final Business business;
+  final bool isEstimate;
+
+  @override
+  Widget build(BuildContext context) {
+    final from = isEstimate ? 'ESTIMATE FROM:' : 'INVOICE FROM:';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          from,
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontFamily: AppFonts.w600,
+          ),
+        ),
+        _FromData(title: business.name),
+        _FromData(title: 'Phone: ${business.phone}'),
+        _FromData(title: 'Email: ${business.email}'),
+        _FromData(
+          title: 'Address: ${business.address}',
+          maxLines: 2,
+        ),
+        if (business.vat.isNotEmpty)
+          _FromData(title: 'VAT No: ${business.vat}'),
+        if (business.bank.isNotEmpty)
+          _FromData(title: 'Bank: ${business.bank}'),
+        if (business.iban.isNotEmpty)
+          _FromData(title: 'IBAN: ${business.iban}'),
+        if (business.bic.isNotEmpty) _FromData(title: 'BIC: ${business.bic}'),
       ],
     );
   }
 }
 
 class _FromData extends StatelessWidget {
-  const _FromData({required this.title});
+  const _FromData({
+    required this.title,
+    this.maxLines = 1,
+  });
 
   final String title;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       title,
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
       style: const TextStyle(
         color: Colors.black,
-        fontSize: 14,
+        fontSize: 10,
         fontFamily: AppFonts.w400,
-        height: 1.2,
+        height: 1.1,
       ),
     );
   }
@@ -426,7 +461,7 @@ class _Amount extends StatelessWidget {
       data,
       style: TextStyle(
         color: Colors.black,
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: bold ? AppFonts.w600 : AppFonts.w400,
       ),
     );

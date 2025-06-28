@@ -38,10 +38,7 @@ class ClientBody extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              ClientBillTo(
-                controller: billToController,
-                onChanged: onChanged,
-              ),
+              ClientBillTo(controller: billToController),
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
