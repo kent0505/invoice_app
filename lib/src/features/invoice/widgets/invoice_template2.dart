@@ -52,10 +52,6 @@ class InvoiceTemplate2 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
-
     return Container(
       width: 500,
       height: 500 * 1.414,
@@ -82,13 +78,31 @@ class InvoiceTemplate2 extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Text(
-                      dates,
-                      style: const TextStyle(
-                        color: Color(0xff1b1509),
-                        fontSize: 12,
-                        fontFamily: AppFonts.w600,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Date: ${formatTimestamp2(previewData.invoice.date)}',
+                          textAlign: TextAlign.end,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: AppFonts.w400,
+                            height: 1,
+                          ),
+                        ),
+                        if (previewData.invoice.dueDate != 0)
+                          Text(
+                            'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                            textAlign: TextAlign.end,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontFamily: AppFonts.w400,
+                              height: 1,
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                 ),
@@ -376,7 +390,7 @@ class _DataTitleRow extends StatelessWidget {
       child: const Row(
         children: [
           Expanded(
-            child: _DataTitle('Product Description'),
+            child: _DataTitle('Product'),
           ),
           SizedBox(
             width: 80,

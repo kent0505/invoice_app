@@ -54,10 +54,6 @@ class InvoiceTemplate1 extends StatelessWidget {
             ? previewData.business.first.imageSignature
             : '';
 
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
-
     final currency = context.read<SettingsRepository>().getCurrency();
 
     return Container(
@@ -89,15 +85,6 @@ class InvoiceTemplate1 extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    dates,
-                    textAlign: TextAlign.end,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: AppFonts.w400,
-                    ),
-                  ),
-                  Text(
                     isEstimate
                         ? 'ESTIMATE # ${previewData.invoice.number}'
                         : 'INVOICE # ${previewData.invoice.number}',
@@ -108,6 +95,26 @@ class InvoiceTemplate1 extends StatelessWidget {
                       fontFamily: AppFonts.w600,
                     ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Date: ${formatTimestamp2(previewData.invoice.date)}',
+                    textAlign: TextAlign.end,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: AppFonts.w400,
+                    ),
+                  ),
+                  if (previewData.invoice.dueDate != 0)
+                    Text(
+                      'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontFamily: AppFonts.w400,
+                      ),
+                    ),
                 ],
               ),
             ],

@@ -49,17 +49,13 @@ class InvoiceTemplate3 extends StatelessWidget {
 
     final isEstimate = previewData.invoice.isEstimate.isNotEmpty;
 
-    uniqueItems = uniqueItems.take(isEstimate ? 7 : 10).toList();
+    uniqueItems = uniqueItems.take(isEstimate ? 8 : 10).toList();
 
     final signature = previewData.invoice.imageSignature.isNotEmpty
         ? previewData.invoice.imageSignature
         : previewData.business.isNotEmpty
             ? previewData.business.first.imageSignature
             : '';
-
-    final dates = previewData.invoice.dueDate != 0
-        ? '${formatTimestamp2(previewData.invoice.date)} - ${formatTimestamp2(previewData.invoice.dueDate)}'
-        : formatTimestamp2(previewData.invoice.date);
 
     return Container(
       width: 500,
@@ -84,13 +80,22 @@ class InvoiceTemplate3 extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    dates,
+                    'Date: ${formatTimestamp2(previewData.invoice.date)}',
                     style: TextStyle(
                       color: color,
-                      fontSize: 12,
+                      fontSize: 10,
                       fontFamily: AppFonts.w600,
                     ),
                   ),
+                  if (previewData.invoice.dueDate != 0)
+                    Text(
+                      'Due date: ${formatTimestamp2(previewData.invoice.dueDate)}',
+                      style: TextStyle(
+                        color: color,
+                        fontSize: 10,
+                        fontFamily: AppFonts.w600,
+                      ),
+                    ),
                 ],
               ),
               const Spacer(),
@@ -225,7 +230,7 @@ class InvoiceTemplate3 extends StatelessWidget {
                                 bold: true,
                               ),
                               _Text(previewData.invoice.paymentMethod),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               _Signature(signature: signature),
                             ],
                           ),
@@ -392,7 +397,7 @@ class _DataTitleRow extends StatelessWidget {
       child: const Row(
         children: [
           Expanded(
-            child: _DataTitle('Product Description'),
+            child: _DataTitle('Product'),
           ),
           SizedBox(
             width: 80,
@@ -444,18 +449,14 @@ class _Signature extends StatelessWidget {
         ? const SizedBox()
         : Column(
             children: [
-              const Text(
+              _Text(
                 'Signature:',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontFamily: AppFonts.w600,
-                ),
+                bold: true,
               ),
               const SizedBox(height: 10),
               SvgPicture.string(
                 signature,
-                height: 40,
+                height: 30,
               ),
             ],
           );

@@ -72,27 +72,36 @@ class _CreateInvoiceScreenState extends State<CreateInvoiceScreen> {
   }
 
   void onPreview() {
-    context.push(
-      InvoicePreviewScreen.routePath,
-      extra: PreviewData(
-        invoice: Invoice(
-          id: id,
-          number: number,
-          template: 1,
-          date: date,
-          dueDate: dueDate,
-          businessID: 0,
-          clientID: 0,
-          imageSignature: hasSignature ? signature : '',
-          isEstimate: widget.isEstimate,
+    final isPro = context.read<ProBloc>().state.isPro;
+    final available = context.read<ProRepository>().getAvailable();
+    if (isPro || available >= 1) {
+      context.push(
+        InvoicePreviewScreen.routePath,
+        extra: PreviewData(
+          invoice: Invoice(
+            id: id,
+            number: number,
+            template: 1,
+            date: date,
+            dueDate: dueDate,
+            businessID: 0,
+            clientID: 0,
+            imageSignature: hasSignature ? signature : '',
+            isEstimate: widget.isEstimate,
+          ),
+          business: business,
+          clients: clients,
+          items: items,
+          photos: photos,
+          customize: false,
         ),
-        business: business,
-        clients: clients,
-        items: items,
-        photos: photos,
-        customize: false,
-      ),
-    );
+      );
+    } else {
+      context.push(
+        ProScreen.routePath,
+        extra: Identifiers.paywall1,
+      );
+    }
   }
 
   void onDate() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:in_app_review/in_app_review.dart';
+// import 'package:in_app_review/in_app_review.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants.dart';
@@ -151,12 +151,12 @@ class SettingsScreen extends StatelessWidget {
                 _Tile(
                   title: 'Rate App',
                   onPressed: () async {
-                    final InAppReview inAppReview = InAppReview.instance;
-                    if (await inAppReview.isAvailable()) {
-                      await inAppReview.requestReview();
-                    } else {
-                      await inAppReview.openStoreListing();
-                    }
+                    // final InAppReview inAppReview = InAppReview.instance;
+                    // if (await inAppReview.isAvailable()) {
+                    //   await inAppReview.requestReview();
+                    // } else {
+                    //   await inAppReview.openStoreListing();
+                    // }
                   },
                 ),
               ],

@@ -1,22 +1,22 @@
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+// import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_asa_attribution/flutter_asa_attribution.dart';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+// import 'package:flutter_asa_attribution/flutter_asa_attribution.dart';
+// import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
+// import 'package:uuid/uuid.dart';
+// import 'package:http/http.dart' as http;
 
-import 'src/core/appsflyer.dart';
+// import 'src/core/appsflyer.dart';
 import 'src/core/router.dart';
 import 'src/core/themes.dart';
-import 'src/core/utils.dart';
+// import 'src/core/utils.dart';
 import 'src/features/business/bloc/business_bloc.dart';
 import 'src/features/business/data/business_repository.dart';
 import 'src/features/business/models/business.dart';
@@ -45,53 +45,54 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   // await prefs.clear();
 
-  String? userID = prefs.getString('userID');
-  bool isFirstInstall = userID == null;
-
-  if (userID == null) {
-    userID = const Uuid().v4();
-    await prefs.setString('userID', userID);
-  }
-
   await Purchases.configure(
     PurchasesConfiguration('appl_XOzrSgcIeAVfozHHQbvIJjGyatM'),
   );
-  await AppTrackingTransparency.trackingAuthorizationStatus;
-  await OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-  OneSignal.initialize("2cf25f97-90de-476b-ac73-6b4b6430d72c");
-  await OneSignal.Notifications.requestPermission(true);
-  await OneSignal.login(userID);
 
-  if (isFirstInstall) {
-    Map<String, String> tags = {
-      'subscription_type': 'unpaid',
-    };
+  // String? userID = prefs.getString('userID');
+  // bool isFirstInstall = userID == null;
 
-    final asaData = await _fetchAppleSearchAdsData();
-    if (asaData != null) {
-      if (asaData['campaignId'] != null) {
-        tags['campaignId'] = asaData['campaignId'].toString();
-      }
-      if (asaData['adGroupId'] != null) {
-        tags['adGroupId'] = asaData['adGroupId'].toString();
-      }
-      if (asaData['keywordId'] != null) {
-        tags['keywordId'] = asaData['keywordId'].toString();
-      }
-      if (asaData['creativeSetId'] != null) {
-        tags['creativeSetId'] = asaData['creativeSetId'].toString();
-      }
-    }
+  // if (userID == null) {
+  //   userID = const Uuid().v4();
+  //   await prefs.setString('userID', userID);
+  // }
 
-    await OneSignal.User.addTags(tags);
-  }
+  // await AppTrackingTransparency.trackingAuthorizationStatus;
+  // await OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
+  // OneSignal.initialize("2cf25f97-90de-476b-ac73-6b4b6430d72c");
+  // await OneSignal.Notifications.requestPermission(true);
+  // await OneSignal.login(userID);
 
-  final appsFlyerService = AppsFlyerService();
-  await appsFlyerService.initAppsFlyer(
-    devKey: 'VssG3LNA5NwZpCZ3Dd5YhQ',
-    appId: 'id6747311276',
-    isDebug: false,
-  );
+  // if (isFirstInstall) {
+  //   Map<String, String> tags = {
+  //     'subscription_type': 'unpaid',
+  //   };
+
+  //   final asaData = await _fetchAppleSearchAdsData();
+  //   if (asaData != null) {
+  //     if (asaData['campaignId'] != null) {
+  //       tags['campaignId'] = asaData['campaignId'].toString();
+  //     }
+  //     if (asaData['adGroupId'] != null) {
+  //       tags['adGroupId'] = asaData['adGroupId'].toString();
+  //     }
+  //     if (asaData['keywordId'] != null) {
+  //       tags['keywordId'] = asaData['keywordId'].toString();
+  //     }
+  //     if (asaData['creativeSetId'] != null) {
+  //       tags['creativeSetId'] = asaData['creativeSetId'].toString();
+  //     }
+  //   }
+
+  //   await OneSignal.User.addTags(tags);
+  // }
+
+  // final appsFlyerService = AppsFlyerService();
+  // await appsFlyerService.initAppsFlyer(
+  //   devKey: 'VssG3LNA5NwZpCZ3Dd5YhQ',
+  //   appId: 'id6747311276',
+  //   isDebug: false,
+  // );
 
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'data.db');
@@ -187,21 +188,24 @@ void main() async {
   );
 }
 
-Future<Map<String, dynamic>?> _fetchAppleSearchAdsData() async {
-  try {
-    final String? appleSearchAdsToken =
-        await FlutterAsaAttribution.instance.attributionToken();
-    if (appleSearchAdsToken != null) {
-      const url = 'https://api-adservices.apple.com/api/v1/';
-      final headers = {'Content-Type': 'text/plain'};
-      final response = await http.post(Uri.parse(url),
-          headers: headers, body: appleSearchAdsToken);
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      }
-    }
-  } catch (e) {
-    logger('ASA Data fetch error: $e');
-  }
-  return null;
-}
+// Future<Map<String, dynamic>?> _fetchAppleSearchAdsData() async {
+//   try {
+//     final String? appleSearchAdsToken =
+//         await FlutterAsaAttribution.instance.attributionToken();
+//     if (appleSearchAdsToken != null) {
+//       const url = 'https://api-adservices.apple.com/api/v1/';
+//       final headers = {'Content-Type': 'text/plain'};
+//       final response = await http.post(
+//         Uri.parse(url),
+//         headers: headers,
+//         body: appleSearchAdsToken,
+//       );
+//       if (response.statusCode == 200) {
+//         return json.decode(response.body);
+//       }
+//     }
+//   } catch (e) {
+//     logger('ASA Data fetch error: $e');
+//   }
+//   return null;
+// }
